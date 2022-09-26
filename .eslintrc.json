@@ -1,6 +1,7 @@
 {
   "extends": "@antfu",
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "no-new": "off"
   }
 }

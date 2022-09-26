@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { KeepLiveTCP } from 'tiny-bilibili-ws/browser'
+import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 import { onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 
 onMounted(() => {
-  new KeepLiveTCP(1017)
+  new KeepLiveWS(1017)
 })
 </script>
 
