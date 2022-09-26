@@ -44,7 +44,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@gfx/zopfli": "^1.0.15",
     "eventemitter3": "^4.0.7",
     "isomorphic-ws": "^5.0.0",
     "pako": "^2.0.4",
