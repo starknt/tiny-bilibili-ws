@@ -37,12 +37,14 @@
     "build": "unbuild",
     "prepublishOnly": "pnpm run build",
     "release": "bumpp && pnpm publish",
-    "start": "esno ./src/index.ts",
+    "start": "esno ./src/node.ts",
     "dev": "unbuild --stub",
     "typecheck": "npx tsc --noEmit",
+    "test": "vitest",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@gfx/zopfli": "^1.0.15",
     "eventemitter3": "^4.0.7",
     "isomorphic-ws": "^5.0.0",
     "pako": "^2.0.4",
