@@ -1,3 +1,6 @@
+import type { IReader, IWriter, IZlib } from './types'
+import { LiveProtocolOperation, LiveProtocolVersion } from './types'
+
 const textDecoder = new TextDecoder()
 const textEncoder = new TextEncoder()
 
@@ -15,52 +18,6 @@ const writeInt = function (buffer: Uint8Array, start: number, len: number, value
     buffer[start + i] = value / 256 ** (len - i - 1)
     i++
   }
-}
-
-export interface IZlib<T extends Uint8Array> {
-  inflateAsync(v: T): Promise<T>
-  brotliDecompressAsync(v: T): Promise<T>
-}
-
-export enum LiveProtocolVersion {
-  VER_0,
-  VER_1,
-  VER_2,
-  VER_3,
-}
-
-export enum LiveProtocolOperation {
-  HEARTBEAT = 2,
-  HEARTBEAT_REPLY,
-  MESSAGE = 5,
-  USER_AUTHENTICATION = 7,
-  CONNECT_SUCCESS,
-  Unknown = -1,
-}
-
-export interface ProtocolHeader {
-  byteLength: number
-  headLength: number
-  ver: LiveProtocolVersion
-  sequence_id: number
-  op: LiveProtocolOperation
-}
-
-export interface LiveProtocol {
-  header: ProtocolHeader
-  body: any
-}
-
-interface IWriter {
-  write(offset: number, len: number, val: number): void
-  // writeInt32BE(val: number, offset?: number): void
-  // writeInt16BE(val: number, offset?: number): void
-}
-
-interface IReader {
-  read(offset: number, len: number): number
-  // readInt16BE(offset?: number): number
-  // readInt32BE(offset?: number): number
 }
 
 class BufferWriter implements IWriter {

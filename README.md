@@ -2,10 +2,15 @@
 
 [![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=)](https://www.npmjs.com/package/tiny-bilibili-ws)
 
-## Usage
+## Install
 
 ```bash
     npm install --save-dev tiny-bilibili-ws
+```
+
+## Usage
+
+```typescript
 ```
 
 ## License

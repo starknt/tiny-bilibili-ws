@@ -1,8 +1,8 @@
-import { CLOSE_EVENT, ERROR_EVENT, Live, MESSAGE_EVENT, OPEN_EVENT } from './base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT } from './base'
 import type { ISocket } from './types'
-import { inflates } from './inflate/browser'
+import { inflates } from './browser/inflate'
 
-export class KeepLiveTCP extends Live {
+export class KeepLiveTCP extends LiveClient {
   private socket: WebSocket
   i = 0
 

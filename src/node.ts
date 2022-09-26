@@ -1,9 +1,9 @@
 import type { Socket } from 'node:net'
 import { connect } from 'node:net'
-import { CLOSE_EVENT, ERROR_EVENT, Live, MESSAGE_EVENT, OPEN_EVENT } from './base'
-import { inflates } from './inflate/node'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT } from './base'
+import { inflates } from './node/inflate'
 
-export class KeepLiveTCP extends Live {
+export class KeepLiveTCP extends LiveClient {
   private socket: Socket
   private buffer: Buffer = Buffer.alloc(0)
   private i = 0

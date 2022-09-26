@@ -1,6 +1,6 @@
 import type { BrotliOptions, InputType, ZlibOptions } from 'zlib'
 import { brotliDecompress as _brotliDecompress, inflate as _inflate } from 'zlib'
-import type { IZlib } from '../buffer'
+import type { IZlib } from 'src/types'
 
 function handler(resolve: (value: Buffer | PromiseLike<Buffer>) => void, reject: (reason?: any) => void) {
   return (error: Error | null, result: Buffer) => {

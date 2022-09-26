@@ -1,28 +1,17 @@
 import EventEmitter from 'eventemitter3'
-import type { IZlib } from './buffer'
-import { LiveProtocolOperation, deserialize, serialize } from './buffer'
-import type { ISocket } from './types'
-
-export interface LiveHelloMessage {
-  clientver: `${number}.${number}.${number}`
-  platform: 'web'
-  protover: 2
-  roomid: number
-  uid: 0
-  type: 2
-}
+import { deserialize, serialize } from './buffer'
+import type { ISocket, IZlib, ListenerEvents, LiveHelloMessage } from './types'
+import { LiveProtocolOperation } from './types'
 
 export const MESSAGE_EVENT = Symbol('')
 export const OPEN_EVENT = Symbol('')
 export const ERROR_EVENT = Symbol('')
 export const CLOSE_EVENT = Symbol('')
 
-export type ListenerEvents = 'msg' | 'message' | 'open' | 'close' | 'error' | 'live'
-
-export class Live extends EventEmitter<ListenerEvents | symbol | string> {
+export class LiveClient extends EventEmitter<ListenerEvents | symbol> {
   readonly roomId: number
 
-  timeout: any
+  private timeout: any
 
   constructor(roomId: number, private readonly _socket: ISocket, readonly zlib: IZlib<Buffer>) {
     if (typeof roomId !== 'number' || Number.isNaN(roomId))
@@ -91,6 +80,11 @@ export class Live extends EventEmitter<ListenerEvents | symbol | string> {
 
   getOnline() {
     this.heartbeat()
-    // return new Promise<number>(resolve => this.once('heartbeat', resolve))
+    return new Promise<number>(resolve => this.once('heartbeat', resolve))
+  }
+
+  close() {
+    clearTimeout(this.timeout)
+    this._socket.end()
   }
 }
