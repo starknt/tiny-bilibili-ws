@@ -1,65 +1,82 @@
 import EventEmitter from 'eventemitter3'
-import { deserialize, serialize } from './buffer'
-import type { ISocket, IZlib, ListenerEvents, LiveHelloMessage } from './types'
-import { LiveProtocolOperation } from './types'
+import { WS_OP, deserialize, serialize } from './buffer'
+import type { BaseLiveClientOptions, ISocket, IZlib, ListenerEvents, LiveHelloMessage } from './types'
+
+/// const
 
 export const MESSAGE_EVENT = Symbol('')
 export const OPEN_EVENT = Symbol('')
 export const ERROR_EVENT = Symbol('')
 export const CLOSE_EVENT = Symbol('')
 
-export class LiveClient extends EventEmitter<ListenerEvents | symbol> {
-  readonly roomId: number
+export const SOCKET_HOST = 'broadcastlv.chat.bilibili.com'
+export const NODE_SOCKET_PORT = 2243
+export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}:2245/sub`
+export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
+///
+
+export class LiveClient extends EventEmitter<string | symbol> {
+  roomId: number
+
+  private socket: ISocket
   private timeout: any
+  private zlib: IZlib
+  private live = false
+  private online = 0
+  private firstMessage: LiveHelloMessage
 
-  constructor(roomId: number, private readonly _socket: ISocket, readonly zlib: IZlib<Buffer>) {
-    if (typeof roomId !== 'number' || Number.isNaN(roomId))
-      throw new Error(`roomId ${roomId} must be Number not NaN`)
-
+  constructor(options: BaseLiveClientOptions) {
     super()
 
-    this.on(OPEN_EVENT, () => {
-      const helloMessage: LiveHelloMessage = {
-        clientver: '2.0.11',
-        platform: 'web',
-        protover: 2,
-        roomid: this.roomId,
-        uid: 0,
-        type: 2,
-      }
+    this.firstMessage = {
+      roomid: options.room,
+      clientver: options.clientVer!,
+      protover: options.protover!,
+      uid: options.uid!,
+      platform: options.platform!,
+      type: options.type!,
+    }
 
-      this._socket.write(serialize(LiveProtocolOperation.USER_AUTHENTICATION, helloMessage))
-      this.emit('live')
-    })
+    this.socket = options.socket
+    this.roomId = options.room
+    this.zlib = options.zlib
 
-    this.roomId = roomId
     this.bindEvent()
   }
 
   private bindEvent() {
+    this.on(OPEN_EVENT, () => {
+      this.socket.write(serialize(WS_OP.USER_AUTHENTICATION, this.firstMessage))
+      this.emit('live')
+    })
+
     this.on(MESSAGE_EVENT, async (buffer: Uint8Array) => {
+      this.emit('message', buffer)
+
       const packs = await deserialize(buffer, this.zlib)
 
-      packs.forEach(({ type, data }) => {
-        if (type === 'welcome') {
+      packs.forEach((packet) => {
+        if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
           this.emit('live')
-          this._socket.write(serialize(LiveProtocolOperation.HEARTBEAT, {}))
-        }
-        if (type === 'heartbeat')
-          this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
-          // this.emit('heartbeat', this.online)
 
-        if (type === 'message') {
-          console.log(data)
-          this.emit('msg', data)
-          const cmd = data?.cmd || (data?.msg && data?.msg?.cmd)
+          this.socket.write(serialize(WS_OP.HEARTBEAT))
+        }
+
+        if (packet.meta.op === WS_OP.HEARTBEAT_REPLY) {
+          this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
+
+          this.emit('heartbeat', this.online)
+        }
+
+        if (packet.meta.op === WS_OP.MESSAGE) {
+          this.emit('msg', packet)
+          const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
           if (cmd) {
             if (cmd.includes('DANMU_MSG'))
-
-              this.emit('DANMU_MSG', data)
-
-            else this.emit(cmd, data)
+              this.emit('DANMU_MSG', packet)
+            else
+              this.emit(cmd, packet)
           }
         }
       })
@@ -75,16 +92,22 @@ export class LiveClient extends EventEmitter<ListenerEvents | symbol> {
   }
 
   heartbeat() {
-    this._socket.write(serialize(LiveProtocolOperation.HEARTBEAT, {}))
+    this.socket.write(serialize(WS_OP.HEARTBEAT))
   }
 
   getOnline() {
     this.heartbeat()
+
     return new Promise<number>(resolve => this.once('heartbeat', resolve))
   }
 
   close() {
+    if (!this.live)
+      return
+    this.live = false
     clearTimeout(this.timeout)
-    this._socket.end()
+    this.socket.end()
+    this.emit('closed')
   }
 }
+

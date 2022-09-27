@@ -1,33 +1,46 @@
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT } from './base'
-import type { ISocket } from './types'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
+import type { BaseLiveClientOptions, ISocket, RoomResponse, WSOptions } from './types'
+import { DEFAULT_WS_OPTIONS } from './types'
 import { inflates } from './browser/inflate'
 
-export class KeepLiveTCP extends LiveClient {
-  private socket: WebSocket
-  i = 0
+export async function getLongRoomId(room: number): Promise<RoomResponse> {
+  const res = await fetch(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${room}`)
+  return await res.json()
+}
 
-  constructor(roomId: number) {
-    const socket = new WebSocket('wss://broadcastlv.chat.bilibili.com:2245/sub')
-    socket.binaryType = 'arraybuffer'
-    const _socket: ISocket = {
+export class KeepLiveWS extends LiveClient {
+  ws: WebSocket
+
+  constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
+    options = Object.assign({}, DEFAULT_WS_OPTIONS, options)
+
+    const websocket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+    websocket.binaryType = 'arraybuffer'
+
+    const socket: ISocket = {
       write(buffer) {
-        socket.send(new Uint8Array(buffer))
+        websocket.send(new Uint8Array(buffer))
       },
       end() {
-        socket.close()
+        websocket.close()
       },
     }
 
-    socket.addEventListener('open', () => this.emit(OPEN_EVENT))
-    socket.addEventListener('close', () => this.emit(CLOSE_EVENT))
-    socket.addEventListener('error', (...params: any[]) => this.emit(ERROR_EVENT, ...params))
-    socket.addEventListener('message', (e: MessageEvent<ArrayBuffer>) => {
-      this.emit(MESSAGE_EVENT, new Uint8Array(e.data))
-    })
+    websocket.addEventListener('open', () => this.emit(OPEN_EVENT))
+    websocket.addEventListener('close', () => this.emit(CLOSE_EVENT))
+    websocket.addEventListener('error', (...params: any[]) => this.emit(ERROR_EVENT, ...params))
+    websocket.addEventListener('message', (e: MessageEvent<ArrayBuffer>) => this.emit(MESSAGE_EVENT, new Uint8Array(e.data)))
 
-    super(roomId, _socket, inflates as any)
+    const liveOptions: BaseLiveClientOptions = {
+      ...options,
+      socket,
+      room: roomId,
+      zlib: inflates,
+    }
 
-    this.socket = socket
+    super(liveOptions)
+
+    this.ws = websocket
   }
 }
 
