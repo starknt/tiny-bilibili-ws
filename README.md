@@ -1,6 +1,8 @@
 # tiny-bilibili-ws
 
-[![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=)](https://www.npmjs.com/package/tiny-bilibili-ws)
+[![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=tiny-bilibili-ws)](https://www.npmjs.com/package/tiny-bilibili-ws)
+
+为啥会有这个项目？[bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 这个项目已经很久没有维护了, 并且浏览器支持操作比较繁琐。
 
 ## 特点
 
@@ -129,6 +131,16 @@ live.on<ListenerEvents>('msg', (data: Message<any>) => {
 - live.on('error', err => {})
 
 监听错误消息
+
+- live.runWhenConnected(() => {})
+
+等到连接成功的时候('live' 事件触发时)，才会执行传入的函数
+
+- live.getOnline()
+
+立即调用 live.heartbeat() 刷新人气数值，并且返回 Promise.resolve 人气刷新后数值
+
+最后，你还可以通过 `live.ws` 或者是 `live.tcpSocket`，获取原始的`socket`实例。
 
 ## License
 
