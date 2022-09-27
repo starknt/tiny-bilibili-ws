@@ -32,12 +32,12 @@ function fromEvent<T>(emitter: EventEmitter, event: string, timeout?: number) {
 
 export class LiveClient extends EventEmitter<string | symbol> {
   roomId: number
+  online = 0
 
   private socket: ISocket
   private timeout: any
   private zlib: IZlib
   private live = false
-  private online = 0
   private firstMessage: LiveHelloMessage
 
   constructor(options: BaseLiveClientOptions) {
@@ -61,8 +61,8 @@ export class LiveClient extends EventEmitter<string | symbol> {
 
   private bindEvent() {
     this.on(OPEN_EVENT, () => {
+      this.emit('open')
       this.socket.write(serialize(WS_OP.USER_AUTHENTICATION, this.firstMessage))
-      this.emit('live')
     })
 
     this.on(MESSAGE_EVENT, async (buffer: Uint8Array) => {
@@ -72,6 +72,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
 
       packs.forEach((packet) => {
         if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
+          this.live = true
           this.emit('live')
 
           this.socket.write(serialize(WS_OP.HEARTBEAT))
@@ -83,7 +84,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
 
           this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
 
-          this.emit('heartbeat', this.online)
+          this.emit('heartbeat', packet)
         }
 
         if (packet.meta.op === WS_OP.MESSAGE) {
