@@ -103,7 +103,63 @@ export interface _DANMU_MSG {
   info: any[]
 }
 
+export interface SEND_GIFT {
+  cmd: 'SEND_GIFT'
+  data: {
+    'giftName': string
+    'num': number
+    'uname': string
+    'face': string
+    'guard_level': number
+    'rcost': number
+    'uid': number
+    'top_list': any[]
+    'timestamp': number
+    'giftId': number
+    'giftType': number
+    'action': '喂食'
+    'super': number
+    'super_gift_num': number
+    'price': number
+    'rnd': string
+    'newMedal': number
+    'newTitle': number
+    'medal': any[]
+    'title': string
+    'beatId': string
+    'biz_source': string
+    'metadata': string
+    'remain': number
+    'gold': number
+    'silver': number
+    'eventScore': number
+    'eventNum': number
+    'smalltv_msg': []
+    'specialGift': null
+    'notice_msg': string[]
+    'capsule': null
+    'addFollow': number
+    'effect_block': number
+    'coin_type': string
+    'total_coin': number
+    'effect': number
+    'tag_image': string
+    'user_count': number
+  }
+}
+
+export interface WATCHED_CHANGE {
+  cmd: 'WATCHED_CHANGE'
+  data: {
+    num: number
+    text_small: string
+    text_large: string
+  }
+}
+
 export type DANMU_MSG = Message<_DANMU_MSG>
+export type SEND_GIFT_MSG = Message<SEND_GIFT>
+export type WATCHED_CHANGE_MSG = Message<WATCHED_CHANGE>
 
 export interface IZlib<T extends Uint8Array = Uint8Array> {
   inflateAsync(v: T): Promise<T>
