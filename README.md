@@ -1,6 +1,6 @@
 # tiny-bilibili-ws
 
-[![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=tiny-bilibili-ws)](https://www.npmjs.com/package/tiny-bilibili-ws)
+[![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=npm)](https://www.npmjs.com/package/tiny-bilibili-ws)
 
 为啥会有这个项目？[bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 这个项目已经很久没有维护了, 并且浏览器支持操作比较繁琐。
 
