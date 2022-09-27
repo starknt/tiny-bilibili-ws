@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import { WS_OP, deserialize, serialize } from './buffer'
-import type { BaseLiveClientOptions, ISocket, IZlib, ListenerEvents, LiveHelloMessage } from './types'
+import type { BaseLiveClientOptions, ISocket, IZlib, LiveHelloMessage } from './types'
 
 /// const
 
