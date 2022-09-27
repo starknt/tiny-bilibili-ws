@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:node": "esno ./node/test.ts"
   },
   "dependencies": {
     "tiny-bilibili-ws": "workspace:*",
