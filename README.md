@@ -10,6 +10,11 @@
 - 轻量
 - 类型安全
 
+## Working
+
+- [ ] 类型
+- [ ] Auth Field
+
 ## 安装
 
 ```bash
