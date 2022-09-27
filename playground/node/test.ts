@@ -5,6 +5,8 @@ const res = await getLongRoomId(650)
 
 const tcp = new KeepLiveTCP(res.data.room_id)
 
-tcp.addListener<ListenerEvents>('DANMU_MSG', (e: Message<any>) => {
-  console.log(e.data)
+tcp.addListener<ListenerEvents>('heartbeat', (e: Message<any>) => {
+  console.log(e)
 })
+
+console.log(await tcp.getOnline())
