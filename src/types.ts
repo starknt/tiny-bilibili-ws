@@ -5,6 +5,11 @@ export interface ISocket {
   end(): void
 }
 
+export interface IWebSocket {
+  send(data: Uint8Array): void
+  close(): void
+}
+
 export interface RoomResponse {
   code: number
   msg: string
@@ -39,7 +44,7 @@ export const DEFAULT_WS_OPTIONS: WSOptions = {
 }
 
 export interface BaseLiveClientOptions extends WSOptions {
-  socket: ISocket
+  socket: ISocket | IWebSocket
   room: number
   zlib: IZlib
 }
@@ -71,9 +76,18 @@ export type ListenerEvents =
   | MESSAGE_CMD
 
 export type MESSAGE_CMD
-  = 'INTERACT_WORD' | 'LIKE_INFO_V3_UPDATE' | 'DANMU_MSG' | 'WATCHED_CHANGE'
-  | 'STOP_LIVE_ROOM_LIST' | 'ONLINE_RANK_COUNT' | 'HOT_RANK_CHANGED' | 'HOT_RANK_CHANGED_V2'
-  | 'LIKE_INFO_V3_CLICK' | 'SEND_GIFT' | 'LIVE_INTERACTIVE_GAME'
+  =
+    'INTERACT_WORD' | 'LIKE_INFO_V3_UPDATE'
+    | 'STOP_LIVE_ROOM_LIST' | 'ONLINE_RANK_COUNT' | 'HOT_RANK_CHANGED' | 'HOT_RANK_CHANGED_V2'
+    | 'LIKE_INFO_V3_CLICK' | 'LIVE_INTERACTIVE_GAME'
+    | 'WATCHED_CHANGE' // 看过
+    | 'DANMU_MSG' | 'WELCOME_GUARD' | 'ENTRY_EFFECT' | 'WELCOME' // 弹幕
+    | 'SUPER_CHAT_MESSAGE_JPN' | 'SUPER_CHAT_MESSAGE' // sc
+    | 'SEND_GIFT' | 'COMBO_SEND' // 礼物
+    | 'ANCHOR_LOT_START' | 'ANCHOR_LOT_END' | 'ANCHOR_LOT_AWARD' // 天选之人
+    | 'GUARD_BUY' | 'USER_TOAST_MSG' | 'NOTICE_MSG' // 舰长
+    | 'ACTIVITY_BANNER_UPDATE_V2' // 小时榜变动
+    | 'ROOM_REAL_TIME_MESSAGE_UPDATE' // 粉丝关注变动
 
 export interface MessageMeta extends ProtocolHeader {
 
@@ -83,6 +97,13 @@ export interface Message<T> {
   meta: MessageMeta
   data: T
 }
+
+export interface _DANMU_MSG {
+  cmd: 'DANMU_MSG'
+  info: any[]
+}
+
+export type DANMU_MSG = Message<_DANMU_MSG>
 
 export interface IZlib<T extends Uint8Array = Uint8Array> {
   inflateAsync(v: T): Promise<T>

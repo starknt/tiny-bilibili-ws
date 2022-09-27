@@ -1,12 +1,18 @@
-import type { ListenerEvents, Message } from 'tiny-bilibili-ws'
+import type { Message } from 'tiny-bilibili-ws'
 import { KeepLiveTCP, getLongRoomId } from 'tiny-bilibili-ws'
 
-const res = await getLongRoomId(650)
+const res = await getLongRoomId(7777)
 
-const tcp = new KeepLiveTCP(res.data.room_id)
+const live = new KeepLiveTCP(res.data.room_id)
 
-tcp.addListener<ListenerEvents>('heartbeat', (e: Message<any>) => {
-  console.log(e)
+// live.onlyListener(['DANMU_MSG'])
+
+live.on('DANMU_MSG', (message: Message<any>) => { // 有弹幕会被触发
+  console.log(message)
 })
 
-console.log(await tcp.getOnline())
+live.on('SEND_GIFT', (message: Message<any>) => { // 有礼物, 但不会被触发
+  console.log(message)
+})
+
+console.log(await live.getOnline())

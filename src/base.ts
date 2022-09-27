@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import { WS_OP, deserialize, serialize } from './buffer'
-import type { BaseLiveClientOptions, ISocket, IZlib, LiveHelloMessage } from './types'
+import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Message } from './types'
 
 /// const
 
@@ -32,13 +32,16 @@ function fromEvent<T>(emitter: EventEmitter, event: string, timeout?: number) {
 
 export class LiveClient extends EventEmitter<string | symbol> {
   roomId: number
+  /** 人气值 */
   online = 0
 
-  private socket: ISocket
+  private socket: ISocket | IWebSocket
   private timeout: any
   private zlib: IZlib
   private live = false
   private firstMessage: LiveHelloMessage
+
+  private skipMessage: string[] = []
 
   constructor(options: BaseLiveClientOptions) {
     super()
@@ -59,10 +62,17 @@ export class LiveClient extends EventEmitter<string | symbol> {
     this.bindEvent()
   }
 
+  onlyListener(events: string[]) {
+    for (const event of events) {
+      if (!this.skipMessage.includes(event))
+        this.skipMessage.push(event)
+    }
+  }
+
   private bindEvent() {
     this.on(OPEN_EVENT, () => {
       this.emit('open')
-      this.socket.write(serialize(WS_OP.USER_AUTHENTICATION, this.firstMessage))
+      this.send(WS_OP.USER_AUTHENTICATION, this.firstMessage)
     })
 
     this.on(MESSAGE_EVENT, async (buffer: Uint8Array) => {
@@ -72,10 +82,10 @@ export class LiveClient extends EventEmitter<string | symbol> {
 
       packs.forEach((packet) => {
         if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
-          this.live = true
           this.emit('live')
+          this.live = true
 
-          this.socket.write(serialize(WS_OP.HEARTBEAT))
+          this.send(WS_OP.HEARTBEAT)
         }
 
         if (packet.meta.op === WS_OP.HEARTBEAT_REPLY) {
@@ -88,14 +98,13 @@ export class LiveClient extends EventEmitter<string | symbol> {
         }
 
         if (packet.meta.op === WS_OP.MESSAGE) {
-          this.emit('msg', packet)
           const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
-          if (cmd) {
-            if (cmd.includes('DANMU_MSG'))
-              this.emit('DANMU_MSG', packet)
-            else
-              this.emit(cmd, packet)
-          }
+          if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
+            return
+
+          this.emit('msg', packet)
+          if (cmd)
+            this.emit(cmd, packet)
         }
       })
     })
@@ -105,37 +114,50 @@ export class LiveClient extends EventEmitter<string | symbol> {
     })
 
     this.on(CLOSE_EVENT, () => {
-      this.emit('close')
+      this.close()
     })
   }
 
+  send(op: WS_OP, data: Record<string, any> | string = {}) {
+    if ('write' in this.socket)
+      this.socket.write(serialize(op, data))
+    else
+      this.socket.send(serialize(op, data))
+  }
+
   async runWhenConnected(...fns: (() => void)[]) {
-    await fromEvent(this, 'live')
+    if (!this.live)
+      await fromEvent(this, 'live')
 
     for (const fn of fns)
       fn()
   }
 
   heartbeat() {
-    this.socket.write(serialize(WS_OP.HEARTBEAT))
+    this.send(WS_OP.HEARTBEAT)
   }
 
   async getOnline() {
     if (!this.live)
       await fromEvent(this, 'live')
+    else
+      this.heartbeat()
 
-    this.heartbeat()
-
-    return new Promise<number>(resolve => this.once('heartbeat', resolve))
+    return new Promise<number>(resolve => this.once('heartbeat', (msg: Message<number>) => resolve(msg.data)))
   }
 
   close() {
+    this.emit('close')
+
     if (!this.live)
       return
     this.live = false
     clearTimeout(this.timeout)
-    this.socket.end()
-    this.emit('closed')
+
+    if ('end' in this.socket)
+      this.socket.end()
+    else
+      this.socket.close()
   }
 }
 

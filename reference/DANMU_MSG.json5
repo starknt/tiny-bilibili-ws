@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "op": 5,
+    "ver": 0,
+    "sequence": 0,
+    "packetLength": 1029,
+    "headerLength": 16
+  },
+  "data": {
+    "cmd": "DANMU_MSG",
+    "info": [
+      [
+        0,
+        1,
+        25,
+        5566168,
+        1664302844304,
+        441200944,
+        0,
+        "e7a90d57",
+        0,
+        0,
+        0,
+        "",
+        0,
+        "{}",
+        "{}",
+        {
+          "mode": 0,
+          "show_player_type": 0,
+          "extra": "{\"send_from_me\":false,\"mode\":0,\"color\":5566168,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"阿斯匹林阿斯匹林阿斯匹林\",\"user_hash\":\"3886615895\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":9,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\"}"
+        },
+        {
+          "activity_identity": "",
+          "activity_source": 0,
+          "not_show": 0
+        }
+      ],
+      "阿斯匹林阿斯匹林阿斯匹林",
+      [
+        146907963,
+        "篮球播客",
+        0,
+        0,
+        0,
+        10000,
+        1,
+        ""
+      ],
+      [
+        10,
+        "德云色",
+        "老实憨厚的笑笑",
+        545068,
+        9272486,
+        "",
+        0,
+        9272486,
+        9272486,
+        9272486,
+        0,
+        1,
+        8739477
+      ],
+      [
+        3,
+        0,
+        9868950,
+        ">50000",
+        0
+      ],
+      [
+        "",
+        ""
+      ],
+      0,
+      0,
+      null,
+      {
+        "ts": 1664302844,
+        "ct": "10B32360"
+      },
+      0,
+      0,
+      null,
+      null,
+      0,
+      49
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "op": 5,
+    "ver": 0,
+    "sequence": 0,
+    "packetLength": 117,
+    "headerLength": 16
+  },
+  "data": {
+    "cmd": "WATCHED_CHANGE",
+    "data": {
+      "num": 192306,
+      "text_small": "19.2万",
+      "text_large": "19.2万人看过"
+    }
+  }
+}
