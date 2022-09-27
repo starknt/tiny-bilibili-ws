@@ -122,6 +122,8 @@ Bilibili API: [https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/AP
 
 - live.on('live')
 
+连接成功后触发
+
 - live.on('heartbeat', online /** 人气值 */ => {})
 
 收到服务器心跳包，会在30秒之后自动发送心跳包。
