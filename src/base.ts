@@ -14,6 +14,20 @@ export const NODE_SOCKET_PORT = 2243
 export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}:2245/sub`
 export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
+function fromEvent<T>(emitter: EventEmitter, event: string, timeout?: number) {
+  return new Promise<T>((resolve, reject) => {
+    emitter.once(event, (arg: T) => {
+      resolve(arg)
+    })
+
+    if (timeout) {
+      const t = setTimeout(() => {
+        clearTimeout(t)
+        reject(new Error('timeout'))
+      })
+    }
+  })
+}
 ///
 
 export class LiveClient extends EventEmitter<string | symbol> {
@@ -64,6 +78,9 @@ export class LiveClient extends EventEmitter<string | symbol> {
         }
 
         if (packet.meta.op === WS_OP.HEARTBEAT_REPLY) {
+          this.online = packet.data
+          clearTimeout(this.timeout)
+
           this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
 
           this.emit('heartbeat', this.online)
@@ -91,11 +108,21 @@ export class LiveClient extends EventEmitter<string | symbol> {
     })
   }
 
+  async runWhenConnected(...fns: (() => void)[]) {
+    await fromEvent(this, 'live')
+
+    for (const fn of fns)
+      fn()
+  }
+
   heartbeat() {
     this.socket.write(serialize(WS_OP.HEARTBEAT))
   }
 
-  getOnline() {
+  async getOnline() {
+    if (!this.live)
+      await fromEvent(this, 'live')
+
     this.heartbeat()
 
     return new Promise<number>(resolve => this.once('heartbeat', resolve))
