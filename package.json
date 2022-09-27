@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "packageManager": "pnpm@7.5.2",
-  "description": "",
+  "description": "Bilibili Live WebSocket/TCP API",
   "author": "starknt",
   "license": "MIT",
   "homepage": "https://github.com/starknt/tiny-bilibili-ws#readme",
@@ -12,7 +12,12 @@
     "url": "git+https://github.com/starknt/tiny-bilibili-ws.git"
   },
   "bugs": "https://github.com/starknt/tiny-bilibili-ws/issues",
-  "keywords": [],
+  "keywords": [
+    "ws",
+    "websocket",
+    "bilibili",
+    "live"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
@@ -26,7 +31,7 @@
       "import": "./dist/browser.mjs"
     }
   },
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
@@ -36,10 +41,9 @@
   "scripts": {
     "build": "unbuild",
     "prepublishOnly": "pnpm run build",
-    "release": "bumpp && pnpm publish",
+    "release": "pnpm publish",
     "start": "esno ./src/node.ts",
     "dev": "unbuild --stub",
-    "typecheck": "npx tsc --noEmit",
     "test": "vitest",
     "lint": "eslint ."
   },
