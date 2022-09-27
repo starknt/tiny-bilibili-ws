@@ -34,6 +34,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
   roomId: number
   /** 人气值 */
   online = 0
+  closed = true
 
   private socket: ISocket | IWebSocket
   private timeout: any
@@ -43,17 +44,23 @@ export class LiveClient extends EventEmitter<string | symbol> {
 
   private skipMessage: string[] = []
 
-  constructor(options: BaseLiveClientOptions) {
+  constructor(readonly options: BaseLiveClientOptions) {
+    if (typeof options.room !== 'number' || Number.isNaN(options.room))
+      throw new Error(`roomId ${options.room} must be Number not NaN`)
+
     super()
 
     this.firstMessage = {
       roomid: options.room,
-      clientver: options.clientVer!,
-      protover: options.protover!,
-      uid: options.uid!,
-      platform: options.platform!,
-      type: options.type!,
+      clientver: options.clientVer,
+      protover: options.protover,
+      uid: options.uid,
+      platform: options.platform,
+      type: options.type,
     }
+
+    if (options.key)
+      this.firstMessage.key = options.key
 
     this.socket = options.socket
     this.roomId = options.room
@@ -69,10 +76,21 @@ export class LiveClient extends EventEmitter<string | symbol> {
     }
   }
 
+  private rawSend(data: Uint8Array) {
+    if ('write' in this.socket)
+      this.socket.write(data)
+    else
+      this.socket.send(data)
+  }
+
   private bindEvent() {
     this.on(OPEN_EVENT, () => {
+      this.closed = false
       this.emit('open')
-      this.send(WS_OP.USER_AUTHENTICATION, this.firstMessage)
+      if (this.options.authBody)
+        this.rawSend(this.options.authBody)
+      else
+        this.send(WS_OP.USER_AUTHENTICATION, this.firstMessage)
     })
 
     this.on(MESSAGE_EVENT, async (buffer: Uint8Array) => {
@@ -119,10 +137,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
   }
 
   send(op: WS_OP, data: Record<string, any> | string = {}) {
-    if ('write' in this.socket)
-      this.socket.write(serialize(op, data))
-    else
-      this.socket.send(serialize(op, data))
+    this.rawSend(serialize(op, data))
   }
 
   async runWhenConnected(...fns: (() => void)[]) {
@@ -158,6 +173,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
       this.socket.end()
     else
       this.socket.close()
+    this.closed = true
   }
 }
 

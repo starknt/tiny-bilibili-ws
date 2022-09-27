@@ -7,9 +7,9 @@ export class KeepLiveWS extends LiveClient {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
-    options = Object.assign({}, DEFAULT_WS_OPTIONS, options)
-
-    const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+    const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
+    const url = resolvedOptions.url ?? options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL
+    const socket = new WebSocket(url)
     socket.binaryType = 'arraybuffer'
 
     socket.addEventListener('open', () => this.emit(OPEN_EVENT))
@@ -18,7 +18,7 @@ export class KeepLiveWS extends LiveClient {
     socket.addEventListener('message', (e: MessageEvent<ArrayBuffer>) => this.emit(MESSAGE_EVENT, new Uint8Array(e.data)))
 
     const liveOptions: BaseLiveClientOptions = {
-      ...options,
+      ...resolvedOptions,
       socket,
       room: roomId,
       zlib: inflates,

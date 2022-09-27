@@ -1,5 +1,11 @@
 import type { ProtocolHeader } from './buffer'
 
+// @ts-expect-error PartialByKeys pk
+export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Partial<Pick<O, UU>>> =
+  PO & {
+    [K in keyof O as K extends U ? never : K]: O[K]
+  }
+
 export interface ISocket {
   write(data: Uint8Array): void
   end(): void
@@ -9,6 +15,8 @@ export interface IWebSocket {
   send(data: Uint8Array): void
   close(): void
 }
+
+type Options = PartialByKeys<Required<WSOptions>, keyof AuthOptions | keyof ConnectionOptions>
 
 export interface RoomResponse {
   code: number
@@ -34,7 +42,7 @@ export interface RoomResponse {
   }
 }
 
-export const DEFAULT_WS_OPTIONS: WSOptions = {
+export const DEFAULT_WS_OPTIONS: Options = {
   ssl: true,
   clientVer: '2.0.11',
   platform: 'web',
@@ -43,13 +51,22 @@ export const DEFAULT_WS_OPTIONS: WSOptions = {
   type: 2,
 }
 
-export interface BaseLiveClientOptions extends WSOptions {
+export interface BaseLiveClientOptions extends Options {
   socket: ISocket | IWebSocket
   room: number
   zlib: IZlib
 }
 
-export interface WSOptions {
+export interface AuthOptions {
+  authBody?: Uint8Array
+  key?: any
+}
+
+export interface ConnectionOptions {
+  url?: string
+}
+
+export interface WSOptions extends AuthOptions, ConnectionOptions {
   ssl?: boolean
   clientVer?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
   platform?: 'web'
@@ -69,6 +86,7 @@ export interface LiveHelloMessage {
   roomid: number
   uid: number
   type: number
+  key?: any
 }
 
 export type ListenerEvents =

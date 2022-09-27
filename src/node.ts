@@ -30,9 +30,9 @@ export class KeepLiveTCP extends LiveClient {
   tcpSocket: Socket
 
   constructor(roomId: number, options: TCPOptions = DEFAULT_WS_OPTIONS) {
-    options = Object.assign({}, DEFAULT_WS_OPTIONS, options)
+    const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
-    const socket = connect(NODE_SOCKET_PORT, SOCKET_HOST)
+    const socket = resolvedOptions.url ? connect(resolvedOptions.url) : connect(NODE_SOCKET_PORT, SOCKET_HOST)
 
     socket.on('ready', () => this.emit(OPEN_EVENT))
     socket.on('close', hadError =>
@@ -45,7 +45,7 @@ export class KeepLiveTCP extends LiveClient {
     })
 
     const liveOptions: BaseLiveClientOptions = {
-      ...options,
+      ...resolvedOptions,
       socket,
       zlib: inflates,
       room: roomId,
@@ -75,12 +75,12 @@ export class KeepLiveWS extends LiveClient {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
-    options = Object.assign({}, DEFAULT_WS_OPTIONS, options)
+    const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
     const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
 
     const liveOptions: BaseLiveClientOptions = {
-      ...options,
+      ...resolvedOptions,
       socket,
       zlib: inflates,
       room: roomId,
