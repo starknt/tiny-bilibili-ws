@@ -39,12 +39,9 @@ const res = await getLongRoomId(650)
 new KeepLiveTCP(res.room_id)
 
 // or browser
-import { KeepLiveWS, getLongRoomId } from 'tiny-bilibili-ws/browser'
+import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 
-// 当 短ID 获取不到弹幕信息时, 你可以尝试使用 getLongRoomId, 获取 room_id
-const res = await getLongRoomId(650)
-
-new KeepLiveWS(res.room_id)
+new KeepLiveWS(650)
 ```
 
 ## Typescript 支持
