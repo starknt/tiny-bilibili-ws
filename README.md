@@ -13,8 +13,8 @@
 ## Working
 
 - [ ] 类型
-- [ ] Auth Field
-- [ ] 自定义连接地址
+- [x] Auth Field
+- [x] 自定义连接地址
 
 ## 安装
 
