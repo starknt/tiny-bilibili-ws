@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "op": 5,
+    "ver": 0,
+    "sequence": 0,
+    "packetLength": 762,
+    "headerLength": 16
+  },
+  "data": {
+    "cmd": "COMBO_SEND",
+    "data": {
+      "action": "投喂",
+      "batch_combo_id": "batch:gift:combo_id:328991096:8739477:31039:1664464438.6950",
+      "batch_combo_num": 2,
+      "combo_id": "gift:combo_id:328991096:8739477:31039:1664464438.6914",
+      "combo_num": 2,
+      "combo_total_coin": 200,
+      "dmscore": 72,
+      "gift_id": 31039,
+      "gift_name": "牛哇牛哇",
+      "gift_num": 0,
+      "is_show": 1,
+      "medal_info": {
+        "anchor_roomid": 0,
+        "anchor_uname": "",
+        "guard_level": 0,
+        "icon_id": 0,
+        "is_lighted": 1,
+        "medal_color": 13081892,
+        "medal_color_border": 13081892,
+        "medal_color_end": 13081892,
+        "medal_color_start": 13081892,
+        "medal_level": 17,
+        "medal_name": "德云色",
+        "special": "",
+        "target_id": 8739477
+      },
+      "name_color": "",
+      "r_uname": "老实憨厚的笑笑",
+      "ruid": 8739477,
+      "send_master": null,
+      "total_num": 2,
+      "uid": 328991096,
+      "uname": "乙车七名"
+    }
+  }
+}

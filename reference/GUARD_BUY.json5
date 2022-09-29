@@ -1,0 +1,17 @@
+{
+  "meta": { "op": 5, "ver": 0, "sequence": 0, "packetLength": 211, "headerLength": 16 },
+  "data": {
+    "cmd": "GUARD_BUY",
+    "data": {
+      "uid": 895107,
+      "username": "弗兰克欧欧欧",
+      "guard_level": 3,
+      "num": 1,
+      "price": 198000,
+      "gift_id": 10003,
+      "gift_name": "舰长",
+      "start_time": 1664467089,
+      "end_time": 1664467089
+    }
+  }
+}
