@@ -2,7 +2,86 @@ import type { Message } from './types'
 
 export interface _DANMU_MSG {
   cmd: 'DANMU_MSG'
-  info: any[]
+  info: [
+    [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      string,
+      number,
+      number,
+      number,
+      string,
+      number,
+      string,
+      string,
+      {
+        'mode': number
+        'show_player_type': number
+        /** json */
+        'extra': string
+      },
+      {
+        'activity_identity': string
+        'activity_source': number
+        'not_show': number
+      },
+    ],
+    string,
+    [
+      number,
+      '李萧浊',
+      number,
+      number,
+      number,
+      number,
+      number,
+      string,
+    ],
+    [
+      16,
+      '德云色',
+      '老实憨厚的笑笑',
+      545068,
+      12478086,
+      '',
+      0,
+      12478086,
+      12478086,
+      12478086,
+      0,
+      1,
+      8739477,
+    ],
+    [
+      16,
+      0,
+      6406234,
+      '>50000',
+      0,
+    ],
+    [
+      '',
+      '',
+    ],
+    number,
+    number,
+    any,
+    {
+      'ts': number
+      'ct': string
+    },
+    0,
+    0,
+    any,
+    any,
+    number,
+    number,
+  ]
 }
 
 export interface SEND_GIFT {

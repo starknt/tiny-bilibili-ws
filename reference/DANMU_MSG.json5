@@ -3,7 +3,7 @@
     "op": 5,
     "ver": 0,
     "sequence": 0,
-    "packetLength": 1029,
+    "packetLength": 984,
     "headerLength": 16
   },
   "data": {
@@ -13,11 +13,11 @@
         0,
         1,
         25,
-        5566168,
-        1664302844304,
-        441200944,
+        5816798,
+        1664477065585,
+        -1634838753,
         0,
-        "e7a90d57",
+        "9203f15b",
         0,
         0,
         0,
@@ -28,7 +28,7 @@
         {
           "mode": 0,
           "show_player_type": 0,
-          "extra": "{\"send_from_me\":false,\"mode\":0,\"color\":5566168,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"阿斯匹林阿斯匹林阿斯匹林\",\"user_hash\":\"3886615895\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":9,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\"}"
+          "extra": "{\"send_from_me\":false,\"mode\":0,\"color\":5816798,\"dm_type\":0,\"font_size\":25,\"player_mode\":1,\"show_player_type\":0,\"content\":\"确实有点\",\"user_hash\":\"2449731931\",\"emoticon_unique\":\"\",\"bulge_display\":0,\"recommend_score\":6,\"main_state_dm_color\":\"\",\"objective_state_dm_color\":\"\",\"direction\":0,\"pk_direction\":0,\"quartet_direction\":0,\"anniversary_crowd\":0,\"yeah_space_type\":\"\",\"yeah_space_url\":\"\",\"jump_to_url\":\"\",\"space_type\":\"\",\"space_url\":\"\"}"
         },
         {
           "activity_identity": "",
@@ -36,10 +36,10 @@
           "not_show": 0
         }
       ],
-      "阿斯匹林阿斯匹林阿斯匹林",
+      "确实有点",
       [
-        146907963,
-        "篮球播客",
+        33713222,
+        "李萧浊",
         0,
         0,
         0,
@@ -48,24 +48,24 @@
         ""
       ],
       [
-        10,
+        16,
         "德云色",
         "老实憨厚的笑笑",
         545068,
-        9272486,
+        12478086,
         "",
         0,
-        9272486,
-        9272486,
-        9272486,
+        12478086,
+        12478086,
+        12478086,
         0,
         1,
         8739477
       ],
       [
-        3,
+        16,
         0,
-        9868950,
+        6406234,
         ">50000",
         0
       ],
@@ -77,15 +77,15 @@
       0,
       null,
       {
-        "ts": 1664302844,
-        "ct": "10B32360"
+        "ts": 1664477065,
+        "ct": "886051DA"
       },
       0,
       0,
       null,
       null,
       0,
-      49
+      63
     ]
   }
 }
