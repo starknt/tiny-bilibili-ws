@@ -76,6 +76,13 @@ export class LiveClient extends EventEmitter<string | symbol> {
     }
   }
 
+  clearOnlyListener(events: string[]) {
+    for (const event of events) {
+      if (this.skipMessage.includes(event))
+        this.skipMessage.splice(this.skipMessage.findIndex(v => event === v), 1)
+    }
+  }
+
   private rawSend(data: Uint8Array) {
     if ('write' in this.socket)
       this.socket.write(data)
@@ -119,7 +126,7 @@ export class LiveClient extends EventEmitter<string | symbol> {
           const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
           if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
             return
-
+          console.log('cmd', cmd)
           this.emit('msg', packet)
           if (cmd)
             this.emit(cmd, packet)

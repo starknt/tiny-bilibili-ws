@@ -12,7 +12,7 @@
 
 ## Working
 
-- [ ] 类型
+- [x] 类型
 - [x] Auth Field
 - [x] 自定义连接地址
 
@@ -47,14 +47,60 @@ new KeepLiveWS(650)
 ## Typescript 支持
 
 ```typescript
-import { KeepLiveTCP, getLongRoomId, ListenerEvents, Message } from "tiny-bilibili-ws";
+import { KeepLiveTCP, getLongRoomId, ListenerEvents, Message, DANMU_MSG } from "tiny-bilibili-ws";
 
 const res = await getLongRoomId(650)
 
 const live = new KeepLiveTCP(res.room_id)
 
-live.on<ListenerEvents>('msg', (data: Message<any>) => {
+live.on<ListenerEvents>('DANMU_MSG', ({ data }: DANMU_MSG) => {
     console.log(data)
+    /**
+     * 可能会打印出类似于这样信息
+      {
+        cmd: 'DANMU_MSG',
+        info: [
+            [
+            0,             1,
+            25,            5816798,
+            1664523954695, -1908228753,
+            0,             '906b61ef',
+            0,             0,
+            0,             '',
+            0,             '{}',
+            '{}',          [Object],
+            [Object]
+            ],
+            '糙哥',
+            [ 12918790, '这人很懒所以没名字', 0, 0, 0, 10000, 1, '' ],
+            [
+            16,               '德云色',
+            '老实憨厚的笑笑', 545068,
+            12478086,         '',
+            0,                12478086,
+            12478086,         12478086,
+            0,                1,
+            8739477
+            ],
+            [ 20, 0, 6406234, '>50000', 0 ],
+            [ '', '' ],
+            0,
+            0,
+            null,
+            { ts: 1664523954, ct: '773C192A' },
+            0,
+            0,
+            null,
+            null,
+            0,
+            63
+        ]
+        }
+     */
+})
+
+live.on<ListenerEvents>('msg', (message: Message<any>) => {
+    console.log(message)
     /**
      * 可能会打印出类似于这样信息
      * 

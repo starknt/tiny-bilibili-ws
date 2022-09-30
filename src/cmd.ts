@@ -416,6 +416,55 @@ export interface _NOTICE_MSG {
   notice_type: number
 }
 
+export interface HOT_RANK_CHANGED {
+  cmd: 'HOT_RANK_CHANGED'
+  data: {
+    rank: number
+    trend: number
+    countdown: number
+    timestamp: number
+    web_url: string
+    blink_url: string
+    live_link_url: string
+    pc_link_url: string
+    icon: string
+    area_name: string
+    rank_desc: string
+  }
+}
+
+export interface HOT_RANK_CHANGED_V2 {
+  cmd: 'HOT_RANK_CHANGED_V2'
+  data: {
+    rank: number
+    trend: number
+    countdown: number
+    timestamp: number
+    web_url: string
+    live_url: string
+    blink_url: string
+    live_link_url: string
+    pc_link_url: string
+    icon: string
+    area_name: string
+    rank_desc: string
+  }
+}
+
+export interface ONLINE_RANK_COUNT {
+  cmd: 'ONLINE_RANK_COUNT'
+  data: {
+    count: number
+  }
+}
+
+export interface STOP_LIVE_ROOM_LIST {
+  cmd: 'STOP_LIVE_ROOM_LIST'
+  data: {
+    room_id_list: number[]
+  }
+}
+
 export type DANMU_MSG = Message<_DANMU_MSG>
 export type SEND_GIFT_MSG = Message<SEND_GIFT>
 export type WATCHED_CHANGE_MSG = Message<WATCHED_CHANGE>
@@ -426,3 +475,7 @@ export type SUPER_CHAT_MSG = Message<SUPER_CHAT_MESSAGE>
 export type SUPER_CHAT_MSG_JPN = Message<SUPER_CHAT_MESSAGE_JPN>
 export type GUARD_BUY_MSG = Message<GUARD_BUY>
 export type NOTICE_MSG = Message<_NOTICE_MSG>
+export type HOT_RANK_CHANGED_MSG = Message<HOT_RANK_CHANGED>
+export type HOT_RANK_CHANGED_V2_MSG = Message<HOT_RANK_CHANGED_V2>
+export type ONLINE_RANK_COUNT_MSG = Message<ONLINE_RANK_COUNT>
+export type STOP_LIVE_ROOM_LIST_MSG = Message<STOP_LIVE_ROOM_LIST>
