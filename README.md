@@ -177,7 +177,20 @@ Bilibili API: [https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/AP
 
 - live.on('message', buffer /** `Uint8Array` */ => {})
 
-会监听到所有的消息, 获得信息原始数据 `Uint8Array`
+会监听到所有的消息, 获得信息原始数据 `Uint8Array`, 但是你必须设置 `raw` 为 `true`，你才可以监听到该消息。
+一个简单的例子如下：
+
+```typescript
+const res = await getLongRoomId(650)
+
+const live = new KeepLiveTCP(res.room_id, {
+    raw: true
+})
+
+live.on('message', (buffer: Uint8Array) => {
+    console.log(buffer)
+})
+```
 
 - live.on(cmd, (message /** Message\<any\> */) => {})
 
@@ -210,6 +223,7 @@ live.on('msg', (message: Message<any>) => { // 只有弹幕能触发
     console.log(message)
 })
 
+// 需要设置 `raw`
 live.on('message', (buffer: Uint8Array) => { // DANMU_MSG 和 SEND_GIFT 都会被触发
     console.log(buffer)
 })
