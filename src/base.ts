@@ -1,6 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import { WS_OP, deserialize, serialize } from './buffer'
 import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Message } from './types'
+import { fromEvent } from './utils'
 
 /// const
 
@@ -14,20 +15,6 @@ export const NODE_SOCKET_PORT = 2243
 export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}:2245/sub`
 export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
-function fromEvent<T>(emitter: EventEmitter, event: string, timeout?: number) {
-  return new Promise<T>((resolve, reject) => {
-    emitter.once(event, (arg: T) => {
-      resolve(arg)
-    })
-
-    if (timeout) {
-      const t = setTimeout(() => {
-        clearTimeout(t)
-        reject(new Error('timeout'))
-      })
-    }
-  })
-}
 ///
 
 export class LiveClient extends EventEmitter<string | symbol> {
@@ -101,16 +88,21 @@ export class LiveClient extends EventEmitter<string | symbol> {
     })
 
     this.on(MESSAGE_EVENT, async (buffer: Uint8Array) => {
-      this.emit('message', buffer)
+      if (this.options.raw)
+        this.emit('message', buffer)
 
       const packs = await deserialize(buffer, this.zlib)
 
-      packs.forEach((packet) => {
-        if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
-          this.emit('live')
-          this.live = true
+      for (const packet of packs) {
+        if (packet.meta.op === WS_OP.MESSAGE) {
+          const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
+          if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
+            return
+          this.emit('msg', packet)
+          if (cmd)
+            this.emit(cmd, packet)
 
-          this.send(WS_OP.HEARTBEAT)
+          continue
         }
 
         if (packet.meta.op === WS_OP.HEARTBEAT_REPLY) {
@@ -120,18 +112,17 @@ export class LiveClient extends EventEmitter<string | symbol> {
           this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
 
           this.emit('heartbeat', packet)
+
+          continue
         }
 
-        if (packet.meta.op === WS_OP.MESSAGE) {
-          const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
-          if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
-            return
-          console.log('cmd', cmd)
-          this.emit('msg', packet)
-          if (cmd)
-            this.emit(cmd, packet)
+        if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
+          this.emit('live')
+          this.live = true
+
+          this.send(WS_OP.HEARTBEAT)
         }
-      })
+      }
     })
 
     this.on(ERROR_EVENT, (error: any) => {
