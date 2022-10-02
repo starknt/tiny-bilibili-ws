@@ -43,6 +43,8 @@ export interface RoomResponse {
 }
 
 export const DEFAULT_WS_OPTIONS: Options = {
+  raw: false,
+  stub: true,
   ssl: true,
   clientVer: '2.0.11',
   platform: 'web',
@@ -57,6 +59,22 @@ export interface BaseLiveClientOptions extends Options {
   zlib: IZlib
 }
 
+export interface BaseOptions {
+  /**
+   * 是否获取原始消息
+   * @default false
+   */
+  raw?: boolean
+  /**
+   * 是否获取全部信息
+   * ```typescript
+   *  // 如果关闭 stub live.on('msg'), 将不生效
+   * ```
+   * @default true
+   */
+  stub?: boolean
+}
+
 export interface AuthOptions {
   authBody?: Uint8Array
   key?: any
@@ -66,7 +84,7 @@ export interface ConnectionOptions {
   url?: string
 }
 
-export interface WSOptions extends AuthOptions, ConnectionOptions {
+export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   ssl?: boolean
   clientVer?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
   platform?: 'web'

@@ -97,8 +97,11 @@ export class LiveClient extends EventEmitter<string | symbol> {
         if (packet.meta.op === WS_OP.MESSAGE) {
           const cmd = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
           if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
-            return
-          this.emit('msg', packet)
+            continue
+
+          if (this.options.stub)
+            this.emit('msg', packet)
+
           if (cmd)
             this.emit(cmd, packet)
 
