@@ -12,7 +12,7 @@
 
 ## Working
 
-- [x] 类型
+- [x] 类型支持
 - [x] Auth Field
 - [x] 自定义连接地址
 
@@ -47,13 +47,13 @@ new KeepLiveWS(650)
 ## Typescript 支持
 
 ```typescript
-import { KeepLiveTCP, getLongRoomId, ListenerEvents, Message, DANMU_MSG } from "tiny-bilibili-ws";
+import { KeepLiveTCP, getLongRoomId, Message, DANMU_MSG } from "tiny-bilibili-ws";
 
 const res = await getLongRoomId(650)
 
 const live = new KeepLiveTCP(res.room_id)
 
-live.on<ListenerEvents>('DANMU_MSG', ({ data }: DANMU_MSG) => {
+live.on('DANMU_MSG', ({ data }: DANMU_MSG) => {
     console.log(data)
     /**
      * 可能会打印出类似于这样信息
@@ -99,7 +99,7 @@ live.on<ListenerEvents>('DANMU_MSG', ({ data }: DANMU_MSG) => {
      */
 })
 
-live.on<ListenerEvents>('msg', (message: Message<any>) => {
+live.on('msg', (message: Message<any>) => {
     console.log(message)
     /**
      * 可能会打印出类似于这样信息
