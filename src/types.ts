@@ -108,7 +108,7 @@ export interface LiveHelloMessage {
 }
 
 export type ListenerEvents =
-  'msg' | 'message' | 'close' | 'error' | 'live' | 'heartbeat' | 'closed'
+  'open' | 'msg' | 'message' | 'close' | 'error' | 'live' | 'heartbeat' | 'closed'
   | MESSAGE_CMD
 
 export type MESSAGE_CMD

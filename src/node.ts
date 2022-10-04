@@ -4,7 +4,7 @@ import https from 'node:https'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, RoomResponse, TCPOptions, WSOptions } from './types'
+import type { BaseLiveClientOptions, ListenerEvents, RoomResponse, TCPOptions, WSOptions } from './types'
 import { DEFAULT_WS_OPTIONS } from './types'
 
 export function getLongRoomId(room: number): Promise<RoomResponse> {
@@ -24,7 +24,7 @@ export function getLongRoomId(room: number): Promise<RoomResponse> {
   })
 }
 
-export class KeepLiveTCP extends LiveClient {
+export class KeepLiveTCP<T extends string = ListenerEvents> extends LiveClient<T> {
   private buffer: Buffer = Buffer.alloc(0)
   private i = 0
   tcpSocket: Socket
@@ -56,7 +56,7 @@ export class KeepLiveTCP extends LiveClient {
     this.tcpSocket = socket
   }
 
-  splitBuffer() {
+  private splitBuffer() {
     while (this.buffer.length >= 4 && this.buffer.readInt32BE(0) <= this.buffer.length) {
       const size = this.buffer.readInt32BE(0)
       const pack = this.buffer.subarray(0, size)
@@ -71,7 +71,7 @@ export class KeepLiveTCP extends LiveClient {
   }
 }
 
-export class KeepLiveWS extends LiveClient {
+export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T> {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {

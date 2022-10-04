@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import { WS_OP, deserialize, serialize } from './buffer'
-import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Message } from './types'
+import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, ListenerEvents, LiveHelloMessage, Message } from './types'
 import { fromEvent } from './utils'
 
 /// const
@@ -17,7 +17,7 @@ export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
 ///
 
-export class LiveClient extends EventEmitter<string | symbol> {
+export class LiveClient<T extends string = ListenerEvents> extends EventEmitter<T | ListenerEvents | symbol> {
   roomId: number
   /** 人气值 */
   online = 0

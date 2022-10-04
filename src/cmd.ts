@@ -34,7 +34,7 @@ export interface _DANMU_MSG {
     string,
     [
       number,
-      '李萧浊',
+      string,
       number,
       number,
       number,
@@ -43,30 +43,30 @@ export interface _DANMU_MSG {
       string,
     ],
     [
-      16,
-      '德云色',
-      '老实憨厚的笑笑',
-      545068,
-      12478086,
-      '',
-      0,
-      12478086,
-      12478086,
-      12478086,
-      0,
-      1,
-      8739477,
+      number,
+      string,
+      string,
+      number,
+      number,
+      string,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
     ],
     [
-      16,
-      0,
-      6406234,
-      '>50000',
-      0,
+      number,
+      number,
+      number,
+      string,
+      number,
     ],
     [
-      '',
-      '',
+      string,
+      string,
     ],
     number,
     number,
@@ -87,45 +87,45 @@ export interface _DANMU_MSG {
 export interface SEND_GIFT {
   cmd: 'SEND_GIFT'
   data: {
-    'giftName': string
-    'num': number
-    'uname': string
-    'face': string
-    'guard_level': number
-    'rcost': number
-    'uid': number
-    'top_list': any[]
-    'timestamp': number
-    'giftId': number
-    'giftType': number
-    'action': '喂食'
-    'super': number
-    'super_gift_num': number
-    'price': number
-    'rnd': string
-    'newMedal': number
-    'newTitle': number
-    'medal': any[]
-    'title': string
-    'beatId': string
-    'biz_source': string
-    'metadata': string
-    'remain': number
-    'gold': number
-    'silver': number
-    'eventScore': number
-    'eventNum': number
-    'smalltv_msg': []
-    'specialGift': null
-    'notice_msg': string[]
-    'capsule': null
-    'addFollow': number
-    'effect_block': number
-    'coin_type': string
-    'total_coin': number
-    'effect': number
-    'tag_image': string
-    'user_count': number
+    giftName: string
+    num: number
+    uname: string
+    face: string
+    guard_level: number
+    rcost: number
+    uid: number
+    top_list: any[]
+    timestamp: number
+    giftId: number
+    giftType: number
+    action: string
+    super: number
+    super_gift_num: number
+    price: number
+    rnd: string
+    newMedal: number
+    newTitle: number
+    medal: any[]
+    title: string
+    beatId: string
+    biz_source: string
+    metadata: string
+    remain: number
+    gold: number
+    silver: number
+    eventScore: number
+    eventNum: number
+    smalltv_msg: []
+    specialGift: null
+    notice_msg: string[]
+    capsule: null
+    addFollow: number
+    effect_block: number
+    coin_type: string
+    total_coin: number
+    effect: number
+    tag_image: string
+    user_count: number
   }
 }
 
