@@ -51,7 +51,12 @@ import { KeepLiveTCP, getLongRoomId, Message, DANMU_MSG } from "tiny-bilibili-ws
 
 const res = await getLongRoomId(650)
 
+// 通常情况下, 你应该像下面这样即可
 const live = new KeepLiveTCP(res.room_id)
+/**
+ * 如果内置的 Event 提示不能满足的你需求, 你可以像下面一样传入一个泛型参数
+ * const live = new KeepLiveTCP<'test'>(res.room_id)
+ */
 
 live.on('DANMU_MSG', ({ data }: DANMU_MSG) => {
     console.log(data)
