@@ -26,19 +26,19 @@ export interface RoomResponse {
     room_id: number
     short_id: number
     uid: number
-    need_p2p: 0
-    is_hidden: false
-    is_locked: false
-    is_portrait: false
-    live_status: 1
-    hidden_till: 0
-    lock_till: 0
-    encrypted: false
-    pwd_verified: false
+    need_p2p: number
+    is_hidden: boolean
+    is_locked: boolean
+    is_portrait: boolean
+    live_status: number
+    hidden_till: number
+    lock_till: number
+    encrypted: boolean
+    pwd_verified: boolean
     live_time: number
-    room_shield: 1
-    is_sp: 0
-    special_type: 0
+    room_shield: number
+    is_sp: number
+    special_type: number
   }
 }
 
