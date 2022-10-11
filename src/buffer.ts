@@ -245,16 +245,7 @@ export function serialize(type: WS_OP, data: string | Record<string, any> = {}):
   // version
   header.write(WS_VERSION_OFFSET, INT_16, WS_BODY_PROTOCOL_VERSION.NUMBER)
   // operation
-  switch (type) {
-    case WS_OP.HEARTBEAT:
-      header.write(WS_OPERATION_OFFSET, INT_32, WS_OP.HEARTBEAT)
-      break
-    case WS_OP.USER_AUTHENTICATION:
-      header.write(WS_OPERATION_OFFSET, INT_32, WS_OP.USER_AUTHENTICATION)
-      break
-    default:
-      throw new Error('Unknown operation')
-  }
+  header.write(WS_OPERATION_OFFSET, INT_32, type)
   // sequence_id 固定为 1
   header.write(WS_SEQUENCE_OFFSET, INT_32, 1)
   ///
