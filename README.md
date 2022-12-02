@@ -1,6 +1,7 @@
 # tiny-bilibili-ws
 
-[![NPM version](https://img.shields.io/npm/v/tiny-bilibili-ws?color=a1b858&label=npm)](https://www.npmjs.com/package/tiny-bilibili-ws)
+[![Version](https://img.shields.io/npm/v/tiny-bilibili-ws?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/tiny-bilibili-ws)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/jotai?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=tiny-bilibili-ws)
 
 为啥会有这个项目？[bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 这个项目已经很久没有维护了, 并且浏览器支持操作比较繁琐。
 
@@ -9,12 +10,6 @@
 - 轻松支持浏览器
 - 轻量
 - 类型安全
-
-## Working
-
-- [x] 类型支持
-- [x] Auth Field
-- [x] 自定义连接地址
 
 ## 安装
 
@@ -40,6 +35,8 @@ new KeepLiveTCP(res.room_id)
 
 // or browser
 import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
+
+// 因为跨域问题, getLongRoomId 这个 API 不能在浏览器运行
 
 new KeepLiveWS(650)
 ```
