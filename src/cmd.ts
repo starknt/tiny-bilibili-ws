@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redeclare */
 import type { Message } from './types'
 
 export interface _DANMU_MSG {

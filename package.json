@@ -48,7 +48,6 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "eventemitter3": "^5.0.1",
     "pako": "^2.1.0",
     "ws": "^8.13.0"
   },

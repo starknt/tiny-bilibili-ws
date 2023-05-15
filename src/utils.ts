@@ -1,6 +1,6 @@
-import type EventEmitter from 'eventemitter3'
+import type { EventEmitter } from './eventemitter'
 
-export function fromEvent<T>(emitter: EventEmitter, event: string, timeout?: number) {
+export function fromEvent<T>(emitter: EventEmitter<any>, event: string, timeout?: number) {
   return new Promise<T>((resolve, reject) => {
     emitter.once(event, (arg: T) => {
       resolve(arg)

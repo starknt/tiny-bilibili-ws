@@ -68,7 +68,7 @@ export interface BaseOptions {
   /**
    * 是否获取全部信息
    * ```typescript
-   *  // 如果关闭 stub live.on('msg'), 将不生效
+   *  如果关闭 stub, live.on('msg'), 将不生效
    * ```
    * @default true
    */

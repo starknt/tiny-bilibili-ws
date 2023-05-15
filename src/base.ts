@@ -1,6 +1,7 @@
-import EventEmitter from 'eventemitter3'
 import { WS_OP, deserialize, serialize } from './buffer'
-import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, ListenerEvents, LiveHelloMessage, Message } from './types'
+import type { DANMU_MSG, SEND_GIFT_MSG } from './cmd'
+import { EventEmitter } from './eventemitter'
+import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Message } from './types'
 import { fromEvent } from './utils'
 
 /// const
@@ -17,7 +18,25 @@ export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
 ///
 
-export class LiveClient<T extends string = ListenerEvents> extends EventEmitter<T | ListenerEvents | symbol> {
+interface BilibiliLiveEvent {
+  open: void
+  msg: Message<any> /**   */
+  message: Uint8Array /** */
+  live: void
+  heartbeat: Message<any>
+  close: void
+  error: Error
+
+  [OPEN_EVENT]: void
+  [MESSAGE_EVENT]: Uint8Array
+  [ERROR_EVENT]: Error
+  [CLOSE_EVENT]: void
+
+  DANMU_MSG: DANMU_MSG
+  SEND_GIFT_MSG: SEND_GIFT_MSG
+}
+
+export class LiveClient<T extends Record<string, any> = {}> extends EventEmitter<BilibiliLiveEvent> {
   roomId: number
   /** 人气值 */
   online = 0
@@ -130,7 +149,7 @@ export class LiveClient<T extends string = ListenerEvents> extends EventEmitter<
       }
     })
 
-    this.on(ERROR_EVENT, (error: any) => {
+    this.on(ERROR_EVENT, (error: Error) => {
       this.emit('error', error)
     })
 
