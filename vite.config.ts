@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 
 const alias = {
   'tiny-bilibili-ws': resolve(__dirname, 'src', 'index.ts'),

@@ -1,7 +1,7 @@
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
 import type { BaseLiveClientOptions, ListenerEvents, WSOptions } from './types'
 import { DEFAULT_WS_OPTIONS } from './types'
-import { inflates } from './browser/inflate'
+import { inflates } from './browserlib/inflate'
 
 export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T> {
   ws: WebSocket
@@ -29,4 +29,3 @@ export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T>
     this.ws = socket
   }
 }
-

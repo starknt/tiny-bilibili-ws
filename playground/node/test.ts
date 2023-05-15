@@ -1,7 +1,7 @@
 import type { Message } from 'tiny-bilibili-ws'
 import { KeepLiveTCP, getLongRoomId } from 'tiny-bilibili-ws'
 
-const res = await getLongRoomId(7688602)
+const res = await getLongRoomId(13233348)
 
 const live = new KeepLiveTCP(res.data.room_id)
 

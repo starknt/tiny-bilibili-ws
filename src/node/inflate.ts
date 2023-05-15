@@ -1,4 +1,5 @@
 import type { BrotliOptions, InputType, ZlibOptions } from 'node:zlib'
+import type { Buffer } from 'node:buffer'
 import { brotliDecompress as _brotliDecompress, inflate as _inflate } from 'node:zlib'
 import type { IZlib } from '../types'
 

@@ -179,4 +179,3 @@ export class LiveClient<T extends string = ListenerEvents> extends EventEmitter<
     this.closed = true
   }
 }
-

@@ -1,6 +1,7 @@
 import type { Socket } from 'node:net'
 import { connect } from 'node:net'
 import https from 'node:https'
+import { Buffer } from 'node:buffer'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
 import { inflates } from './node/inflate'
@@ -96,4 +97,3 @@ export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T>
     this.ws = socket
   }
 }
-
