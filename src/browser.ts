@@ -1,9 +1,19 @@
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
-import type { BaseLiveClientOptions, ListenerEvents, WSOptions } from './types'
-import { DEFAULT_WS_OPTIONS } from './types'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import type { BaseLiveClientOptions, Merge, WSOptions } from './base/types'
+import { DEFAULT_WS_OPTIONS } from './base/types'
 import { inflates } from './browserlib/inflate'
+import type { EventKey } from './base/eventemitter'
 
-export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T> {
+export interface WSEvents {
+  [OPEN_EVENT]: void
+  [MESSAGE_EVENT]: Uint8Array
+  [ERROR_EVENT]: Event
+  [CLOSE_EVENT]: CloseEvent
+}
+
+export class KeepLiveWS<E extends Record<EventKey, any> = {}> extends LiveClient<Merge<WSEvents, E>> {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
@@ -13,8 +23,8 @@ export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T>
     socket.binaryType = 'arraybuffer'
 
     socket.addEventListener('open', () => this.emit(OPEN_EVENT))
-    socket.addEventListener('close', () => this.emit(CLOSE_EVENT))
-    socket.addEventListener('error', (...params: any[]) => this.emit(ERROR_EVENT, ...params))
+    socket.addEventListener('close', e => this.emit(CLOSE_EVENT, e))
+    socket.addEventListener('error', e => this.emit(ERROR_EVENT, e))
     socket.addEventListener('message', (e: MessageEvent<ArrayBuffer>) => this.emit(MESSAGE_EVENT, new Uint8Array(e.data)))
 
     const liveOptions: BaseLiveClientOptions = {

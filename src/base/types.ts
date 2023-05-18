@@ -6,6 +6,18 @@ export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U ext
     [K in keyof O as K extends U ? never : K]: O[K]
   }
 
+// reference https://stackoverflow.com/questions/49682569/typescript-merge-object-types
+export type Merge<A, B> = {
+  [K in keyof A | keyof B]:
+  K extends keyof A & keyof B
+    ? A[K] | B[K]
+    : K extends keyof B
+      ? B[K]
+      : K extends keyof A
+        ? A[K]
+        : never
+}
+
 export interface ISocket {
   write(data: Uint8Array): void
   end(): void
