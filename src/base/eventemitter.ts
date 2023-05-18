@@ -89,7 +89,10 @@ export class EventEmitter<E extends Record<EventKey, any>> {
       this.eventListeners.clear()
   }
 
-  listenerCount<N extends keyof E>(eventName: N): number {
+  listenerCount<N extends keyof E>(eventName?: N): number {
+    if (!eventName)
+      return Array.from(this.eventListeners.values()).flatMap(v => v).length
+
     return this.eventListeners.get(eventName)?.length ?? 0
   }
 }
