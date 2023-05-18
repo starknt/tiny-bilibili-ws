@@ -105,9 +105,7 @@ export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   type?: number
 }
 
-export interface TCPOptions extends WSOptions {
-
-}
+export interface TCPOptions extends WSOptions {}
 
 export interface LiveHelloMessage {
   clientver: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
@@ -118,10 +116,6 @@ export interface LiveHelloMessage {
   type: number
   key?: any
 }
-
-export type ListenerEvents =
-  'open' | 'msg' | 'message' | 'close' | 'error' | 'live' | 'heartbeat' | 'closed'
-  | MESSAGE_CMD
 
 export type MESSAGE_CMD
   =
@@ -137,9 +131,7 @@ export type MESSAGE_CMD
     | 'ACTIVITY_BANNER_UPDATE_V2' // 小时榜变动
     | 'ROOM_REAL_TIME_MESSAGE_UPDATE' // 粉丝关注变动
 
-export interface MessageMeta extends ProtocolHeader {
-
-}
+export interface MessageMeta extends ProtocolHeader {}
 
 export interface Message<T> {
   meta: MessageMeta
@@ -153,12 +145,8 @@ export interface IZlib<T extends Uint8Array = Uint8Array> {
 
 export interface IWriter {
   write(offset: number, len: number, val: number): void
-  // writeInt32BE(val: number, offset?: number): void
-  // writeInt16BE(val: number, offset?: number): void
 }
 
 export interface IReader {
   read(offset: number, len: number): number
-  // readInt16BE(offset?: number): number
-  // readInt32BE(offset?: number): number
 }

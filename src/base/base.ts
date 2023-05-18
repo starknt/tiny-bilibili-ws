@@ -1,5 +1,5 @@
 import { WS_OP, deserialize, serialize } from './buffer'
-import type { DANMU_MSG } from './cmd'
+import type { BuiltinEvent } from './cmd'
 import { fromEvent } from './utils'
 import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
 import { EventEmitter } from './eventemitter'
@@ -20,16 +20,11 @@ export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 ///
 
 // TODO: out of box type for bilibili event, and flexable extension event
-interface BilibiliLiveEvent {
+interface BilibiliLiveEvent extends BuiltinEvent {
   open: void
   msg: Message<any>
   live: void
   heartbeat: Message<any>
-  close: void
-  error: Event
-
-  // builtin event
-  DANMU_MSG: DANMU_MSG
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {
@@ -47,13 +42,19 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   private skipMessage: string[] = []
 
   constructor(readonly options: BaseLiveClientOptions) {
-    if (typeof options.room !== 'number' || Number.isNaN(options.room))
-      throw new Error(`roomId ${options.room} must be Number not NaN`)
+    let room = 0
+    if (typeof options.room === 'string')
+    // @ts-expect-error transform string
+      room = +(options.room.trim())
+    else
+      room = options.room
+    if (typeof room !== 'number' || Number.isNaN(room))
+      throw new Error(`roomId ${room} must be Number not NaN`)
 
     super()
 
     this.firstMessage = {
-      roomid: options.room,
+      roomid: room,
       clientver: options.clientVer,
       protover: options.protover,
       uid: options.uid,
@@ -71,7 +72,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
     this.bindEvent()
   }
 
-  onlyListener(events: string[]) {
+  onlyListener<N extends string>(events: N[]) {
     for (const event of events) {
       if (!this.skipMessage.includes(event))
         this.skipMessage.push(event)

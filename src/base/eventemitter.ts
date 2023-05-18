@@ -1,5 +1,5 @@
 export type Nil = undefined | void | null
-export type EventKey = string | number | symbol
+export type EventKey = string
 export type Listener<O extends Record<string | number, any>, K extends keyof O, V = O[K]> =
   V extends Array<any>
     ? V extends [infer Arg] ? (arg1: Arg) => void | Promise<void>

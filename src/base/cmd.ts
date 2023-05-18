@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-redeclare */
 import type { Message } from './types'
 
-export interface _DANMU_MSG {
+export interface DANMU_MSG {
   cmd: 'DANMU_MSG'
   info: [
     [
@@ -370,7 +369,7 @@ export interface GUARD_BUY {
   }
 }
 
-export interface _NOTICE_MSG {
+export interface NOTICE_MSG {
   cmd: 'NOTICE_MSG'
   id: number
   name: string
@@ -466,17 +465,27 @@ export interface STOP_LIVE_ROOM_LIST {
   }
 }
 
-export type DANMU_MSG = Message<_DANMU_MSG>
-export type SEND_GIFT_MSG = Message<SEND_GIFT>
-export type WATCHED_CHANGE_MSG = Message<WATCHED_CHANGE>
-export type ENTRY_EFFECT_MSG = Message<ENTRY_EFFECT>
-export type INTERACT_WORD_MSG = Message<INTERACT_WORD>
-export type COMBO_SEND_MSG = Message<COMBO_SEND>
-export type SUPER_CHAT_MSG = Message<SUPER_CHAT_MESSAGE>
-export type SUPER_CHAT_MSG_JPN = Message<SUPER_CHAT_MESSAGE_JPN>
-export type GUARD_BUY_MSG = Message<GUARD_BUY>
-export type NOTICE_MSG = Message<_NOTICE_MSG>
-export type HOT_RANK_CHANGED_MSG = Message<HOT_RANK_CHANGED>
-export type HOT_RANK_CHANGED_V2_MSG = Message<HOT_RANK_CHANGED_V2>
-export type ONLINE_RANK_COUNT_MSG = Message<ONLINE_RANK_COUNT>
-export type STOP_LIVE_ROOM_LIST_MSG = Message<STOP_LIVE_ROOM_LIST>
+interface _BuiltinEvent {
+  DANMU_MSG: DANMU_MSG
+  SEND_GIFT: SEND_GIFT
+  GUARD_BUY: GUARD_BUY
+  COMBO_SEND: COMBO_SEND
+  NOTICE_MSG: NOTICE_MSG
+  HOT_RANK_CHANGED: HOT_RANK_CHANGED
+  HOT_RANK_CHANGED_V2: HOT_RANK_CHANGED_V2
+  ONLINE_RANK_COUNT: ONLINE_RANK_COUNT
+  STOP_LIVE_ROOM_LIST: STOP_LIVE_ROOM_LIST
+  ENTRY_EFFECT: ENTRY_EFFECT
+  INTERACT_WORD: INTERACT_WORD
+  SUPER_CHAT_MESSAGE: SUPER_CHAT_MESSAGE
+  SUPER_CHAT_MESSAGE_JPN: SUPER_CHAT_MESSAGE_JPN
+  WATCHED_CHANGE: WATCHED_CHANGE
+  WELCOME_GUARD: any
+  WELCOME: any
+}
+
+type ReplaceVToMessage<E extends Record<string, any>> = {
+  [K in keyof E]: Message<E[K]>
+}
+
+export type BuiltinEvent = ReplaceVToMessage<_BuiltinEvent>

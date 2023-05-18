@@ -3,13 +3,11 @@
 [![Version](https://img.shields.io/npm/v/tiny-bilibili-ws?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/tiny-bilibili-ws)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/jotai?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=tiny-bilibili-ws)
 
-为啥会有这个项目？[bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 这个项目已经很久没有维护了, 并且浏览器支持操作比较繁琐。
-
 ## 特点
 
-- 轻松支持浏览器
+- 支持浏览器
 - 轻量
-- 类型安全
+- 开箱即用的消息类型支持
 
 ## 安装
 
@@ -157,10 +155,6 @@ live.on('msg', (message: Message<any>) => {
 })
 ```
 
-## 参考资料
-
-Bilibili API: [https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md](https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md)
-
 ## API
 
 `API` 基本与 [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 的 `API` 兼容
@@ -241,6 +235,14 @@ live.on('message', (buffer: Uint8Array) => { // DANMU_MSG 和 SEND_GIFT 都会�
 
 最后，你还可以通过 `live.ws` 或者是 `live.tcpSocket`，获取原始的 `socket` 实例。
 
+## Credits
+
+https://github.com/simon300000/bilibili-live-ws
+
+## 参考资料
+
+Bilibili API: [https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md](https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md)
+
 ## License
 
-[MIT](./LICENSE) License © 2022 [starknt](https://github.com/starknt)
+[MIT](./LICENSE) License ©2022 [starknt](https://github.com/starknt)
