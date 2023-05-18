@@ -7,14 +7,14 @@ import type { EventKey } from './eventemitter'
 
 /// const
 
-export const MESSAGE_EVENT = Symbol('')
-export const OPEN_EVENT = Symbol('')
-export const ERROR_EVENT = Symbol('')
-export const CLOSE_EVENT = Symbol('')
+export const MESSAGE_EVENT = '__message__'
+export const OPEN_EVENT = '__open__'
+export const ERROR_EVENT = '__error__'
+export const CLOSE_EVENT = '__close__'
 
 export const SOCKET_HOST = 'broadcastlv.chat.bilibili.com'
 export const NODE_SOCKET_PORT = 2243
-export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}:2245/sub`
+export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}/sub`
 export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
 ///
@@ -72,15 +72,15 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
     this.bindEvent()
   }
 
-  onlyListener<N extends string>(events: N[]) {
-    for (const event of events) {
+  onlyListener(events: string[] | string) {
+    for (const event of (Array.isArray(events) ? events : [events])) {
       if (!this.skipMessage.includes(event))
         this.skipMessage.push(event)
     }
   }
 
-  clearOnlyListener(events: string[]) {
-    for (const event of events) {
+  clearOnlyListener(events: string[] | string) {
+    for (const event of (Array.isArray(events) ? events : [events])) {
       if (this.skipMessage.includes(event))
         this.skipMessage.splice(this.skipMessage.findIndex(v => event === v), 1)
     }

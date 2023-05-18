@@ -1,6 +1,6 @@
 export type Nil = undefined | void | null
 export type EventKey = string
-export type Listener<O extends Record<string | number, any>, K extends keyof O, V = O[K]> =
+export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K]> =
   V extends Array<any>
     ? V extends [infer Arg] ? (arg1: Arg) => void | Promise<void>
       : V extends [infer Arg1, infer Arg2] ? (arg1: Arg1, arg2: Arg2) => void | Promise<void>
@@ -27,7 +27,8 @@ export class EventEmitter<E extends Record<EventKey, any>> {
   on<N extends keyof E>(eventName: N, listener: Listener<E, N>) {
     if (!this.eventListeners.has(eventName))
       this.eventListeners.set(eventName, [listener])
-    this.eventListeners.get(eventName)!.push(listener)
+    else
+      this.eventListeners.get(eventName)!.push(listener)
     return this
   }
 

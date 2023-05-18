@@ -28,7 +28,7 @@ export interface IWebSocket {
   close(): void
 }
 
-type Options = PartialByKeys<Required<WSOptions>, keyof AuthOptions | keyof ConnectionOptions>
+type Options = PartialByKeys<WSOptions, keyof AuthOptions | keyof ConnectionOptions>
 
 export interface RoomResponse {
   code: number
@@ -58,11 +58,11 @@ export const DEFAULT_WS_OPTIONS: Options = {
   raw: false,
   stub: true,
   ssl: true,
-  clientVer: '2.0.11',
-  platform: 'web',
-  protover: 2,
-  uid: 0,
-  type: 2,
+  // clientVer: '2.0.11',
+  // platform: 'web',
+  // protover: 2,
+  // uid: 0,
+  // type: 2,
 }
 
 export interface BaseLiveClientOptions extends Options {
@@ -108,12 +108,12 @@ export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
 export interface TCPOptions extends WSOptions {}
 
 export interface LiveHelloMessage {
-  clientver: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
-  platform: 'web'
-  protover: 1 | 2 | 3
+  clientver?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
+  platform?: 'web'
+  protover?: 1 | 2 | 3
   roomid: number
-  uid: number
-  type: number
+  uid?: number
+  type?: number
   key?: any
 }
 
