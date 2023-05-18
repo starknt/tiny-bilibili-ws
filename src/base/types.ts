@@ -6,6 +6,18 @@ export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U ext
     [K in keyof O as K extends U ? never : K]: O[K]
   }
 
+// reference https://stackoverflow.com/questions/49682569/typescript-merge-object-types
+export type Merge<A, B> = {
+  [K in keyof A | keyof B]:
+  K extends keyof A & keyof B
+    ? A[K] | B[K]
+    : K extends keyof B
+      ? B[K]
+      : K extends keyof A
+        ? A[K]
+        : never
+}
+
 export interface ISocket {
   write(data: Uint8Array): void
   end(): void
@@ -16,7 +28,7 @@ export interface IWebSocket {
   close(): void
 }
 
-type Options = PartialByKeys<Required<WSOptions>, keyof AuthOptions | keyof ConnectionOptions>
+type Options = PartialByKeys<WSOptions, keyof AuthOptions | keyof ConnectionOptions>
 
 export interface RoomResponse {
   code: number
@@ -46,11 +58,11 @@ export const DEFAULT_WS_OPTIONS: Options = {
   raw: false,
   stub: true,
   ssl: true,
-  clientVer: '2.0.11',
-  platform: 'web',
-  protover: 2,
-  uid: 0,
-  type: 2,
+  // clientVer: '2.0.11',
+  // platform: 'web',
+  // protover: 2,
+  // uid: 0,
+  // type: 2,
 }
 
 export interface BaseLiveClientOptions extends Options {
@@ -68,7 +80,7 @@ export interface BaseOptions {
   /**
    * 是否获取全部信息
    * ```typescript
-   *  // 如果关闭 stub live.on('msg'), 将不生效
+   *  如果关闭 stub, live.on('msg'), 将不生效
    * ```
    * @default true
    */
@@ -93,23 +105,17 @@ export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   type?: number
 }
 
-export interface TCPOptions extends WSOptions {
-
-}
+export interface TCPOptions extends WSOptions {}
 
 export interface LiveHelloMessage {
-  clientver: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
-  platform: 'web'
-  protover: 1 | 2 | 3
+  clientver?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
+  platform?: 'web'
+  protover?: 1 | 2 | 3
   roomid: number
-  uid: number
-  type: number
+  uid?: number
+  type?: number
   key?: any
 }
-
-export type ListenerEvents =
-  'open' | 'msg' | 'message' | 'close' | 'error' | 'live' | 'heartbeat' | 'closed'
-  | MESSAGE_CMD
 
 export type MESSAGE_CMD
   =
@@ -125,9 +131,7 @@ export type MESSAGE_CMD
     | 'ACTIVITY_BANNER_UPDATE_V2' // 小时榜变动
     | 'ROOM_REAL_TIME_MESSAGE_UPDATE' // 粉丝关注变动
 
-export interface MessageMeta extends ProtocolHeader {
-
-}
+export interface MessageMeta extends ProtocolHeader {}
 
 export interface Message<T> {
   meta: MessageMeta
@@ -141,12 +145,8 @@ export interface IZlib<T extends Uint8Array = Uint8Array> {
 
 export interface IWriter {
   write(offset: number, len: number, val: number): void
-  // writeInt32BE(val: number, offset?: number): void
-  // writeInt16BE(val: number, offset?: number): void
 }
 
 export interface IReader {
   read(offset: number, len: number): number
-  // readInt16BE(offset?: number): number
-  // readInt32BE(offset?: number): number
 }

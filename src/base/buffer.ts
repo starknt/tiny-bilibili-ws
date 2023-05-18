@@ -1,10 +1,6 @@
 import type { IReader, IWriter, IZlib, Message } from './types'
 
-///
-
-/**
- * @reference https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md
- */
+/// reference https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md
 
 /**
  * 消息操作类型

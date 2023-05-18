@@ -1,0 +1,7 @@
+{
+  "cmd": "SUPER_CHAT_MESSAGE_DELETE",
+  "data": {
+    "ids": [3897503]
+  },
+  "roomid": 23708804
+}

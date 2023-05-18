@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
-import type { ListenerEvents, Message } from 'tiny-bilibili-ws'
 import { onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 
 onMounted(async () => {
-  const live = new KeepLiveWS(545068)
+  const live = new KeepLiveWS(import.meta.env.VITE_ROOM)
 
-  live.on<ListenerEvents>('WELCOME_GUARD', (message: Message<any>) => { // 有弹幕会被触发
+  live.on('WELCOME_GUARD', (message) => { // 有弹幕会被触发
     console.log(message)
   })
 
-  live.on<ListenerEvents>('WELCOME', (message: Message<any>) => { // 有弹幕会被触发
+  live.on('WELCOME', (message) => { // 有弹幕会被触发
     console.log(message)
   })
 
-  live.on<ListenerEvents>('SUPER_CHAT_MESSAGE', (message: Message<any>) => { // 有弹幕会被触发
+  live.on('SUPER_CHAT_MESSAGE', (message) => { // 有弹幕会被触发
     console.log(message)
   })
+
+  live.on('DANMU_MSG', m => console.log(m))
 })
 </script>
 

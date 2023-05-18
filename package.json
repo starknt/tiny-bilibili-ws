@@ -48,13 +48,12 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "eventemitter3": "^5.0.1",
     "pako": "^2.1.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.6",
-    "@types/node": "^20.1.4",
+    "@types/node": "^20.2.1",
     "@types/pako": "^2.0.0",
     "@types/ws": "^8.5.4",
     "bumpp": "^9.1.0",
@@ -63,6 +62,6 @@
     "pnpm": "^8.5.1",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.1"
   }
 }

@@ -1,0 +1,25 @@
+{
+  "cmd": "USER_TOAST_MSG",
+  "data": {
+    "anchor_show": true,
+    "color": "#00D1F1",
+    "dmscore": 90,
+    "effect_id": 397,
+    "end_time": 1650363257,
+    "guard_level": 3,
+    "is_show": 0,
+    "num": 1,
+    "op_type": 3,
+    "payflow_id": "2204191814095042182780602",
+    "price": 138000,
+    "role_name": "舰长",
+    "start_time": 1650363257,
+    "svga_block": 0,
+    "target_guard_count": 794,
+    "toast_msg": "<%酒蒂威%> 自动续费了舰长",
+    "uid": 165298278,
+    "unit": "月",
+    "user_show": true,
+    "username": "酒蒂威"
+  }
+}

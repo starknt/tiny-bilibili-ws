@@ -1,12 +1,16 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import type { Socket } from 'node:net'
 import { connect } from 'node:net'
 import https from 'node:https'
 import { Buffer } from 'node:buffer'
+import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, ListenerEvents, RoomResponse, TCPOptions, WSOptions } from './types'
-import { DEFAULT_WS_OPTIONS } from './types'
+import type { BaseLiveClientOptions, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import { DEFAULT_WS_OPTIONS } from './base/types'
+import type { EventKey } from './base/eventemitter'
 
 export function getLongRoomId(room: number): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
@@ -25,7 +29,18 @@ export function getLongRoomId(room: number): Promise<RoomResponse> {
   })
 }
 
-export class KeepLiveTCP<T extends string = ListenerEvents> extends LiveClient<T> {
+export interface TCPEvents {
+  // [OPEN_EVENT]: void
+  // [MESSAGE_EVENT]: Buffer
+  // [ERROR_EVENT]: Error
+  // [CLOSE_EVENT]: void
+
+  error: Error
+  close: void
+  message: Buffer
+}
+
+export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClient<Merge<TCPEvents, E>> {
   private buffer: Buffer = Buffer.alloc(0)
   private i = 0
   tcpSocket: Socket
@@ -36,10 +51,8 @@ export class KeepLiveTCP<T extends string = ListenerEvents> extends LiveClient<T
     const socket = resolvedOptions.url ? connect(resolvedOptions.url) : connect(NODE_SOCKET_PORT, SOCKET_HOST)
 
     socket.on('ready', () => this.emit(OPEN_EVENT))
-    socket.on('close', hadError =>
-      this.emit(CLOSE_EVENT, hadError),
-    )
-    socket.on('error', (...params: any[]) => this.emit(ERROR_EVENT, ...params))
+    socket.on('close', () => this.emit(CLOSE_EVENT))
+    socket.on('error', e => this.emit(ERROR_EVENT, e))
     socket.on('data', (buffer) => {
       this.buffer = Buffer.concat([this.buffer, buffer])
       this.splitBuffer()
@@ -72,7 +85,18 @@ export class KeepLiveTCP<T extends string = ListenerEvents> extends LiveClient<T
   }
 }
 
-export class KeepLiveWS<T extends string = ListenerEvents> extends LiveClient<T> {
+export interface WSEvents {
+  // [OPEN_EVENT]: void
+  // [MESSAGE_EVENT]: Buffer
+  // [ERROR_EVENT]: ErrorEvent
+  // [CLOSE_EVENT]: CloseEvent
+
+  error: ErrorEvent
+  close: CloseEvent
+  message: Buffer
+}
+
+export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClient<Merge<WSEvents, E>> {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {

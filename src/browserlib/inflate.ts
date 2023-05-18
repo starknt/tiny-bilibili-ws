@@ -1,5 +1,5 @@
 import { inflate as _inflate } from 'pako'
-import type { IZlib } from '../types'
+import type { IZlib } from '../base/types'
 import { BrotliDecode } from './brotli'
 
 async function brotliDecompress(buf: Uint8Array): Promise<Uint8Array> {
