@@ -19,7 +19,7 @@ export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
 ///
 
-// TODO: out of box type for bilibili event, and flexable extension event
+// TODO: out of the box type for bilibili event, and flexable extension event
 interface BilibiliLiveEvent extends BuiltinEvent {
   open: void
   msg: Message<any>

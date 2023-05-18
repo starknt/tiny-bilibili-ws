@@ -18,7 +18,7 @@ onMounted(async () => {
     console.log(message)
   })
 
-  live.addListener('DANMU_MSG', m => console.log(m))
+  live.on('DANMU_MSG', m => console.log(m))
 })
 </script>
 
