@@ -7,10 +7,13 @@ import { inflates } from './browserlib/inflate'
 import type { EventKey } from './base/eventemitter'
 
 export interface WSEvents {
-  [OPEN_EVENT]: void
-  [MESSAGE_EVENT]: Uint8Array
-  [ERROR_EVENT]: Event
-  [CLOSE_EVENT]: CloseEvent
+  // [OPEN_EVENT]: void
+  // [MESSAGE_EVENT]: Uint8Array
+  // [ERROR_EVENT]: Event
+  // [CLOSE_EVENT]: CloseEvent
+
+  error: Event
+  close: CloseEvent
   message: Uint8Array
 }
 

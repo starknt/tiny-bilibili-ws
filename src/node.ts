@@ -30,10 +30,10 @@ export function getLongRoomId(room: number): Promise<RoomResponse> {
 }
 
 export interface TCPEvents {
-  [OPEN_EVENT]: void
-  [MESSAGE_EVENT]: Buffer
-  [ERROR_EVENT]: Error
-  [CLOSE_EVENT]: void
+  // [OPEN_EVENT]: void
+  // [MESSAGE_EVENT]: Buffer
+  // [ERROR_EVENT]: Error
+  // [CLOSE_EVENT]: void
 
   error: Error
   close: void
@@ -86,10 +86,10 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
 }
 
 export interface WSEvents {
-  [OPEN_EVENT]: void
-  [MESSAGE_EVENT]: Buffer
-  [ERROR_EVENT]: ErrorEvent
-  [CLOSE_EVENT]: CloseEvent
+  // [OPEN_EVENT]: void
+  // [MESSAGE_EVENT]: Buffer
+  // [ERROR_EVENT]: ErrorEvent
+  // [CLOSE_EVENT]: CloseEvent
 
   error: ErrorEvent
   close: CloseEvent
