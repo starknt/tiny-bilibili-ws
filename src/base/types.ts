@@ -117,20 +117,6 @@ export interface LiveHelloMessage {
   key?: any
 }
 
-export type MESSAGE_CMD
-  =
-    'INTERACT_WORD' | 'LIKE_INFO_V3_UPDATE'
-    | 'STOP_LIVE_ROOM_LIST' | 'ONLINE_RANK_COUNT' | 'HOT_RANK_CHANGED' | 'HOT_RANK_CHANGED_V2'
-    | 'LIKE_INFO_V3_CLICK' | 'LIVE_INTERACTIVE_GAME'
-    | 'WATCHED_CHANGE' // 看过
-    | 'DANMU_MSG' | 'WELCOME_GUARD' | 'ENTRY_EFFECT' | 'WELCOME' // 弹幕
-    | 'SUPER_CHAT_MESSAGE_JPN' | 'SUPER_CHAT_MESSAGE' // sc
-    | 'SEND_GIFT' | 'COMBO_SEND' // 礼物
-    | 'ANCHOR_LOT_START' | 'ANCHOR_LOT_END' | 'ANCHOR_LOT_AWARD' // 天选之人
-    | 'GUARD_BUY' | 'USER_TOAST_MSG' | 'NOTICE_MSG' // 舰长
-    | 'ACTIVITY_BANNER_UPDATE_V2' // 小时榜变动
-    | 'ROOM_REAL_TIME_MESSAGE_UPDATE' // 粉丝关注变动
-
 export interface MessageMeta extends ProtocolHeader {}
 
 export interface Message<T> {

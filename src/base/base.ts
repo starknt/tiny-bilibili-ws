@@ -24,7 +24,7 @@ interface BilibiliLiveEvent extends BuiltinEvent {
   open: void
   msg: Message<any>
   live: void
-  heartbeat: Message<any>
+  heartbeat: number
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {

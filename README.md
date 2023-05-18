@@ -5,9 +5,9 @@
 
 ## 特点
 
-- 支持浏览器
-- 轻量
-- 开箱即用的消息类型支持
+- 同时支持浏览器和NodeJs环境
+- 开箱即用的 Typescript 类型提示
+- 轻量级的包体积
 
 ## 安装
 
@@ -34,130 +34,41 @@ new KeepLiveTCP(res.room_id)
 // or browser
 import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 
-// 因为跨域问题, getLongRoomId 这个 API 不能在浏览器运行
+// 因为存在跨域问题, getLongRoomId 这个 API 不能在浏览器运行
 
-new KeepLiveWS(650)
+new KeepLiveWS(650) // Now Long Room id: 4350043
 ```
 
-## Typescript 支持
+## 高级用法
 
 ```typescript
-import { KeepLiveTCP, getLongRoomId, Message, DANMU_MSG } from "tiny-bilibili-ws";
+import { KeepLiveTCP, KeepLiveWS, getLongRoomId, serialize, deserialize, WS_OP, WS_BODY_PROTOCOL_VERSION, Message } from "tiny-bilibili-ws"
+
+// 扩展内置的 BILIBILI CMD 类型
 
 const res = await getLongRoomId(650)
 
-// 通常情况下, 你应该像下面这样即可
-const live = new KeepLiveTCP(res.room_id)
-/**
- * 如果内置的 Event 提示不能满足的你需求, 你可以像下面一样传入一个泛型参数
- * const live = new KeepLiveTCP<'test'>(res.room_id)
- */
+const live = new KeepLiveTCP<{
+    A_BILIBILI_CMD: [Uint8Array, number]
+    B_BILIBILI_CMD: [Message<any>, number]
+}>(res.data.room_id)
 
-live.on('DANMU_MSG', ({ data }: DANMU_MSG) => {
-    console.log(data)
-    /**
-     * 可能会打印出类似于这样信息
-      {
-        cmd: 'DANMU_MSG',
-        info: [
-            [
-            0,             1,
-            25,            5816798,
-            1664523954695, -1908228753,
-            0,             '906b61ef',
-            0,             0,
-            0,             '',
-            0,             '{}',
-            '{}',          [Object],
-            [Object]
-            ],
-            '糙哥',
-            [ 12918790, '这人很懒所以没名字', 0, 0, 0, 10000, 1, '' ],
-            [
-            16,               '德云色',
-            '老实憨厚的笑笑', 545068,
-            12478086,         '',
-            0,                12478086,
-            12478086,         12478086,
-            0,                1,
-            8739477
-            ],
-            [ 20, 0, 6406234, '>50000', 0 ],
-            [ '', '' ],
-            0,
-            0,
-            null,
-            { ts: 1664523954, ct: '773C192A' },
-            0,
-            0,
-            null,
-            null,
-            0,
-            63
-        ]
-        }
-     */
+live.on('A_BILIBILI_CMD', (arg1 /* Uint8Array */, arg2 /* number */) => {
+    console.log(arg1, arg2) // Uint8Array[] 1
 })
 
-live.on('msg', (message: Message<any>) => {
-    console.log(message)
-    /**
-     * 可能会打印出类似于这样信息
-     * 
-     {
-        "meta": { "op": 5, "headerLength": 16, "packetLength": 256, "sequence": 1, "ver": 3 },
-        "data": {
-            "cmd": "SEND_GIFT",
-            "data": {
-                "giftName": "辣条",
-                "num": 1,
-                "uname": "simon3000",
-                "face": "http://i1.hdslb.com/bfs/facec26b9f670b10599ad105e2a7fea4b5f21c0f0bcf.jpg",
-                "guard_level": 0,
-                "rcost": 2318827,
-                "uid": 3499295,
-                "top_list": [],
-                "timestamp": 1555690631,
-                "giftId": 1,
-                "giftType": 0,
-                "action": "喂食",
-                "super": 0,
-                "super_gift_num": 0,
-                "price": 100,
-                "rnd": "1555690616",
-                "newMedal": 0,
-                "newTitle": 0,
-                "medal": [],
-                "title": "",
-                "beatId": "0",
-                "biz_source": "live",
-                "metadata": "",
-                "remain": 6,
-                "gold": 0,
-                "silver": 0,
-                "eventScore": 0,
-                "eventNum": 0,
-                "smalltv_msg": [],
-                "specialGift": null,
-                "notice_msg": [],
-                "capsule": null,
-                "addFollow": 0,
-                "effect_block": 1,
-                "coin_type": "silver",
-                "total_coin": 100,
-                "effect": 0,
-                "tag_image": "",
-                "user_count": 0
-            }
-        }
-    }
-     */
+live.on('B_BILIBILI_CMD', (arg1 /* Message<any> */, arg2 /* number */) => {
+    console.log(arg1, arg2) // Message 2
 })
+
+live.emit('A_BILIBILI_CMD', serialize(WS_OP.MESSAGE, "test"), 1)
+live.emit('B_BILIBILI_CMD', { meta: { op: WS_OP.MESSAGE, ver: WS_BODY_PROTOCOL_VERSION.NORMAL,
+  packetLength: 17,
+  headerLength: 16,
+  sequence: 1 }, data: 1 }, 2)
 ```
 
 ## API
-
-`API` 基本与 [bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws) 的 `API` 兼容
 
 - live.on('live')
 
@@ -171,7 +82,7 @@ live.on('msg', (message: Message<any>) => {
 
 会监听到所有的 `cmd` 消息
 
-- live.on('message', buffer /** `Uint8Array` */ => {})
+- live.on('message', buffer => {})
 
 会监听到所有的消息, 获得信息原始数据 `Uint8Array`, 但是你必须设置 `raw` 为 `true`，你才可以监听到该消息。
 一个简单的例子如下：
@@ -190,7 +101,7 @@ live.on('message', (buffer: Uint8Array) => {
 
 - live.on(cmd, (message /** Message\<any\> */) => {})
 
-监听特定的 `cmd`, 关于 `cmd` [详见于此](https://github.com/simon300000/bilibili-live-ws)
+监听特定的 `cmd`, 关于 `cmd`, 例如 `DANMU_MSG`
 
 - live.runWhenConnected(() => {})
 
@@ -198,29 +109,29 @@ live.on('message', (buffer: Uint8Array) => {
 
 - live.getOnline()
 
-立即调用 live.heartbeat() 刷新人气数值，并且返回 Promise.resolve 人气刷新后数值
+立即调用 live.heartbeat() 刷新人气数值，并且返回人气刷新后的值
 
-- live.onlyListener(events /** string[] */)
+- live.onlyListener(events)
 
 选择你需要监听 `cmd` 事件，可能会提高执行效率。 如果你调用了这个方法, 你就只能监听到你传入的 `cmd` 事件。举个例子:
 
 ```typescript
 live.onlyListener(['DANMU_MSG'])
 
-live.on('DANMU_MSG', (message: Message<any>) => { // 有弹幕会被触发
+live.on('DANMU_MSG', (message) => { // 有弹幕会被触发
     console.log(message)
 })
 
-live.on('SEND_GIFT', (message: Message<any>) => {  // 有礼物, 但不会被触发
+live.on('SEND_GIFT', (message) => {  // 有礼物, 但不会被触发
     console.log(message)
 })
 
-live.on('msg', (message: Message<any>) => { // 只有弹幕能触发
+live.on('msg', (message) => { // 只有弹幕能触发
     console.log(message)
 })
 
 // 需要设置 `raw`
-live.on('message', (buffer: Uint8Array) => { // DANMU_MSG 和 SEND_GIFT 都会被触发
+live.on('message', (buffer) => { // DANMU_MSG 和 SEND_GIFT 都会被触发
     console.log(buffer)
 })
 ```
@@ -237,7 +148,7 @@ live.on('message', (buffer: Uint8Array) => { // DANMU_MSG 和 SEND_GIFT 都会�
 
 ## Credits
 
-https://github.com/simon300000/bilibili-live-ws
+Inspiration of the [https://github.com/simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
 
 ## 参考资料
 
