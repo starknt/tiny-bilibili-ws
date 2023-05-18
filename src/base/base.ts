@@ -19,13 +19,14 @@ export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
 
 ///
 
+// TODO: out of box type for bilibili event, and flexable extension event
 interface BilibiliLiveEvent {
-  // open: void
-  // msg: Message<any>
-  // live: void
-  // heartbeat: Message<any>
-  // close: void
-  // error: Event
+  open: void
+  msg: Message<any>
+  live: void
+  heartbeat: Message<any>
+  close: void
+  error: Event
 
   // builtin event
   DANMU_MSG: DANMU_MSG
