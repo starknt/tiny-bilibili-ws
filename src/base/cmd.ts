@@ -651,48 +651,48 @@ export interface ROOM_REAL_TIME_MESSAGE_UPDATE {
 
 export interface ROOM_SKIN_MSG {
   cmd: 'ROOM_SKIN_MSG'
-  'skin_id': number
-  'status': number
-  'end_time': number
-  'current_time': number
-  'only_local': boolean
-  'scatter': {
-    'min': number
-    'max': number
+  skin_id: number
+  status: number
+  end_time: number
+  current_time: number
+  only_local: boolean
+  scatter: {
+    min: number
+    max: number
   }
-  'skin_config': {
-    'android': {
-      '1': {
-        'zip': string
-        'md5': string
+  skin_config: {
+    android: {
+      number: {
+        zip: string
+        md5: string
       }
     }
-    'ios': {
-      '1': {
-        'zip': string
-        'md5': string
+    ios: {
+      number: {
+        zip: string
+        md5: string
       }
     }
-    'ipad': {
-      '1': {
-        'zip': string
-        'md5': string
+    ipad: {
+      number: {
+        zip: string
+        md5: string
       }
     }
-    'web': {
-      '1': {
-        'zip': string
-        'md5': string
-        'platform': string
-        'version': string
-        'headInfoBgPic': string
-        'giftControlBgPic': string
-        'rankListBgPic': string
-        'mainText': `#${string}`
-        'normalText': `#${string}`
-        'highlightContent': `#${string}`
-        'border': `#${string}`
-        'buttonText': `#${string}`
+    web: {
+      number: {
+        zip: string
+        md5: string
+        platform: string
+        version: string
+        headInfoBgPic: string
+        giftControlBgPic: string
+        rankListBgPic: string
+        mainText: `#${string}`
+        normalText: `#${string}`
+        highlightContent: `#${string}`
+        border: `#${string}`
+        buttonText: `#${string}`
       }
     }
   }
@@ -700,65 +700,65 @@ export interface ROOM_SKIN_MSG {
 
 export interface ROOM_SILENT_ON {
   cmd: 'ROOM_SILENT_ON'
-  'data': {
-    'type': string
-    'level': number
-    'second': number
+  data: {
+    type: string
+    level: number
+    second: number
   }
 }
 
 export interface ROOM_SILENT_OFF {
   cmd: 'ROOM_SILENT_OFF'
-  'data': {
-    'type': string
-    'level': number
-    'second': number
+  data: {
+    type: string
+    level: number
+    second: number
   }
 }
 
 export interface ROOM_BLOCK_MSG {
   cmd: 'ROOM_BLOCK_MSG'
-  'data': {
-    'dmscore': number
-    'operator': number
-    'uid': number
-    'uname': string
+  data: {
+    dmscore: number
+    operator: number
+    uid: number
+    uname: string
   }
-  'uid': string
-  'uname': string
+  uid: string
+  uname: string
 }
 
 export interface ROOM_ADMINS {
   cmd: 'ROOM_ADMINS'
-  'uids': number[]
+  uids: number[]
 }
 
 export interface room_admin_entrance {
   cmd: 'room_admin_entrance'
-  'dmscore': number
-  'level': number
-  'msg': string
-  'uid': number
+  dmscore: number
+  level: number
+  msg: string
+  uid: number
 }
 
 export interface ROOM_ADMIN_REVOKE {
   cmd: 'ROOM_ADMIN_REVOKE'
-  'msg': string
-  'uid': number
+  msg: string
+  uid: number
 }
 
 export interface ONLINE_RANK_V2 {
   cmd: 'ONLINE_RANK_V2'
-  'data': {
-    'list': ({
-      'uid': number
-      'face': string
-      'score': string
-      'uname': string
-      'rank': number
-      'guard_level': number
+  data: {
+    list: ({
+      uid: number
+      face: string
+      score: string
+      uname: string
+      rank: number
+      guard_level: number
     })[]
-    'rank_type': string
+    rank_type: string
   }
 }
 
