@@ -1049,24 +1049,49 @@ export interface POPULAR_RANK_CHANGED {
 
 export interface LIVE_INTERACTIVE_GAME {
   cmd: 'LIVE_INTERACTIVE_GAME'
-  'data': {
-    'type': number
-    'uid': number
-    'uname': string
-    'uface': string
-    'gift_id': number
-    'gift_name': string
-    'gift_num': number
-    'price': number
-    'paid': boolean
-    'msg': string
-    'fans_medal_level': number
-    'guard_level': number
-    'timestamp': number
-    'anchor_lottery': Nullable<any>
-    'pk_info': Nullable<any>
-    'anchor_info': Nullable<any>
-    'combo_info': Nullable<any>
+  data: {
+    type: number
+    uid: number
+    uname: string
+    uface: string
+    gift_id: number
+    gift_name: string
+    gift_num: number
+    price: number
+    paid: boolean
+    msg: string
+    fans_medal_level: number
+    guard_level: number
+    timestamp: number
+    anchor_lottery: Nullable<any>
+    pk_info: Nullable<any>
+    anchor_info: Nullable<any>
+    combo_info: Nullable<any>
+  }
+}
+
+export interface MULTI_VOICE_OPERATIN {
+  cmd: 'MULTI_VOICE_OPERATIN'
+  data: {
+    uid: number
+    total_price: number
+    ts: number
+  }
+}
+
+export interface MULTI_VOICE_APPLICATION_USER {
+  cmd: 'MULTI_VOICE_APPLICATION_USER'
+  data: {
+    count: number
+    uid: number
+    anchor_uid: number
+    operate_uid: number
+    want_position: number
+    event: number
+    toast: string
+    channel: string
+    roomId: number
+    role: number
   }
 }
 
@@ -1092,6 +1117,9 @@ interface _BuiltinEvent {
 
   LIKE_INFO_V3_CLICK: LIKE_INFO_V3_CLICK
   LIKE_INFO_V3_UPDATE: LIKE_INFO_V3_UPDATE
+
+  MULTI_VOICE_OPERATIN: MULTI_VOICE_OPERATIN
+  MULTI_VOICE_APPLICATION_USER: MULTI_VOICE_APPLICATION_USER
 
   // 弹幕
   DANMU_MSG: DANMU_MSG
