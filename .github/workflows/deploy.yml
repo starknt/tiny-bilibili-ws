@@ -24,10 +24,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: npm
-      - run: npm ci
       - name: Build
-        run: npm run docs:build
+        run: npx vitepress build docs
       - uses: actions/configure-pages@v2
       - uses: actions/upload-pages-artifact@v1
         with:
