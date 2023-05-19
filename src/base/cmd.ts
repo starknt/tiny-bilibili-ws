@@ -650,7 +650,7 @@ export interface ROOM_REAL_TIME_MESSAGE_UPDATE {
 }
 
 export interface ROOM_SKIN_MSG {
-  'cmd': 'ROOM_SKIN_MSG'
+  cmd: 'ROOM_SKIN_MSG'
   'skin_id': number
   'status': number
   'end_time': number
@@ -699,7 +699,7 @@ export interface ROOM_SKIN_MSG {
 }
 
 export interface ROOM_SILENT_ON {
-  'cmd': 'ROOM_SILENT_ON'
+  cmd: 'ROOM_SILENT_ON'
   'data': {
     'type': string
     'level': number
@@ -708,7 +708,7 @@ export interface ROOM_SILENT_ON {
 }
 
 export interface ROOM_SILENT_OFF {
-  'cmd': 'ROOM_SILENT_OFF'
+  cmd: 'ROOM_SILENT_OFF'
   'data': {
     'type': string
     'level': number
@@ -717,7 +717,7 @@ export interface ROOM_SILENT_OFF {
 }
 
 export interface ROOM_BLOCK_MSG {
-  'cmd': 'ROOM_BLOCK_MSG'
+  cmd: 'ROOM_BLOCK_MSG'
   'data': {
     'dmscore': number
     'operator': number
@@ -729,12 +729,12 @@ export interface ROOM_BLOCK_MSG {
 }
 
 export interface ROOM_ADMINS {
-  'cmd': 'ROOM_ADMINS'
+  cmd: 'ROOM_ADMINS'
   'uids': number[]
 }
 
 export interface room_admin_entrance {
-  'cmd': 'room_admin_entrance'
+  cmd: 'room_admin_entrance'
   'dmscore': number
   'level': number
   'msg': string
@@ -742,13 +742,13 @@ export interface room_admin_entrance {
 }
 
 export interface ROOM_ADMIN_REVOKE {
-  'cmd': 'ROOM_ADMIN_REVOKE'
+  cmd: 'ROOM_ADMIN_REVOKE'
   'msg': string
   'uid': number
 }
 
 export interface ONLINE_RANK_V2 {
-  'cmd': 'ONLINE_RANK_V2'
+  cmd: 'ONLINE_RANK_V2'
   'data': {
     'list': ({
       'uid': number
@@ -763,226 +763,287 @@ export interface ONLINE_RANK_V2 {
 }
 
 export interface ONLINE_RANK_TOP3 {
-  'cmd': 'ONLINE_RANK_TOP3'
-  'data': {
-    'dmscore': number
-    'list': ({
-      'msg': string
-      'rank': number
+  cmd: 'ONLINE_RANK_TOP3'
+  data: {
+    dmscore: number
+    list: ({
+      msg: string
+      rank: number
     })[]
   }
 }
 
 export interface HOT_RANK_SETTLEMENT {
-  'cmd': 'HOT_RANK_SETTLEMENT'
-  'data': {
-    'area_name': string
-    'cache_key': string
-    'dm_msg': string
-    'dmscore': number
-    'face': string
-    'icon': string
-    'rank': number
-    'timestamp': number
-    'uname': string
-    'url': string
+  cmd: 'HOT_RANK_SETTLEMENT'
+  data: {
+    area_name: string
+    cache_key: string
+    dm_msg: string
+    dmscore: number
+    face: string
+    icon: string
+    rank: number
+    timestamp: number
+    uname: string
+    url: string
   }
 }
 
 export interface HOT_RANK_SETTLEMENT_V2 {
-  'cmd': 'HOT_RANK_SETTLEMENT_V2'
-  'data': {
-    'rank': number
-    'uname': string
-    'face': string
-    'timestamp': number
-    'icon': string
-    'area_name': string
-    'url': string
-    'cache_key': string
-    'dm_msg': string
+  cmd: 'HOT_RANK_SETTLEMENT_V2'
+  data: {
+    rank: number
+    uname: string
+    face: string
+    timestamp: number
+    icon: string
+    area_name: string
+    url: string
+    cache_key: string
+    dm_msg: string
   }
 }
 
 export interface WIDGET_BANNER {
-  'cmd': 'WIDGET_BANNER'
-  'data': {
-    'timestamp': number
-    'widget_list': {
+  cmd: 'WIDGET_BANNER'
+  data: {
+    timestamp: number
+    widget_list: {
       number: {
-        'id': number
-        'title': string
-        'cover': string
-        'web_cover': string
-        'tip_text': string
-        'tip_text_color': '#F9F8F8'
-        'tip_bottom_color': '#F95E5E'
-        'jump_url': string
-        'url': string
-        'stay_time': number
-        'site': number
-        'platform_in': string[]
-        'type': number
-        'band_id': 100356
-        'sub_key': string
-        'sub_data': string
-        'is_add': boolean
+        id: number
+        title: string
+        cover: string
+        web_cover: string
+        tip_text: string
+        tip_text_color: `#${string}`
+        tip_bottom_color: `#${string}`
+        jump_url: string
+        url: string
+        stay_time: number
+        site: number
+        platform_in: string[]
+        type: number
+        band_id: 100356
+        sub_key: string
+        sub_data: string
+        is_add: boolean
       }
     }
   }
 }
 
 export interface WIDGET_WISH_LIST {
-  'cmd': 'WIDGET_WISH_LIST'
-  'data': {
-    'wish': ({
-      'type': number
-      'gift_id': number
-      'gift_name': string
-      'gift_img': string
-      'gift_price': number
-      'target_num': number
-      'current_num': number
+  cmd: 'WIDGET_WISH_LIST'
+  data: {
+    wish: ({
+      type: number
+      gift_id: number
+      gift_name: string
+      gift_img: string
+      gift_price: number
+      target_num: number
+      current_num: number
     })[]
-    'wish_status': number
-    'sid': number
-    'wish_status_info': ({
-      'wish_status_msg': string
-      'wish_status_img': string
-      'wish_status': number
+    wish_status: number
+    sid: number
+    wish_status_info: ({
+      wish_status_msg: string
+      wish_status_img: string
+      wish_status: number
     })[]
-    'wish_name': string
+    wish_name: string
   }
 }
 
 export interface ANCHOR_LOT_CHECKSTATUS {
-  'cmd': 'ANCHOR_LOT_CHECKSTATUS'
-  'data': {
-    'id': number
-    'reject_reason': string
-    'status': number
-    'uid': number
+  cmd: 'ANCHOR_LOT_CHECKSTATUS'
+  data: {
+    id: number
+    reject_reason: string
+    status: number
+    uid: number
   }
 }
 
 export interface ANCHOR_LOT_START {
-  'cmd': 'ANCHOR_LOT_START'
-  'data': {
-    'asset_icon': string
-    'award_image': string
-    'award_name': string
-    'award_num': number
-    'cur_gift_num': number
-    'current_time': number
-    'danmu': string
-    'gift_id': number
-    'gift_name': string
-    'gift_num': number
-    'gift_price': number
-    'goaway_time': number
-    'goods_id': number
-    'id': number
-    'is_broadcast': number
-    'join_type': number
-    'lot_status': number
-    'max_time': number
-    'require_text': string
-    'require_type': number
-    'require_value': number
-    'room_id': number
-    'send_gift_ensure': number
-    'show_panel': number
-    'start_dont_popup': number
-    'status': number
-    'time': number
-    'url': string
-    'web_url': string
+  cmd: 'ANCHOR_LOT_START'
+  data: {
+    asset_icon: string
+    award_image: string
+    award_name: string
+    award_num: number
+    cur_gift_num: number
+    current_time: number
+    danmu: string
+    gift_id: number
+    gift_name: string
+    gift_num: number
+    gift_price: number
+    goaway_time: number
+    goods_id: number
+    id: number
+    is_broadcast: number
+    join_type: number
+    lot_status: number
+    max_time: number
+    require_text: string
+    require_type: number
+    require_value: number
+    room_id: number
+    send_gift_ensure: number
+    show_panel: number
+    start_dont_popup: number
+    status: number
+    time: number
+    url: string
+    web_url: string
   }
 }
 
 export interface ANCHOR_LOT_END {
-  'cmd': 'ANCHOR_LOT_END'
-  'data': {
-    'id': number
+  cmd: 'ANCHOR_LOT_END'
+  data: {
+    id: number
   }
 }
 
 export interface ANCHOR_LOT_AWARD {
-  'cmd': 'ANCHOR_LOT_AWARD'
-  'data': {
-    'award_dont_popup': number
-    'award_image': string
-    'award_name': string
-    'award_num': number
-    'award_users': ({
-      'uid': number
-      'uname': string
-      'face': string
-      'level': number
-      'color': number
+  cmd: 'ANCHOR_LOT_AWARD'
+  data: {
+    award_dont_popup: number
+    award_image: string
+    award_name: string
+    award_num: number
+    award_users: ({
+      uid: number
+      uname: string
+      face: string
+      level: number
+      color: number
     })[]
-    'id': number
-    'lot_status': number
-    'url': string
-    'web_url': string
+    id: number
+    lot_status: number
+    url: string
+    web_url: string
   }
 }
 
 export interface VIDEO_CONNECTION_JOIN_START {
-  'cmd': 'VIDEO_CONNECTION_JOIN_START'
-  'data': {
-    'status': number
-    'invited_uid': number
-    'channel_id': string
-    'invited_uname': string
-    'invited_face': string
-    'start_at': number
-    'current_time': number
+  cmd: 'VIDEO_CONNECTION_JOIN_START'
+  data: {
+    status: number
+    invited_uid: number
+    channel_id: string
+    invited_uname: string
+    invited_face: string
+    start_at: number
+    current_time: number
   }
-  'roomid': number
+  roomid: number
 }
 
 export interface VIDEO_CONNECTION_MSG {
-  'cmd': 'VIDEO_CONNECTION_MSG'
-  'data': {
-    'channel_id': string
-    'current_time': number
-    'dmscore': number
-    'toast': string
+  cmd: 'VIDEO_CONNECTION_MSG'
+  data: {
+    channel_id: string
+    current_time: number
+    dmscore: number
+    toast: string
   }
 }
 
 export interface VIDEO_CONNECTION_JOIN_END {
-  'cmd': 'VIDEO_CONNECTION_JOIN_END'
-  'data': {
-    'channel_id': string
-    'start_at': number
-    'toast': string
-    'current_time': number
+  cmd: 'VIDEO_CONNECTION_JOIN_END'
+  data: {
+    channel_id: string
+    start_at: number
+    toast: string
+    current_time: number
   }
-  'roomid': number
+  roomid: number
 }
 
 export interface FULL_SCREEN_SPECIAL_EFFECT {
-  'cmd': 'FULL_SCREEN_SPECIAL_EFFECT'
-  'data': {
-    'type': number
-    'ids': number[]
-    'queue': number
-    'platform_in': number[]
+  cmd: 'FULL_SCREEN_SPECIAL_EFFECT'
+  data: {
+    type: number
+    ids: number[]
+    queue: number
+    platform_in: number[]
   }
 }
 
 export interface COMMON_NOTICE_DANMAKU {
-  'cmd': 'COMMON_NOTICE_DANMAKU'
-  'data': {
-    'content_segments': ({
-      'font_color': `#${string}`
-      'text': string
-      'type': number
+  cmd: 'COMMON_NOTICE_DANMAKU'
+  data: {
+    content_segments: ({
+      font_color: `#${string}`
+      text: string
+      type: number
     })[]
-    'dmscore': number
-    'terminals': number[]
+    dmscore: number
+    terminals: number[]
+  }
+}
+
+export interface LIKE_INFO_V3_UPDATE {
+  cmd: 'LIKE_INFO_V3_UPDATE'
+  data: {
+    click_count: number
+  }
+}
+
+export interface LIKE_INFO_V3_CLICK {
+  cmd: 'LIKE_INFO_V3_CLICK'
+  data: {
+    show_area: number
+    msg_type: number
+    like_icon: string
+    uid: number
+    like_text: string
+    uname: string
+    uname_color: string
+    identities: number[]
+    fans_medal: {
+      target_id: number
+      medal_level: number
+      medal_name: string
+      medal_color: number
+      medal_color_start: number
+      medal_color_end: number
+      medal_color_border: number
+      is_lighted: number
+      guard_level: number
+      special: string
+      icon_id: number
+      anchor_roomid: number
+      score: number
+    }
+    contribution_info: {
+      grade: number
+    }
+    dmscore: number
+  }
+}
+
+export interface HOT_ROOM_NOTIFY {
+  cmd: 'HOT_ROOM_NOTIFY'
+  data: {
+    threshold: number
+    ttl: number
+    exit_no_refresh: number
+    random_delay_req_v2: ({ path: string; delay: number })[ ]
+  }
+}
+
+export interface POPULAR_RANK_CHANGED {
+  cmd: 'POPULAR_RANK_CHANGED'
+  data: {
+    uid: number
+    rank: number
+    countdown: number
+    timestamp: number
+    cache_key: string
   }
 }
 
@@ -1004,6 +1065,9 @@ interface _BuiltinEvent {
   ROOM_ADMINS: ROOM_ADMINS
   room_admin_entrance: room_admin_entrance
   ROOM_ADMIN_REVOKE: ROOM_ADMIN_REVOKE
+
+  LIKE_INFO_V3_CLICK: LIKE_INFO_V3_CLICK
+  LIKE_INFO_V3_UPDATE: LIKE_INFO_V3_UPDATE
 
   // 弹幕
   DANMU_MSG: DANMU_MSG
@@ -1029,10 +1093,12 @@ interface _BuiltinEvent {
   GUARD_BUY: GUARD_BUY
   USER_TOAST_MSG: USER_TOAST_MSG
 
+  HOT_ROOM_NOTIFY: HOT_ROOM_NOTIFY
   HOT_RANK_CHANGED: HOT_RANK_CHANGED
   HOT_RANK_CHANGED_V2: HOT_RANK_CHANGED_V2
   HOT_RANK_SETTLEMENT: HOT_RANK_SETTLEMENT
   HOT_RANK_SETTLEMENT_V2: HOT_RANK_SETTLEMENT_V2
+  POPULAR_RANK_CHANGED: POPULAR_RANK_CHANGED
 
   // 石油榜
   ONLINE_RANK_COUNT: ONLINE_RANK_COUNT
@@ -1058,6 +1124,7 @@ interface _BuiltinEvent {
 
   INTERACT_WORD: INTERACT_WORD
   WATCHED_CHANGE: WATCHED_CHANGE
+
   WELCOME_GUARD: any
   WELCOME: any
 }
