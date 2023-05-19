@@ -1,5 +1,7 @@
 export { KeepLiveTCP, KeepLiveWS, getLongRoomId } from './node'
 export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize, deserialize } from './base/buffer'
+export { fromEvent, toMessageData } from './base/utils'
+export { EventEmitter, EventKey, Listener } from './base/eventemitter'
 export type { Protocol, ProtocolHeader } from './base/buffer'
 export type { WSOptions, TCPOptions, MessageMeta, Message, RoomResponse } from './base/types'
-export * from './base/cmd'
+export type * from './base/cmd'

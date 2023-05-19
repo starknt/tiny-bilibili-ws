@@ -1,4 +1,5 @@
 import type { EventEmitter } from './eventemitter'
+import type { Message } from './types'
 
 export function fromEvent<T>(emitter: EventEmitter<any>, event: string, timeout?: number) {
   return new Promise<T>((resolve, reject) => {
@@ -13,4 +14,8 @@ export function fromEvent<T>(emitter: EventEmitter<any>, event: string, timeout?
       })
     }
   })
+}
+
+export function toMessageData(message: Message<any>) {
+  return message.data
 }
