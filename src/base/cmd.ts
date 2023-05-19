@@ -859,7 +859,7 @@ export interface ANCHOR_LOT_CHECKSTATUS {
   cmd: 'ANCHOR_LOT_CHECKSTATUS'
   data: {
     id: number
-    reject_reason: string
+    reject_reason?: string
     status: number
     uid: number
   }
@@ -1095,6 +1095,156 @@ export interface MULTI_VOICE_APPLICATION_USER {
   }
 }
 
+export interface AREA_RANK_CHANGED {
+  cmd: 'AREA_RANK_CHANGED'
+  data: {
+    conf_id: number
+    rank_name: string
+    uid: number
+    rank: number
+    icon_url_blue: string
+    icon_url_pink: string
+    icon_url_grey: string
+    action_type: number
+    timestamp: number
+    msg_id: string
+    jump_url_link: string
+  }
+}
+
+export interface GOTO_BUY_FLOW {
+  cmd: 'GOTO_BUY_FLOW'
+  data: {
+    text: string
+  }
+}
+
+export interface GUARD_HONOR_THOUSAND {
+  cmd: 'GUARD_HONOR_THOUSAND'
+  data: {
+    add: number[]
+    del: number[]
+  }
+}
+
+export interface RECOMMEND_CARD_LIST_ITEM {
+  shopping_card_detail: {
+    goods_id: string
+    goods_name: string
+    goods_price: string
+    goods_max_price: string
+    sale_status: number
+    coupon_name: string
+    goods_icon: string
+    goods_status: number
+    source: number
+    h5_url: string
+    jump_link: string
+    schema_url: string
+    is_pre_sale: number
+    activity_info: Nullable<any>
+    pre_sale_info: Nullable<any>
+    early_bird_info: Nullable<any>
+    timestamp: number
+    coupon_discount_price: string
+    selling_point: string
+    hot_buy_num: number
+    gift_buy_info: Nullable<any>
+    is_exclusive: boolean
+    coupon_id: string
+    reward_info: Nullable<any>
+    goods_tag_list: Nullable<any>
+    virtual_extra_info: {
+      goods_type: number
+      web_container_type: number
+    }
+    price_info: {
+      normal: {
+        prefix_price: string
+        sale_price: string
+        suffix_price: string
+        strock_price: string
+        sale_start_time: number
+        sale_end_time: number
+        strock_show: number
+      }
+      activity: Nullable<any>
+    }
+    btn_info: {
+      card_btn_status: number
+      card_btn_title: string
+      card_btn_style: number
+      card_btn_jumpurl: string
+      card_btn_route_jump_url: string
+    }
+    goods_sort_id: number
+    coupon_info: Nullable<any>
+    active_info: Nullable<any>
+    jump_url: string
+  }
+  recommend_card_extra: Nullable<any>
+}
+
+export interface RECOMMEND_CARD {
+  cmd: 'RECOMMEND_CARD'
+  data: {
+    title_icon: string
+    recommend_list: RECOMMEND_CARD_LIST_ITEM[]
+    timestamp: number
+    update_list: any[]
+  }
+}
+
+export interface SYS_MSG {
+  'cmd': 'SYS_MSG'
+  msg: string
+  url: string
+}
+
+export interface SHOPPING_CART_SHOW {
+  cmd: 'SHOPPING_CART_SHOW'
+  data: { status: number }
+}
+
+export interface TRADING_SCORE {
+  cmd: 'TRADING_SCORE'
+  data: {
+    bubble_show_time: number
+    num: number
+    score_id: number
+    uid: number
+    update_time: number
+    update_type: number
+  }
+}
+
+export interface VOICE_JOIN_LIST {
+  cmd: 'VOICE_JOIN_LIST'
+  data: {
+    cmd: string
+    room_id: number
+    category: number
+    apply_count: number
+    red_point: number
+    refresh: number
+  }
+  room_id: number
+}
+
+export interface VOICE_JOIN_ROOM_COUNT_INFO {
+  cmd: 'VOICE_JOIN_ROOM_COUNT_INFO'
+  data: {
+    cmd: string
+    room_id: number
+    root_status: number
+    room_status: number
+    apply_count: number
+    notify_count: number
+    red_point: number
+  }
+  room_id: number
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
@@ -1143,6 +1293,7 @@ interface _BuiltinEvent {
 
   // 大航海
   GUARD_BUY: GUARD_BUY
+  GOTO_BUY_FLOW: GOTO_BUY_FLOW
   USER_TOAST_MSG: USER_TOAST_MSG
 
   HOT_ROOM_NOTIFY: HOT_ROOM_NOTIFY
@@ -1160,6 +1311,8 @@ interface _BuiltinEvent {
   WIDGET_BANNER: WIDGET_BANNER
   WIDGET_WISH_LIST: WIDGET_WISH_LIST
 
+  AREA_RANK_CHANGED: AREA_RANK_CHANGED
+
   ANCHOR_LOT_CHECKSTATUS: ANCHOR_LOT_CHECKSTATUS
   ANCHOR_LOT_START: ANCHOR_LOT_START
   ANCHOR_LOT_END: ANCHOR_LOT_END
@@ -1176,6 +1329,15 @@ interface _BuiltinEvent {
 
   INTERACT_WORD: INTERACT_WORD
   WATCHED_CHANGE: WATCHED_CHANGE
+
+  GUARD_HONOR_THOUSAND: GUARD_HONOR_THOUSAND
+  RECOMMEND_CARD: RECOMMEND_CARD
+
+  SHOPPING_CART_SHOW: SHOPPING_CART_SHOW
+  SYS_MSG: SYS_MSG
+  TRADING_SCORE: TRADING_SCORE
+  VOICE_JOIN_LIST: VOICE_JOIN_LIST
+  VOICE_JOIN_ROOM_COUNT_INFO: VOICE_JOIN_ROOM_COUNT_INFO
 
   WELCOME_GUARD: any
   WELCOME: any
