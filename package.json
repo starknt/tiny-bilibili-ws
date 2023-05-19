@@ -43,6 +43,10 @@
     "prepublishOnly": "pnpm run build",
     "release": "pnpm publish",
     "dev": "unbuild --stub",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "deploy:docs": "",
     "test": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -64,6 +68,7 @@
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
+    "vitepress": "^1.0.0-alpha.76",
     "vitest": "^0.31.1"
   }
 }
