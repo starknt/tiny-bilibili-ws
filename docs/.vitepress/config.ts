@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/tiny-bilibili-ws',
+  base: '/tiny-bilibili-ws/',
   title: 'Tiny Bilibili WS',
   description: 'Tiny Bilibili WebSocket Client Doc',
   themeConfig: {
