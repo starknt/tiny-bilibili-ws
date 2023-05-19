@@ -9,6 +9,8 @@ const referenceDirectory = path.resolve(process.cwd(), './reference')
 
 const { data } = await getLongRoomId(process.env.VITE_ROOM as any)
 
+console.error('当前监听的直播间: ', data.room_id)
+
 const tcp = new KeepLiveTCP(data.room_id)
 
 tcp.on('msg', (msg) => {
