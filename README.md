@@ -11,6 +11,10 @@
 - 开箱即用的 Typescript 类型提示
 - 轻量级的包体积
 
+## 文档
+
+阅读 [文档](https://starknt.github.io/tiny-bilibili-ws) 查看更多信息.
+
 ## 安装
 
 ```bash
