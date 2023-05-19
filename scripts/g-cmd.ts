@@ -9,7 +9,7 @@ const referenceDirectory = path.resolve(process.cwd(), './reference')
 
 const { data } = await getLongRoomId(process.env.VITE_ROOM as any)
 
-const tcp = new KeepLiveTCP(data.room_id, { stub: true })
+const tcp = new KeepLiveTCP(data.room_id)
 
 tcp.on('msg', (msg) => {
   if (!fs.existsSync(path.join(referenceDirectory, `${msg.data.cmd}.json5`))) {
@@ -19,6 +19,9 @@ tcp.on('msg', (msg) => {
     })
   }
 })
+
+// tcp.on('heartbeat', o => console.error('当前人气: ', o))
+// tcp.on('WATCHED_CHANGE', w => console.error(w.data.data.num, '人看过'))
 
 tcp.on('error', console.error)
 tcp.on('close', console.error)

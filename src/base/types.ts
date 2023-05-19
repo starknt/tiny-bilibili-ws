@@ -23,11 +23,13 @@ export type Nullable<T> = null | undefined | T
 export interface ISocket {
   write(data: Uint8Array): void
   end(): void
+  reconnect(): void
 }
 
 export interface IWebSocket {
   send(data: Uint8Array): void
   close(): void
+  reconnect(): void
 }
 
 type Options = PartialByKeys<WSOptions, keyof AuthOptions | keyof ConnectionOptions>
@@ -60,6 +62,7 @@ export const DEFAULT_WS_OPTIONS: Options = {
   raw: false,
   stub: true,
   ssl: true,
+  keepalive: true,
   // clientVer: '2.0.11',
   // platform: 'web',
   // protover: 2,
@@ -87,6 +90,11 @@ export interface BaseOptions {
    * @default true
    */
   stub?: boolean
+  /**
+   * 保持连接, 当发生错误和断开连接时自动重新连接
+   * @default true
+   */
+  keepalive?: boolean
 }
 
 export interface AuthOptions {

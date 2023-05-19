@@ -140,7 +140,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
 
           // @ts-expect-error heartbeat event allow
-          this.emit('heartbeat', packet)
+          this.emit('heartbeat', this.online)
 
           continue
         }
@@ -199,6 +199,12 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
     if (!this.live)
       return
+
+    if (this.options.keepalive) {
+      this.socket.reconnect()
+      return
+    }
+
     this.live = false
     clearTimeout(this.timeout)
 
