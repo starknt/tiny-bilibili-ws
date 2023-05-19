@@ -1,4 +1,4 @@
-import type { Message } from './types'
+import type { Message, Nullable } from './types'
 
 export interface DANMU_MSG {
   cmd: 'DANMU_MSG'
@@ -1047,11 +1047,35 @@ export interface POPULAR_RANK_CHANGED {
   }
 }
 
+export interface LIVE_INTERACTIVE_GAME {
+  cmd: 'LIVE_INTERACTIVE_GAME'
+  'data': {
+    'type': number
+    'uid': number
+    'uname': string
+    'uface': string
+    'gift_id': number
+    'gift_name': string
+    'gift_num': number
+    'price': number
+    'paid': boolean
+    'msg': string
+    'fans_medal_level': number
+    'guard_level': number
+    'timestamp': number
+    'anchor_lottery': Nullable<any>
+    'pk_info': Nullable<any>
+    'anchor_info': Nullable<any>
+    'combo_info': Nullable<any>
+  }
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
   WARNING: WARNING
   CUT_OFF: CUT_OFF
+  LIVE_INTERACTIVE_GAME: LIVE_INTERACTIVE_GAME
 
   CHANGE_ROOM_INFO: CHANGE_ROOM_INFO
   ROOM_CHANGE: ROOM_CHANGE

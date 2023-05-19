@@ -18,6 +18,8 @@ export type Merge<A, B> = {
         : never
 }
 
+export type Nullable<T> = null | undefined | T
+
 export interface ISocket {
   write(data: Uint8Array): void
   end(): void
