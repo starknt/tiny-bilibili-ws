@@ -1265,6 +1265,14 @@ export interface WIDGET_GIFT_STAR_PROCESS {
   }
 }
 
+export interface GIFT_STAR_PROCESS {
+  cmd: 'GIFT_STAR_PROCESS'
+  data: {
+    status: number
+    tip: string
+  }
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
@@ -1298,6 +1306,7 @@ interface _BuiltinEvent {
 
   // 礼物
   SEND_GIFT: SEND_GIFT
+  GIFT_STAR_PROCESS: GIFT_STAR_PROCESS
   COMBO_SEND: COMBO_SEND
   SPECIAL_GIFT: SPECIAL_GIFT
 
