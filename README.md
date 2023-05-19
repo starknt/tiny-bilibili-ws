@@ -53,7 +53,7 @@ const res = await getLongRoomId(650)
 const live = new KeepLiveTCP<{
     A_BILIBILI_CMD: Uint8Array
     B_BILIBILI_CMD: void
-    C_BILIBILI_CMD: [Message<any>, number]
+    C_BILIBILI_CMD: [Message<any>, number] /* 当前仅支持十个参数 */
 }>(res.data.room_id)
 
 live.on('A_BILIBILI_CMD', (arg1 /* Uint8Array */) => {
@@ -70,21 +70,18 @@ live.on('C_BILIBILI_CMD', (arg1 /* Message<any> */, arg2 /* number */) => {
 
 live.emit('A_BILIBILI_CMD', serialize(WS_OP.MESSAGE, "test"))
 live.emit('B_BILIBILI_CMD')
-live.emit('C_BILIBILI_CMD', { meta: { op: WS_OP.MESSAGE, ver: WS_BODY_PROTOCOL_VERSION.NORMAL,
-  packetLength: 17,
-  headerLength: 16,
-  sequence: 1 }, data: 1 }, 2)
+live.emit('C_BILIBILI_CMD', { meta: { op: WS_OP.MESSAGE, ver: WS_BODY_PROTOCOL_VERSION.NORMAL, packetLength: 17, headerLength: 16, sequence: 1 }, data: 1 }, 2)
 ```
 
-## API
+## API 文档
 
 - live.on('live')
 
 连接成功后触发
 
-- live.on('heartbeat', online /** 人气值 */ => {})
+- live.on('heartbeat', online => {})
 
-收到服务器心跳包，会在30秒之后自动发送心跳包。
+收到服务器心跳包，会在30秒之后自动发送心跳包, `online` 是当前直播间的人气值。
 
 - live.on('msg')
 
