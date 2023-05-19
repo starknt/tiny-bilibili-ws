@@ -43,13 +43,13 @@
     "prepublishOnly": "pnpm run build",
     "release": "pnpm publish",
     "dev": "unbuild --stub",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "deploy:docs": "",
+    "docs:dev": "pnpm -C docs run docs:dev",
+    "docs:build": "pnpm -C docs run docs:build",
+    "docs:preview": "pnpm -C docs run docs:preview",
     "test": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "size": "pnpm run build && tsx --tsconfig=./tsconfig.tsx.json ./scripts/size.ts",
     "g": "tsx --tsconfig=./tsconfig.tsx.json ./scripts/g-cmd.ts"
   },
   "dependencies": {
@@ -61,14 +61,15 @@
     "@types/node": "^20.2.1",
     "@types/pako": "^2.0.0",
     "@types/ws": "^8.5.4",
+    "brotli-size": "^4.0.0",
     "bumpp": "^9.1.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.40.0",
     "pnpm": "^8.5.1",
+    "terser": "^5.17.4",
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
-    "vitepress": "^1.0.0-alpha.76",
     "vitest": "^0.31.1"
   }
 }

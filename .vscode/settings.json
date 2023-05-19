@@ -4,7 +4,8 @@
     "source.fixAll.eslint": true
   },
   "cSpell.words": [
-    "Bilibili"
+    "Bilibili",
+    "vitepress"
   ],
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///e%3A/workspace/i/other-workspace/tiny-bilibili-ws/.github/workflows/deploy.yml"

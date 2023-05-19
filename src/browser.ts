@@ -45,5 +45,5 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
 }
 
 export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize, deserialize } from './base/buffer'
-export { EventEmitter, EventKey, Listener } from './base/eventemitter'
+export { EventEmitter } from './base/eventemitter'
 export { fromEvent, toMessageData } from './base/utils'

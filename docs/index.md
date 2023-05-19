@@ -3,23 +3,29 @@
 layout: home
 
 hero:
-  name: "My Awesome Project"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  name: "Tiny Bilibili Ws"
+  text: "Bilibili Live WebSocket/TCP API"
+  tagline: Tiny · Flexible · Type-Safy
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Getting Started
+      link: /guide/
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: API Reference
+      link: /api/
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: <span class="i-carbon-wind-gusts"></span>
+    title: Lightweight
+    details: "Browser friendly: node ~1kb, browser ~60kb"
+  - icon: <span class="i-carbon:hybrid-networking-alt"></span>
+    title: Browser and Node
+    details: "Support both browser and NodeJS runtime"
+  - icon: <span class="i-mingcute:safety-certificate-line"></span>
+    title: Type-safy
+    details: Based on typescript type support
+  - icon: <span class="i-solar:box-outline"></span>
+    title: Flexible type
+    details: Out of the box type hit, and flexible type extendsion
 ---
 

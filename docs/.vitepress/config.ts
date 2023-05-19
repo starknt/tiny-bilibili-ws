@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { version } from '../../package.json'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,7 +9,21 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
+      {
+        text: 'Guide',
+        items: [
+          { text: 'Getting Started', link: '/guide' },
+        ],
+      },
+      {
+        text: `v${version}`,
+        items: [
+          {
+            text: 'Release Notes',
+            link: 'https://github.com/starknt/tiny-bilibili-ws/releases',
+          },
+        ],
+      },
     ],
 
     // sidebar: [
@@ -24,5 +39,10 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/starknt/tiny-bilibili-ws' },
     ],
+
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2022-PRESENT starknt',
+    },
   },
 })
