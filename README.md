@@ -51,20 +51,26 @@ import { KeepLiveTCP, KeepLiveWS, getLongRoomId, serialize, deserialize, WS_OP, 
 const res = await getLongRoomId(650)
 
 const live = new KeepLiveTCP<{
-    A_BILIBILI_CMD: [Uint8Array, number]
-    B_BILIBILI_CMD: [Message<any>, number]
+    A_BILIBILI_CMD: Uint8Array
+    B_BILIBILI_CMD: void
+    C_BILIBILI_CMD: [Message<any>, number]
 }>(res.data.room_id)
 
-live.on('A_BILIBILI_CMD', (arg1 /* Uint8Array */, arg2 /* number */) => {
-    console.log(arg1, arg2) // Uint8Array[] 1
+live.on('A_BILIBILI_CMD', (arg1 /* Uint8Array */) => {
+    console.log(arg1) // Uint8Array[]
 })
 
-live.on('B_BILIBILI_CMD', (arg1 /* Message<any> */, arg2 /* number */) => {
+live.on('B_BILIBILI_CMD', () => {
+    console.log('B_BILIBILI_CMD') // B_BILIBILI_CMD
+})
+
+live.on('C_BILIBILI_CMD', (arg1 /* Message<any> */, arg2 /* number */) => {
     console.log(arg1, arg2) // Message 2
 })
 
-live.emit('A_BILIBILI_CMD', serialize(WS_OP.MESSAGE, "test"), 1)
-live.emit('B_BILIBILI_CMD', { meta: { op: WS_OP.MESSAGE, ver: WS_BODY_PROTOCOL_VERSION.NORMAL,
+live.emit('A_BILIBILI_CMD', serialize(WS_OP.MESSAGE, "test"))
+live.emit('B_BILIBILI_CMD')
+live.emit('C_BILIBILI_CMD', { meta: { op: WS_OP.MESSAGE, ver: WS_BODY_PROTOCOL_VERSION.NORMAL,
   packetLength: 17,
   headerLength: 16,
   sequence: 1 }, data: 1 }, 2)
