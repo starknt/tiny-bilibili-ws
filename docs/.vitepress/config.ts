@@ -16,6 +16,10 @@ export default defineConfig({
         ],
       },
       {
+        text: 'API Reference',
+        link: '/api',
+      },
+      {
         text: `v${version}`,
         items: [
           {
