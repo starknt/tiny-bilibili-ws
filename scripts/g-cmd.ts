@@ -19,3 +19,6 @@ tcp.on('msg', (msg) => {
     })
   }
 })
+
+tcp.on('error', console.error)
+tcp.on('close', console.error)

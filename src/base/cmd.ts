@@ -1245,6 +1245,26 @@ export interface VOICE_JOIN_ROOM_COUNT_INFO {
   room_id: number
 }
 
+export interface WIDGET_GIFT_STAR_PROCESS {
+  cmd: 'WIDGET_GIFT_STAR_PROCESS'
+  data: {
+    start_date: number
+    process_list: ({
+      gift_id: number
+      gift_img: string
+      gift_name: string
+      completed_num: number
+      target_num: number
+    })[]
+    finished: boolean
+    ddl_timestamp: number
+    version: number
+    reward_gift: number
+    reward_gift_img: string
+    reward_gift_name: string
+  }
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
@@ -1329,6 +1349,7 @@ interface _BuiltinEvent {
 
   INTERACT_WORD: INTERACT_WORD
   WATCHED_CHANGE: WATCHED_CHANGE
+  WIDGET_GIFT_STAR_PROCESS: WIDGET_GIFT_STAR_PROCESS
 
   GUARD_HONOR_THOUSAND: GUARD_HONOR_THOUSAND
   RECOMMEND_CARD: RECOMMEND_CARD
