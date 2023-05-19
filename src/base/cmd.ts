@@ -20,15 +20,15 @@ export interface DANMU_MSG {
       string,
       string,
       {
-        'mode': number
-        'show_player_type': number
+        mode: number
+        show_player_type: number
         /** json */
-        'extra': string
+        extra: string
       },
       {
-        'activity_identity': string
-        'activity_source': number
-        'not_show': number
+        activity_identity: string
+        activity_source: number
+        not_show: number
       },
     ],
     string,
