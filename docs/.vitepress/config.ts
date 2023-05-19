@@ -5,7 +5,7 @@ import { version } from '../../package.json'
 export default defineConfig({
   base: '/tiny-bilibili-ws/',
   title: 'Tiny Bilibili WS',
-  description: 'Tiny Bilibili WebSocket Client Doc',
+  description: 'Tiny Bilibili WebSocket/TCP Client',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

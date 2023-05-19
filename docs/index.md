@@ -1,9 +1,10 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+title: "Tiny-Bilibili-WS: Bilibili Live WebSocket/TCP API"
 
 hero:
-  name: "Tiny Bilibili Ws"
+  name: "Tiny Bilibili WS"
   text: "Bilibili Live WebSocket/TCP API"
   tagline: Tiny · Flexible · Type-Safy
   actions:
