@@ -6,8 +6,8 @@ import { KeepLiveTCP, getLongRoomId } from 'tiny-bilibili-ws'
 dotenv.config({ path: path.resolve(process.cwd(), './playground/.env.local') })
 
 const referenceDirectory = path.resolve(process.cwd(), './reference')
-
-const { data } = await getLongRoomId(Number(process.argv.slice(1)[0]) ?? process.env.VITE_ROOM as any)
+const room = Number.isNaN(Number(process.argv.slice(1)[0])) ? process.env.VITE_ROOM as any : process.argv.slice(1)[0]
+const { data } = await getLongRoomId(room as any)
 
 const tcp = new KeepLiveTCP(data.room_id)
 
