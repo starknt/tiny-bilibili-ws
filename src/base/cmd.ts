@@ -1273,12 +1273,23 @@ export interface GIFT_STAR_PROCESS {
   }
 }
 
+export interface LIVE_MULTI_VIEW_CHANGE {
+  cmd: 'LIVE_MULTI_VIEW_CHANGE'
+  data: {
+    scatter: {
+      max: number
+      min: number
+    }
+  }
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
   WARNING: WARNING
   CUT_OFF: CUT_OFF
   LIVE_INTERACTIVE_GAME: LIVE_INTERACTIVE_GAME
+  LIVE_MULTI_VIEW_CHANGE: LIVE_MULTI_VIEW_CHANGE
 
   CHANGE_ROOM_INFO: CHANGE_ROOM_INFO
   ROOM_CHANGE: ROOM_CHANGE
