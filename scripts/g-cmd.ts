@@ -6,7 +6,8 @@ import { KeepLiveTCP, getLongRoomId } from 'tiny-bilibili-ws'
 dotenv.config({ path: path.resolve(process.cwd(), './playground/.env.local') })
 
 const referenceDirectory = path.resolve(process.cwd(), './reference')
-const room = Number.isNaN(Number(process.argv.slice(1)[0])) ? process.env.VITE_ROOM as any : process.argv.slice(1)[0]
+const argv = process.argv.slice(2)[0]
+const room = Number.isNaN(Number(argv)) ? process.env.VITE_ROOM as any : argv
 const { data } = await getLongRoomId(room as any)
 
 const tcp = new KeepLiveTCP(data.room_id)
@@ -30,4 +31,6 @@ tcp.on('DANMU_MSG', ({ data }) => {
   console.log(data)
 })
 tcp.on('error', console.error)
-tcp.on('close', console.error)
+tcp.on('close', () => {
+  console.log('退出直播间')
+})
