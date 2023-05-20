@@ -35,6 +35,9 @@ importers:
       eslint:
         specifier: ^8.40.0
         version: 8.40.0
+      eventemitter3:
+        specifier: 5.0.1
+        version: 5.0.1
       pnpm:
         specifier: ^8.5.1
         version: 8.5.1
@@ -3109,6 +3112,10 @@ packages:
   /esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
     dev: true
 
   /execa@5.1.1:
