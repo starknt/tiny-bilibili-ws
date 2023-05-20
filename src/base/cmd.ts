@@ -1283,6 +1283,23 @@ export interface LIVE_MULTI_VIEW_CHANGE {
   }
 }
 
+export interface DANMU_AGGREGATION {
+  cmd: 'DANMU_AGGREGATION'
+  'data': {
+    'activity_identity': string
+    'activity_source': number
+    'aggregation_cycle': number
+    'aggregation_icon': string
+    'aggregation_num': number
+    'broadcast_msg_type': number
+    'dmscore': number
+    'msg': string
+    'show_rows': number
+    'show_time': number
+    'timestamp': number
+  }
+}
+
 interface _BuiltinEvent {
   LIVE: LIVE
   PREPARING: PREPARING
@@ -1314,6 +1331,7 @@ interface _BuiltinEvent {
   DANMU_MSG: DANMU_MSG
   NOTICE_MSG: NOTICE_MSG
   COMMON_NOTICE_DANMAKU: COMMON_NOTICE_DANMAKU
+  DANMU_AGGREGATION: DANMU_AGGREGATION
 
   // 礼物
   SEND_GIFT: SEND_GIFT
