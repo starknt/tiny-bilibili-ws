@@ -16,7 +16,7 @@
 ## 安装
 
 ```bash
-    npm install --save-dev tiny-bilibili-ws
+    npm install tiny-bilibili-ws
 ```
 
 ## 简单使用
@@ -155,7 +155,7 @@ live.on('message', (buffer) => { // DANMU_MSG 和 SEND_GIFT 都会被触发
 
 ## Credits
 
-Inspiration of the [https://github.com/simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
+Inspired by [https://github.com/simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)
 
 ## 参考资料
 
