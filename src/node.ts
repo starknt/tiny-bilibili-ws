@@ -34,7 +34,7 @@ export interface TCPEvents {
   // [CLOSE_EVENT]: void
 
   error: Error
-  close: void
+  close: boolean
   message: Buffer
 }
 
@@ -78,7 +78,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
     // @ts-expect-error emit event
     socket.on('ready', () => this.emit(OPEN_EVENT))
     // @ts-expect-error emit event
-    socket.on('close', () => this.emit(CLOSE_EVENT))
+    socket.on('close', hadError => this.emit(CLOSE_EVENT, hadError))
     // @ts-expect-error emit event
     socket.on('error', e => this.emit(ERROR_EVENT, e))
     socket.on('data', (buffer) => {

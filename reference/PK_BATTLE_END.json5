@@ -1,0 +1,1 @@
+{ "cmd": "PK_BATTLE_END", "pk_id": "324795709", "pk_status": 401, "timestamp": 1684595895, "data": { "battle_type": 1, "timer": 10, "init_info": { "room_id": 958617, "votes": 372, "winner_type": -1, "best_uname": "塔达林坚果" }, "match_info": { "room_id": 27487691, "votes": 684, "winner_type": 2, "best_uname": "carriebobo" } } }

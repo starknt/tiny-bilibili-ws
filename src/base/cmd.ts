@@ -118,9 +118,9 @@ export interface SEND_GIFT {
     eventScore: number
     eventNum: number
     smalltv_msg: []
-    specialGift: null
+    specialGift: Nullable<any>
     notice_msg: string[]
-    capsule: null
+    capsule: Nullable<any>
     addFollow: number
     effect_block: number
     coin_type: string
@@ -823,7 +823,7 @@ export interface WIDGET_BANNER {
         site: number
         platform_in: string[]
         type: number
-        band_id: 100356
+        band_id: number
         sub_key: string
         sub_data: string
         is_add: boolean
@@ -1196,7 +1196,7 @@ export interface RECOMMEND_CARD {
 }
 
 export interface SYS_MSG {
-  'cmd': 'SYS_MSG'
+  cmd: 'SYS_MSG'
   msg: string
   url: string
 }
@@ -1285,22 +1285,409 @@ export interface LIVE_MULTI_VIEW_CHANGE {
 
 export interface DANMU_AGGREGATION {
   cmd: 'DANMU_AGGREGATION'
-  'data': {
-    'activity_identity': string
-    'activity_source': number
-    'aggregation_cycle': number
-    'aggregation_icon': string
-    'aggregation_num': number
-    'broadcast_msg_type': number
-    'dmscore': number
-    'msg': string
-    'show_rows': number
-    'show_time': number
-    'timestamp': number
+  data: {
+    activity_identity: string
+    activity_source: number
+    aggregation_cycle: number
+    aggregation_icon: string
+    aggregation_num: number
+    broadcast_msg_type: number
+    dmscore: number
+    msg: string
+    show_rows: number
+    show_time: number
+    timestamp: number
   }
 }
 
+export interface PK_BATTLE_START {
+  cmd: 'PK_BATTLE_START'
+  pk_id: number
+  pk_status: number
+  timestamp: number
+  data: {
+    battle_type: number
+    final_hit_votes: number
+    pk_start_time: number
+    pk_frozen_time: number
+    pk_end_time: number
+    pk_votes_type: number
+    pk_votes_add: number
+    pk_votes_name: string
+    star_light_msg: string
+    pk_countdown: number
+    final_conf: {
+      switch: number
+      start_time: number
+      end_time: number
+    }
+    init_info: {
+      room_id: number
+      date_streak: number
+    }
+    match_info: {
+      room_id: number
+      date_streak: number
+    }
+  }
+  roomid: string
+}
+
+export interface PK_BATTLE_END {
+  cmd: 'PK_BATTLE_END'
+  pk_id: string
+  pk_status: number
+  timestamp: number
+  data: {
+    battle_type: number
+    timer: number
+    init_info: {
+      room_id: number
+      votes: number
+      winner_type: number
+      best_uname: string
+    }
+    match_info: {
+      room_id: number
+      votes: number
+      winner_type: number
+      best_uname: string
+    }
+  }
+}
+
+export interface PK_BATTLE_FINAL_PROCESS {
+  cmd: 'PK_BATTLE_FINAL_PROCESS'
+  data: {
+    battle_type: number
+    pk_frozen_time: number
+  }
+  pk_id: number
+  pk_status: number
+  timestamp: number
+}
+
+export interface PK_BATTLE_PRE_NEW {
+  cmd: 'PK_BATTLE_PRE_NEW'
+  pk_status: number
+  pk_id: number
+  timestamp: number
+  data: {
+    battle_type: number
+    match_type: number
+    uname: string
+    face: string
+    uid: number
+    room_id: number
+    season_id: number
+    pre_timer: number
+    pk_votes_name: string
+    end_win_task: Nullable<any>
+  }
+  roomid: number
+}
+
+export interface PK_BATTLE_PRE {
+  cmd: 'PK_BATTLE_PRE'
+  pk_status: number
+  pk_id: number
+  timestamp: number
+  data: {
+    battle_type: number
+    match_type: number
+    uname: string
+    face: string
+    uid: number
+    room_id: number
+    season_id: number
+    pre_timer: number
+    pk_votes_name: string
+    end_win_task: Nullable<any>
+  }
+  roomid: number
+}
+
+export interface PK_BATTLE_PROCESS_NEW {
+  cmd: 'PK_BATTLE_PROCESS_NEW'
+  data: {
+    battle_type: number
+    init_info: {
+      room_id: number
+      votes: number
+      best_uname: string
+      vision_desc: number
+    }
+    match_info: {
+      room_id: number
+      votes: number
+      best_uname: string
+      vision_desc: number
+    }
+  }
+  pk_id: number
+  pk_status: number
+  timestamp: number
+}
+
+export interface PK_BATTLE_PROCESS {
+  cmd: 'PK_BATTLE_PROCESS'
+  data: {
+    battle_type: number
+    init_info: {
+      room_id: number
+      votes: number
+      best_uname: string
+      vision_desc: number
+    }
+    match_info: {
+      room_id: number
+      votes: number
+      best_uname: string
+      vision_desc: number
+    }
+  }
+  pk_id: number
+  pk_status: number
+  timestamp: number
+}
+
+export interface PK_BATTLE_SETTLE_USER {
+  cmd: 'PK_BATTLE_SETTLE_USER'
+  pk_id: number
+  pk_status: number
+  settle_status: number
+  timestamp: number
+  data: {
+    pk_id: string
+    season_id: number
+    settle_status: number
+    result_type: number
+    battle_type: number
+    result_info: {
+      total_score: number
+      result_type_score: number
+      pk_votes: number
+      pk_votes_name: string
+      pk_crit_score: number
+      pk_resist_crit_score: number
+      pk_extra_score_slot: string
+      pk_extra_value: number
+      pk_extra_score: number
+      pk_task_score: number
+      pk_times_score: number
+      pk_done_times: number
+      pk_total_times: number
+      win_count: number
+      win_final_hit: number
+      winner_count_score: number
+      task_score_list: any[]
+    }
+    winner: {
+      room_id: number
+      uid: number
+      uname: string
+      face: string
+      face_frame: string
+      exp: {
+        color: number
+        user_level: number
+        master_level: {
+          color: number
+          level: number
+        }
+      }
+      best_user: {
+        uid: number
+        uname: string
+        face: string
+        pk_votes: number
+        pk_votes_name: string
+        exp: {
+          color: number
+          level: number
+        }
+        face_frame: string
+        badge: {
+          url: string
+          desc: string
+          position: number
+        }
+        award_info: Nullable<any>
+        award_info_list: any[]
+        end_win_award_info_list: {
+          list: any[]
+        }
+      }
+    }
+    my_info: {
+      room_id: number
+      uid: number
+      uname: string
+      face: string
+      face_frame: string
+      exp: {
+        color: number
+        user_level: number
+        master_level: {
+          color: number
+          level: number
+        }
+      }
+      best_user: {
+        uid: number
+        uname: string
+        face: string
+        pk_votes: number
+        pk_votes_name: string
+        exp: {
+          color: number
+          level: number
+        }
+        face_frame: string
+        badge: {
+          url: string
+          desc: string
+          position: number
+        }
+        award_info: Nullable<any>
+        award_info_list: any[]
+        end_win_award_info_list: {
+          list: any[]
+        }
+      }
+    }
+    level_info: {
+      first_rank_name: string
+      second_rank_num: number
+      first_rank_img: string
+      second_rank_icon: string
+    }
+  }
+}
+
+export interface PK_BATTLE_SETTLE_V2 {
+  cmd: 'PK_BATTLE_SETTLE_V2'
+  pk_id: number
+  pk_status: number
+  settle_status: number
+  timestamp: number
+  data: {
+    pk_id: string
+    season_id: number
+    pk_type: number
+    result_type: number
+    result_info: {
+      total_score: number
+      pk_votes: number
+      pk_votes_name: string
+      pk_extra_value: number
+    }
+    level_info: {
+      uid: string
+      first_rank_name: string
+      second_rank_num: number
+      first_rank_img: string
+      second_rank_icon: string
+    }
+    assist_list: ({
+      id: number
+      uname: string
+      face: string
+      score: number
+    })[]
+    star_light_msg: string
+  }
+}
+
+export interface PK_BATTLE_SETTLE {
+  cmd: 'PK_BATTLE_SETTLE'
+  pk_id: number
+  pk_status: number
+  settle_status: number
+  timestamp: number
+  data: {
+    battle_type: number
+    result_type: number
+    star_light_msg: string
+  }
+  roomid: string
+}
+
+export interface PK_BATTLE_START_NEW {
+  cmd: 'PK_BATTLE_START_NEW'
+  pk_id: number
+  pk_status: number
+  timestamp: number
+  data: {
+    battle_type: number
+    final_hit_votes: number
+    pk_start_time: number
+    pk_frozen_time: number
+    pk_end_time: number
+    pk_votes_type: number
+    pk_votes_add: number
+    pk_votes_name: string
+    star_light_msg: string
+    pk_countdown: number
+    final_conf: {
+      switch: number
+      start_time: number
+      end_time: number
+    }
+    init_info: {
+      room_id: number
+      date_streak: number
+    }
+    match_info: {
+      room_id: number
+      date_streak: number
+    }
+  }
+  roomid: string
+}
+
+export interface VOICE_JOIN_STATUS {
+  cmd: 'VOICE_JOIN_STATUS'
+  data: {
+    room_id: number
+    status: number
+    channel: string
+    channel_type: string
+    uid: number
+    user_name: string
+    head_pic: string
+    guard: number
+    start_at: number
+    current_time: number
+    web_share_link: string
+  }
+  room_id: number
+}
+
+export interface VOICE_JOIN_SWITCH {
+  cmd: 'VOICE_JOIN_SWITCH'
+  data: {
+    room_id: number
+    room_status: number
+    root_status: number
+  }
+  roomid: number
+}
+
 interface _BuiltinEvent {
+  // PK
+  PK_BATTLE_START: PK_BATTLE_START
+  PK_BATTLE_FINAL_PROCESS: PK_BATTLE_FINAL_PROCESS
+  PK_BATTLE_PRE_NEW: PK_BATTLE_PRE_NEW
+  PK_BATTLE_PRE: PK_BATTLE_PRE
+  PK_BATTLE_PROCESS: PK_BATTLE_PROCESS
+  PK_BATTLE_PROCESS_NEW: PK_BATTLE_PROCESS_NEW
+  PK_BATTLE_SETTLE_USER: PK_BATTLE_SETTLE_USER
+  PK_BATTLE_SETTLE_V2: PK_BATTLE_SETTLE_V2
+  PK_BATTLE_SETTLE: PK_BATTLE_SETTLE
+  PK_BATTLE_START_NEW: PK_BATTLE_START_NEW
+  PK_BATTLE_END: PK_BATTLE_END
+
   LIVE: LIVE
   PREPARING: PREPARING
   WARNING: WARNING
@@ -1395,6 +1782,9 @@ interface _BuiltinEvent {
   SHOPPING_CART_SHOW: SHOPPING_CART_SHOW
   SYS_MSG: SYS_MSG
   TRADING_SCORE: TRADING_SCORE
+
+  VOICE_JOIN_STATUS: VOICE_JOIN_STATUS
+  VOICE_JOIN_SWITCH: VOICE_JOIN_SWITCH
   VOICE_JOIN_LIST: VOICE_JOIN_LIST
   VOICE_JOIN_ROOM_COUNT_INFO: VOICE_JOIN_ROOM_COUNT_INFO
 

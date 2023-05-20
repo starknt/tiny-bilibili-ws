@@ -1,0 +1,1 @@
+{ "cmd": "PK_BATTLE_PROCESS", "data": { "battle_type": 1, "init_info": { "room_id": 958617, "votes": 372, "best_uname": "塔达林坚果", "vision_desc": 1 }, "match_info": { "room_id": 27487691, "votes": 25, "best_uname": "_阿栾", "vision_desc": -1 } }, "pk_id": 324795709, "pk_status": 201, "timestamp": 1684595825 }
