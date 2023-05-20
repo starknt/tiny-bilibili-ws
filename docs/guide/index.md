@@ -79,7 +79,7 @@ import { KeepLiveTCP, KeepLiveWS, getLongRoomId, serialize, deserialize, WS_OP, 
 
 // 扩展内置的 BILIBILI CMD 类型
 
-const res = await getLongRoomId(650)
+const res = await getLongRoomId(652581)
 
 const live = new KeepLiveTCP<{
     A_BILIBILI_CMD: Uint8Array
