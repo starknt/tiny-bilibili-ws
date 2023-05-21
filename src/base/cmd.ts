@@ -1674,8 +1674,79 @@ export interface VOICE_JOIN_SWITCH {
   roomid: number
 }
 
+export interface ACTIVITY_BANNER_CHANGE_V2 {
+  cmd: 'ACTIVITY_BANNER_CHANGE_V2'
+  data: {
+    timestamp: number
+    list: ({
+      id: number
+      position: string
+      type: number
+      activity_title: string
+      cover: string
+      jump_url: string
+      is_close: number
+      action: string
+      platform_info: ({
+        platform: string
+        condition: number
+        build: number
+      })[]
+      ext_data: string
+    })[]
+  }
+}
+
+export interface ACTIVITY_BANNER_CHANGE {
+  cmd: 'ACTIVITY_BANNER_CHANGE'
+  data: {
+    list: ({
+      id: number
+      timestamp: number
+      position: string
+      activity_title: string
+      cover: string
+      is_close: number
+      action: string
+    })[]
+  }
+}
+
+export interface DM_INTERACTION {
+  cmd: 'DM_INTERACTION'
+  data: {
+    id: number
+    status: number
+    type: number
+    /** JSON string */
+    data: string
+  }
+}
+
+export interface PLAY_TAG {
+  cmd: 'PLAY_TAG'
+  data: {
+    tag_id: number
+    pic: string
+    timestamp: number
+    type: string
+  }
+}
+
+export interface RANK_REM {
+  cmd: 'RANK_REM'
+  data: {
+    name: string
+    room_id: number
+    ruid: number
+    time: number
+    uid: number
+  }
+}
+
 interface _BuiltinEvent {
   // PK
+  PLAY_TAG: PLAY_TAG
   PK_BATTLE_START: PK_BATTLE_START
   PK_BATTLE_FINAL_PROCESS: PK_BATTLE_FINAL_PROCESS
   PK_BATTLE_PRE_NEW: PK_BATTLE_PRE_NEW
@@ -1687,6 +1758,9 @@ interface _BuiltinEvent {
   PK_BATTLE_SETTLE: PK_BATTLE_SETTLE
   PK_BATTLE_START_NEW: PK_BATTLE_START_NEW
   PK_BATTLE_END: PK_BATTLE_END
+
+  ACTIVITY_BANNER_CHANGE: ACTIVITY_BANNER_CHANGE
+  ACTIVITY_BANNER_CHANGE_V2: ACTIVITY_BANNER_CHANGE_V2
 
   LIVE: LIVE
   PREPARING: PREPARING
@@ -1719,6 +1793,7 @@ interface _BuiltinEvent {
   NOTICE_MSG: NOTICE_MSG
   COMMON_NOTICE_DANMAKU: COMMON_NOTICE_DANMAKU
   DANMU_AGGREGATION: DANMU_AGGREGATION
+  DM_INTERACTION: DM_INTERACTION
 
   // 礼物
   SEND_GIFT: SEND_GIFT
@@ -1746,6 +1821,7 @@ interface _BuiltinEvent {
   HOT_RANK_CHANGED_V2: HOT_RANK_CHANGED_V2
   HOT_RANK_SETTLEMENT: HOT_RANK_SETTLEMENT
   HOT_RANK_SETTLEMENT_V2: HOT_RANK_SETTLEMENT_V2
+  RANK_REM: RANK_REM
   POPULAR_RANK_CHANGED: POPULAR_RANK_CHANGED
 
   // 石油榜
