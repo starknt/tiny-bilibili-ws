@@ -1744,6 +1744,49 @@ export interface RANK_REM {
   }
 }
 
+export interface DANMU_TAG_CHANGE {
+  cmd: 'DANMU_TAG_CHANGE'
+  data: {
+    room_id: number
+    dm_tag: number
+    dm_mode: number[]
+    platform: number[]
+    /** JSON String */
+    extra: string
+    /** JSON String */
+    dm_chronos_extra: string
+    dm_chronos_screen_type: number
+    dm_setting_switch: number
+    material_conf: ({
+      dm_mode: number
+      activity_type: number
+      main_state_dm_color: string
+      objective_state_dm_color: string
+      /** JSON String */
+      web_material: string
+      activity_test_material: string
+      customized_material: number
+      material_mode: ({
+        app_key: string
+        chronos_apply: number
+        mobi_material: {
+          mobi_pool: string
+          mobi_module: string
+          mobi_module_file: string
+          mobi_module_file_name: string
+          mobi_module_version: number
+        }
+      })[]
+    })[]
+    chronos_mode: {
+      mobi_pool: string
+      mobi_module: string
+      mobi_module_file: string
+      mobi_module_file_name: string
+    }
+  }
+}
+
 interface _BuiltinEvent {
   // PK
   PLAY_TAG: PLAY_TAG
@@ -1791,6 +1834,7 @@ interface _BuiltinEvent {
   // 弹幕
   DANMU_MSG: DANMU_MSG
   NOTICE_MSG: NOTICE_MSG
+  DANMU_TAG_CHANGE: DANMU_TAG_CHANGE
   COMMON_NOTICE_DANMAKU: COMMON_NOTICE_DANMAKU
   DANMU_AGGREGATION: DANMU_AGGREGATION
   DM_INTERACTION: DM_INTERACTION
