@@ -3,7 +3,7 @@ import { EventEmitter } from './eventemitter'
 
 describe('EventEmitter', () => {
   test('Basic test case', () => {
-    const emitter = new EventEmitter()
+    const emitter = new EventEmitter<{ close: boolean; t1: void }>()
     let emitHit = 0
 
     emitter.on('t1', () => {

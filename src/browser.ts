@@ -34,6 +34,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
           this.ws.close()
         },
         reconnect: () => {
+          this.ws?.close()
           this.ws = null!
           const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
           socket.binaryType = 'arraybuffer'

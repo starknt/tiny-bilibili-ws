@@ -165,9 +165,6 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
     this.on(CLOSE_EVENT, (e) => {
       // @ts-expect-error close event
       this.emit('close', e)
-
-      if (this.options.keepalive)
-        this.socket.reconnect()
     })
   }
 

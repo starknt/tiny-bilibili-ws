@@ -58,6 +58,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
           this.tcpSocket.write(data)
         },
         reconnect: () => {
+          this.tcpSocket?.end()
           this.tcpSocket = null!
           const socket = resolvedOptions.url ? connect(resolvedOptions.url) : connect(NODE_SOCKET_PORT, SOCKET_HOST)
           this.tcpSocket = socket
@@ -136,6 +137,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
           this.ws.close()
         },
         reconnect: () => {
+          this.ws?.close()
           this.ws = null!
           const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
           this.ws = socket

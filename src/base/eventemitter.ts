@@ -15,7 +15,8 @@ export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K
                         : (...args: any[]) => void | Promise<void>
     : V extends Nil
       ? () => void | Promise<void>
-      : (arg: V) => void | Promise<void>
+      : V extends boolean ? (arg: boolean) => void | Promise<void>
+        : (arg: V) => void | Promise<void>
 
 export class EventEmitter<E extends Record<EventKey, any>> {
   private readonly eventListeners: Map<keyof E, Listener<E, any>[]> = new Map()

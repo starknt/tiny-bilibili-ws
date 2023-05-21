@@ -33,10 +33,10 @@ tcp.on('msg', (msg) => {
 
 // tcp.on('heartbeat', o => console.error('当前人气: ', o))
 // tcp.on('WATCHED_CHANGE', ({ data }) => console.error(data.data.num, '人看过直播'))
-// tcp.on('DANMU_MSG', ({ data }) => {
-//   console.log(data)
-// })
+tcp.on('DANMU_MSG', ({ data }) => {
+  console.log(data)
+})
 tcp.on('error', console.error)
-tcp.on('close', () => {
-  console.log('退出直播间')
+tcp.on('close', (e) => {
+  console.log('退出直播间', e)
 })
