@@ -52,9 +52,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
       socket: {
-        end: () => {
-          this.tcpSocket.end()
-        },
+        type: 'tcp',
         write: (data) => {
           this.tcpSocket.write(data)
         },
@@ -65,7 +63,11 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
           this.tcpSocket = socket
           this._bindEvent(socket)
         },
+        end: () => {
+          this.tcpSocket.end()
+        },
       } as ISocket,
+      timeout: 30 * 1000, // 30s
       zlib: inflates,
       room: roomId,
     }
@@ -126,7 +128,9 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
 
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
+      timeout: 30 * 1000, // 30s
       socket: {
+        type: 'websocket',
         send: (data) => {
           this.ws.send(data, (err) => {
             if (err)

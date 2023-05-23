@@ -28,6 +28,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
       socket: {
+        type: 'websocket',
         send: (data) => {
           this.ws.send(data)
         },
@@ -37,12 +38,13 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
         reconnect: () => {
           this.ws?.close()
           this.ws = null!
-          const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+          const socket = new WebSocket(resolvedOptions.url ?? options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
           socket.binaryType = 'arraybuffer'
           this.ws = socket
           this._bindEvent(socket)
         },
       } as IWebSocket,
+      timeout: 30 * 1000, // 30s
       room: roomId,
       zlib: inflates,
     }

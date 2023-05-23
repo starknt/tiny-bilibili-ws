@@ -34,6 +34,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
   private socket: ISocket | IWebSocket
   private timeout: any
+  private readonly HEARTBEAT_TIME = 30 * 1000
   private zlib: IZlib
   private live = false
   private firstMessage: LiveHelloMessage
@@ -137,7 +138,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           this.online = packet.data
           clearTimeout(this.timeout)
 
-          this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30)
+          this.timeout = setTimeout(() => this.heartbeat(), this.HEARTBEAT_TIME)
 
           // @ts-expect-error heartbeat event allow
           this.emit('heartbeat', this.online)
@@ -165,6 +166,15 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
     this.on(CLOSE_EVENT, (e) => {
       // @ts-expect-error close event
       this.emit('close', e)
+
+      if (this.options.keepalive) {
+        this.closed = true
+        this.online = 0
+        this.live = false
+        clearTimeout(this.timeout)
+        // console.log('try reconnect to ', this.roomId)
+        this.socket.reconnect()
+      }
     })
   }
 
@@ -196,7 +206,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
   close() {
     // @ts-expect-error close event
-    this.emit('close')
+    this.emit('close', this.socket.type === 'tcp' ? false : { code: 0, reason: 'close', wasClean: true })
 
     if (!this.live)
       return

@@ -21,12 +21,14 @@ export type Merge<A, B> = {
 export type Nullable<T> = null | undefined | T
 
 export interface ISocket {
+  type: 'tcp'
   write(data: Uint8Array): void
   end(): void
   reconnect(): void
 }
 
 export interface IWebSocket {
+  type: 'websocket'
   send(data: Uint8Array): void
   close(): void
   reconnect(): void
@@ -71,6 +73,7 @@ export const DEFAULT_WS_OPTIONS: Options = {
 }
 
 export interface BaseLiveClientOptions extends Options {
+  timeout: number
   socket: ISocket | IWebSocket
   room: number
   zlib: IZlib
