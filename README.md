@@ -15,8 +15,22 @@
 
 ## 安装
 
+### Npm
+
 ```bash
-    npm install tiny-bilibili-ws
+npm install --save tiny-bilibili-ws
+```
+
+### Yarn
+
+```bash
+yarn add tiny-bilibili-ws
+```
+
+### Pnpm
+
+```bash
+pnpm install tiny-bilibili-ws
 ```
 
 ## 简单使用
