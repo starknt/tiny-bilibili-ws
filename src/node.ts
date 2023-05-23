@@ -9,6 +9,7 @@ import { inflates } from './node/inflate'
 import type { BaseLiveClientOptions, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
+import { parser } from './base/buffer'
 
 export function getLongRoomId(room: number): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
@@ -164,4 +165,8 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
     // @ts-expect-error emit event
     socket.addEventListener('close', e => this.emit(CLOSE_EVENT, e))
   }
+}
+
+export function deserialize(buffer: Buffer) {
+  return parser(buffer, inflates)
 }

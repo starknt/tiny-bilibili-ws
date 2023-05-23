@@ -1,6 +1,7 @@
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import type { BaseLiveClientOptions, IWebSocket, Merge, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
+import { parser } from './base/buffer'
 import { inflates } from './browserlib/inflate'
 import type { EventKey } from './base/eventemitter'
 
@@ -63,6 +64,9 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
   }
 }
 
-export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize, deserialize } from './base/buffer'
+export function deserialize(buffer: Uint8Array) {
+  return parser(buffer, inflates)
+}
+export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize } from './base/buffer'
 export { EventEmitter } from './base/eventemitter'
 export { fromEvent, toMessageData } from './base/utils'
