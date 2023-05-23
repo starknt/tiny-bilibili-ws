@@ -67,7 +67,6 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
           this.tcpSocket.end()
         },
       } as ISocket,
-      timeout: 30 * 1000, // 30s
       zlib: inflates,
       room: roomId,
     }
@@ -128,7 +127,6 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
 
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
-      timeout: 30 * 1000, // 30s
       socket: {
         type: 'websocket',
         send: (data) => {

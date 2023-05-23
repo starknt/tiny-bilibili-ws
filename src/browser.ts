@@ -44,7 +44,6 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
           this._bindEvent(socket)
         },
       } as IWebSocket,
-      timeout: 30 * 1000, // 30s
       room: roomId,
       zlib: inflates,
     }
