@@ -40,3 +40,10 @@ tcp.on('error', console.error)
 tcp.on('close', (e) => {
   console.log('退出直播间', e)
 })
+
+tcp.runWhenConnected(() => {
+  setTimeout(() => {
+    console.log('try close')
+    tcp.close()
+  }, 5000)
+})

@@ -24,6 +24,7 @@ interface BilibiliLiveEvent extends BuiltinEvent {
   msg: Message<any>
   live: void
   heartbeat: number
+  reconnect: void
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {
@@ -32,6 +33,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   online = 0
   closed = true
 
+  private close_func_called = false
   private socket: ISocket | IWebSocket
   private timeout: any
   private readonly HEARTBEAT_TIME = this.options.heartbeatTime ?? 30 * 1000
@@ -168,7 +170,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       // @ts-expect-error close event
       this.emit('close', e)
 
-      if (this.options.keepalive) {
+      if (this.options.keepalive && !this.close_func_called) {
         const timer = setTimeout(() => {
           clearTimeout(timer)
           this.closed = true
@@ -176,8 +178,17 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           this.live = false
           clearTimeout(this.timeout)
           // console.log('try reconnect to ', this.roomId)
+          // @ts-expect-error emit reconnect event
+          this.emit('reconnect')
           this.socket.reconnect()
         }, this.RECONNECT_TIME)
+      }
+      else {
+        this.closed = true
+        this.online = 0
+        this.live = false
+        this.close_func_called = false
+        clearTimeout(this.timeout)
       }
     })
   }
@@ -209,19 +220,30 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   }
 
   close() {
-    // @ts-expect-error close event
-    this.emit('close', this.socket.type === 'tcp' ? false : { code: 0, reason: 'close', wasClean: true })
-
+    // issue: https://github.com/ddiu8081/blive-message-listener/issues/24
+    // this.emit('close', this.socket.type === 'tcp' ? false : { code: 0, reason: 'close', wasClean: true })
     if (!this.live)
-      return
+      return false
 
-    this.live = false
+    this.close_func_called = true
+
     clearTimeout(this.timeout)
 
     if ('end' in this.socket)
       this.socket.end()
     else
       this.socket.close()
+    return true
+  }
+
+  reconnect() {
     this.closed = true
+    this.online = 0
+    this.live = false
+    clearTimeout(this.timeout)
+    this.close_func_called = false
+    // @ts-expect-error emit reconnect event
+    this.emit('reconnect')
+    this.socket.reconnect()
   }
 }
