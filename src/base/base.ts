@@ -34,7 +34,8 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
   private socket: ISocket | IWebSocket
   private timeout: any
-  private readonly HEARTBEAT_TIME = 30 * 1000
+  private readonly HEARTBEAT_TIME = this.options.heartbeatTime ?? 30 * 1000
+  private readonly RECONNECT_TIME = this.options.reconnectTime ?? 5 * 1000
   private zlib: IZlib
   private live = false
   private firstMessage: LiveHelloMessage
@@ -168,12 +169,15 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       this.emit('close', e)
 
       if (this.options.keepalive) {
-        this.closed = true
-        this.online = 0
-        this.live = false
-        clearTimeout(this.timeout)
-        // console.log('try reconnect to ', this.roomId)
-        this.socket.reconnect()
+        const timer = setTimeout(() => {
+          clearTimeout(timer)
+          this.closed = true
+          this.online = 0
+          this.live = false
+          clearTimeout(this.timeout)
+          // console.log('try reconnect to ', this.roomId)
+          this.socket.reconnect()
+        }, this.RECONNECT_TIME)
       }
     })
   }

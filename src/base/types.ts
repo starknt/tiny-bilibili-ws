@@ -65,6 +65,8 @@ export const DEFAULT_WS_OPTIONS: Options = {
   stub: true,
   ssl: true,
   keepalive: true,
+  reconnectTime: 5 * 1000,
+  heartbeatTime: 30 * 1000,
   // clientVer: '2.0.11',
   // platform: 'web',
   // protover: 2,
@@ -73,7 +75,6 @@ export const DEFAULT_WS_OPTIONS: Options = {
 }
 
 export interface BaseLiveClientOptions extends Options {
-  timeout: number
   socket: ISocket | IWebSocket
   room: number
   zlib: IZlib
@@ -98,6 +99,16 @@ export interface BaseOptions {
    * @default true
    */
   keepalive?: boolean
+  /**
+   * 重新连接到服务器的时间间隔
+   * @default 5000
+   */
+  reconnectTime?: number
+  /**
+   * 心跳时间
+   * @default 300000
+   */
+  heartbeatTime?: number
 }
 
 export interface AuthOptions {
