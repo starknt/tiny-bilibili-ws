@@ -36,8 +36,8 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   private close_func_called = false
   private socket: ISocket | IWebSocket
   private timeout: any
-  private readonly HEARTBEAT_TIME = this.options.heartbeatTime ?? 30 * 1000
-  private readonly RECONNECT_TIME = this.options.reconnectTime ?? 5 * 1000
+  private readonly HEARTBEAT_TIME: number
+  private readonly RECONNECT_TIME: number
   private zlib: IZlib
   private live = false
   private firstMessage: LiveHelloMessage
@@ -55,6 +55,9 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       throw new Error(`roomId ${room} must be Number not NaN`)
 
     super()
+
+    this.HEARTBEAT_TIME = options.heartbeatTime ?? 30 * 1000
+    this.RECONNECT_TIME = options.reconnectTime ?? 5 * 1000
 
     this.firstMessage = {
       roomid: room,
