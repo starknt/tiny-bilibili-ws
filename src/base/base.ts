@@ -24,7 +24,7 @@ interface BilibiliLiveEvent extends BuiltinEvent {
   msg: Message<any>
   live: void
   heartbeat: number
-  reconnect: void
+  reconnect: boolean
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {
@@ -174,6 +174,9 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       this.emit('close', e)
 
       if (this.options.keepalive && !this.close_func_called) {
+        // @ts-expect-error emit reconnect event
+        this.emit('reconnect', true) // Warning:  reconnect to bilibili server
+
         const timer = setTimeout(() => {
           clearTimeout(timer)
           this.closed = true
@@ -181,8 +184,6 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           this.live = false
           clearTimeout(this.timeout)
           // console.log('try reconnect to ', this.roomId)
-          // @ts-expect-error emit reconnect event
-          this.emit('reconnect')
           this.socket.reconnect()
         }, this.RECONNECT_TIME)
       }
@@ -246,7 +247,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
     clearTimeout(this.timeout)
     this.close_func_called = false
     // @ts-expect-error emit reconnect event
-    this.emit('reconnect')
+    this.emit('reconnect', false)
     this.socket.reconnect()
   }
 }
