@@ -70,15 +70,15 @@ export interface DANMU_MSG {
     ],
     number,
     number,
-    any,
+    NonNullable<any>,
     {
       ts: number
       ct: string
     },
     0,
     0,
-    any,
-    any,
+    NonNullable<any>,
+    NonNullable<any>,
     number,
     number,
   ]

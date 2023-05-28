@@ -25,6 +25,8 @@ interface BilibiliLiveEvent extends BuiltinEvent {
   live: void
   heartbeat: number
   reconnect: boolean
+
+  'deserialize:error': Error
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {
@@ -47,7 +49,6 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   constructor(readonly options: BaseLiveClientOptions) {
     let room = 0
     if (typeof options.room === 'string')
-    // @ts-expect-error transform string
       room = +(options.room.trim())
     else
       room = options.room
@@ -72,7 +73,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       this.firstMessage.key = options.key
 
     this.socket = options.socket
-    this.roomId = options.room
+    this.roomId = room
     this.zlib = options.zlib
 
     this.bindEvent()
@@ -119,6 +120,13 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
         this.emit('message', buffer)
 
       const packs = await deserialize(buffer, this.zlib)
+        .catch((err) => {
+          if (Error instanceof err)
+          // @ts-expect-error emit error
+            this.emit('deserialize:error', err)
+
+          return [] as Array<Message<any>>
+        })
 
       for (const packet of packs) {
         if (packet.meta.op === WS_OP.MESSAGE) {

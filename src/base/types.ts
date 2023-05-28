@@ -76,7 +76,7 @@ export const DEFAULT_WS_OPTIONS: Options = {
 
 export interface BaseLiveClientOptions extends Options {
   socket: ISocket | IWebSocket
-  room: number
+  room: number | string
   zlib: IZlib
 }
 
@@ -88,9 +88,7 @@ export interface BaseOptions {
   raw?: boolean
   /**
    * 是否获取全部信息
-   * ```typescript
-   *  如果关闭 stub, live.on('msg'), 将不生效
-   * ```
+   *  如果关闭 stub, 监听 `msg` 消息将不生效
    * @default true
    */
   stub?: boolean

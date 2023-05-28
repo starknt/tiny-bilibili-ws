@@ -63,7 +63,7 @@ export interface Protocol {
 
 /// utils
 
-const textDecoder = new TextDecoder()
+const textDecoder = new TextDecoder('utf-8')
 const textEncoder = new TextEncoder()
 
 const readInt = function (buffer: Uint8Array, offset: number, len: number) {
