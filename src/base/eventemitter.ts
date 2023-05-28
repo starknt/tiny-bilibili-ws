@@ -61,7 +61,10 @@ export class EventEmitter<E extends Record<EventKey, any>> {
   }
 
   emit<N extends keyof E>(eventName: N, ...args: Parameters<Listener<E, N>>) {
-    for (const callback of (this.eventListeners.get(eventName) ?? [])) {
+    if (!this.eventListeners.has(eventName))
+      return this
+
+    for (const callback of this.eventListeners.get(eventName)!) {
       // @ts-expect-error rest parameter allow
       callback(...args)
         ?.then(() => { /* ignore void */ })

@@ -123,7 +123,7 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       for (const packet of packs) {
         if (packet.meta.op === WS_OP.MESSAGE) {
           const cmd: string = packet.data?.cmd || (packet.data?.msg && packet.data?.msg?.cmd)
-          if (this.skipMessage.length > 0 && !this.skipMessage.includes(cmd))
+          if (this.skipMessage.length > 0 && this.skipMessage.includes(cmd))
             continue
 
           if (this.options.stub)
