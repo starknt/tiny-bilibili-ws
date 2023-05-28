@@ -120,12 +120,12 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
         this.emit('message', buffer)
 
       const packs = await deserialize(buffer, this.zlib)
-        .catch((err) => {
-          if (Error instanceof err)
+        .catch<Array<Message<any>>>((err) => {
+          if (err instanceof Error)
           // @ts-expect-error emit error
             this.emit('deserialize:error', err)
 
-          return [] as Array<Message<any>>
+          return []
         })
 
       for (const packet of packs) {
