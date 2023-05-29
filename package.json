@@ -51,7 +51,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "size": "pnpm run build && tsx --tsconfig=./tsconfig.tsx.json ./scripts/size.ts",
-    "g": "tsx --tsconfig=./tsconfig.tsx.json ./scripts/g-cmd.ts"
+    "g": "tsx --tsconfig=./tsconfig.tsx.json ./scripts/g-cmd.ts",
+    "test:memory:leak": "node --inspect ./scripts/m-test.mjs"
   },
   "dependencies": {
     "pako": "^2.1.0",
