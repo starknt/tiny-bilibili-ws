@@ -51,6 +51,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
     super(liveOptions)
 
     this.ws = socket
+    this._bindEvent(socket)
   }
 
   private _bindEvent(socket: WebSocket) {

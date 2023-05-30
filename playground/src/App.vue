@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 import { onMounted } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
 
-onMounted(async () => {
+onMounted(() => {
   const live = new KeepLiveWS(import.meta.env.VITE_ROOM)
+  console.log(live)
+
+  live.runWhenConnected(() => {
+    console.log(`正在监听 ${import.meta.env.VITE_ROOM}`)
+  })
 
   live.on('WELCOME_GUARD', (message) => { // 有弹幕会被触发
     console.log(message)
@@ -23,15 +27,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo">
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo">
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  1
 </template>
 
 <style scoped>
