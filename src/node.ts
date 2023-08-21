@@ -4,7 +4,7 @@ import https from 'node:https'
 import { Buffer } from 'node:buffer'
 import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, SOCKET_HOSTS, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
 import type { BaseLiveClientOptions, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
@@ -47,7 +47,9 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
   constructor(roomId: number, options: TCPOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
-    const socket = resolvedOptions.url ? connect(resolvedOptions.url) : connect(NODE_SOCKET_PORT, SOCKET_HOST)
+    const socket = resolvedOptions.url
+      ? connect(resolvedOptions.url)
+      : connect(resolvedOptions.port ?? NODE_SOCKET_PORT, resolvedOptions.host ?? SOCKET_HOST)
 
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
@@ -59,7 +61,9 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClie
         reconnect: () => {
           this.tcpSocket?.end()
           this.tcpSocket = null!
-          const socket = resolvedOptions.url ? connect(resolvedOptions.url) : connect(NODE_SOCKET_PORT, SOCKET_HOST)
+          const socket = resolvedOptions.url
+            ? connect(resolvedOptions.url)
+            : connect(resolvedOptions.port ?? NODE_SOCKET_PORT, resolvedOptions.host ?? SOCKET_HOST)
           this.tcpSocket = socket
           this._bindEvent(socket)
         },
@@ -122,8 +126,17 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
+    const ssl = !!resolvedOptions.ssl
+    const url = resolvedOptions.url
+      ?? (
+        ssl
+          ? WEBSOCKET_SSL_URL(resolvedOptions.host ?? SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
+          : WEBSOCKET_URL(SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
+      )
 
-    const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+    console.log({ url, resolvedOptions })
+
+    const socket = new WebSocket(url)
 
     const liveOptions: BaseLiveClientOptions = {
       ...resolvedOptions,
@@ -139,10 +152,10 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
         close: () => {
           this.ws.close()
         },
-        reconnect: () => {
+        reconnect: (_url?: string) => {
           this.ws?.close()
           this.ws = null!
-          const socket = new WebSocket(options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+          const socket = new WebSocket(_url ?? url)
           this.ws = socket
           this._bindEvent(socket)
         },

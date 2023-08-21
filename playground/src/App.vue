@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+
+const danmu = ref<any[]>([])
 
 onMounted(() => {
+  fetch(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
+    .then(w => w.json())
+    .then((data) => {
+      console.log(data)
+    })
+
   const live = new KeepLiveWS(import.meta.env.VITE_ROOM)
-  console.log(live)
 
   live.runWhenConnected(() => {
     console.log(`正在监听 ${import.meta.env.VITE_ROOM}`)
@@ -22,12 +29,16 @@ onMounted(() => {
     console.log(message)
   })
 
-  live.on('DANMU_MSG', m => console.log(m))
+  live.on('DANMU_MSG', (m) => {
+    danmu.value.push(m)
+  })
 })
 </script>
 
 <template>
-  1
+  <div v-for="m in danmu" :key="m">
+    {{ JSON.stringify(m.data) }}
+  </div>
 </template>
 
 <style scoped>

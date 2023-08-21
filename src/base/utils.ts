@@ -19,3 +19,7 @@ export function fromEvent<T>(emitter: EventEmitter<any>, event: string, timeout?
 export function toMessageData(message: Message<any>) {
   return message.data
 }
+
+export function normalizeWebsocketPath(path: string) {
+  return path[0] === '/' ? path : `/${path}`
+}

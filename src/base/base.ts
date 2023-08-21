@@ -1,21 +1,30 @@
 import { WS_OP, deserialize, serialize } from './buffer'
 import type { BuiltinEvent } from './cmd'
-import { fromEvent } from './utils'
-import type { BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
+import { fromEvent, normalizeWebsocketPath } from './utils'
+import type { BILIBILI_HOST, BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
 import { EventEmitter } from './eventemitter'
 import type { EventKey } from './eventemitter'
 
 /// const
+export enum SOCKET_HOSTS {
+  DEFAULT = 'hw-gz-live-comet-02.chat.bilibili.com',
+  HOST_TX = 'tx-bj-live-comet-02.chat.bilibili.com',
+  HOST_HW = 'hw-gz-live-comet-02.chat.bilibili.com',
+  OLD = 'broadcastlv.chat.bilibili.com',
+}
 
 export const MESSAGE_EVENT = '__message__'
 export const OPEN_EVENT = '__open__'
 export const ERROR_EVENT = '__error__'
 export const CLOSE_EVENT = '__close__'
 
-export const SOCKET_HOST = 'broadcastlv.chat.bilibili.com'
+export const SOCKET_HOST = SOCKET_HOSTS.DEFAULT
 export const NODE_SOCKET_PORT = 2243
-export const WEBSOCKET_SSL_URL = `wss://${SOCKET_HOST}/sub`
-export const WEBSOCKET_URL = `ws://${SOCKET_HOST}:2244/sub`
+export const WEBSOCKET_PORT = 2244
+export const WEBSOCKET_SSL_PORT = 443
+export const WEBSOCKET_PATH = 'sub'
+export const WEBSOCKET_SSL_URL = (host: BILIBILI_HOST = SOCKET_HOST, port = WEBSOCKET_SSL_PORT, path?: string) => `wss://${host}${port === 443 ? '' : `:${port}`}${normalizeWebsocketPath(path ?? WEBSOCKET_PATH)}`
+export const WEBSOCKET_URL = (host: BILIBILI_HOST = SOCKET_HOST, port = WEBSOCKET_PORT, path?: string) => `ws://${host}:${port}${normalizeWebsocketPath(path ?? WEBSOCKET_PATH)}`
 
 ///
 

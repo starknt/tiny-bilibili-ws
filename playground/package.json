@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "dev:node": "esno ./node/test.ts"
+    "dev:node": "tsx ./node/test.ts"
   },
   "dependencies": {
     "tiny-bilibili-ws": "workspace:*",

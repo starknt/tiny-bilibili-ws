@@ -1,4 +1,4 @@
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, OPEN_EVENT, SOCKET_HOSTS, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import type { BaseLiveClientOptions, IWebSocket, Merge, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import { parser } from './base/buffer'
@@ -21,7 +21,13 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
-    const url = resolvedOptions.url ?? options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL
+    const ssl = !!resolvedOptions.ssl
+    const url = resolvedOptions.url
+      ?? (
+        ssl
+          ? WEBSOCKET_SSL_URL(resolvedOptions.host ?? SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
+          : WEBSOCKET_URL(SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
+      )
     const socket = new WebSocket(url)
     socket.binaryType = 'arraybuffer'
 
@@ -35,10 +41,10 @@ export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClien
         close: () => {
           this.ws.close()
         },
-        reconnect: () => {
+        reconnect: (_url?: string) => {
           this.ws?.close()
           this.ws = null!
-          const socket = new WebSocket(resolvedOptions.url ?? options.ssl ? WEBSOCKET_SSL_URL : WEBSOCKET_URL)
+          const socket = new WebSocket(_url ?? url)
           socket.binaryType = 'arraybuffer'
           this.ws = socket
           this._bindEvent(socket)

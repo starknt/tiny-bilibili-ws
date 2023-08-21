@@ -1,5 +1,7 @@
 import type { ProtocolHeader } from './buffer'
 
+export type BILIBILI_HOST = `${string}.chat.bilibili.com`
+
 // @ts-expect-error PartialByKeys pk
 export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Partial<Pick<O, UU>>> =
   PO & {
@@ -68,10 +70,10 @@ export const DEFAULT_WS_OPTIONS: Options = {
   reconnectTime: 5 * 1000,
   heartbeatTime: 30 * 1000,
   // clientVer: '2.0.11',
-  // platform: 'web',
-  // protover: 2,
+  platform: 'web',
+  protover: 3,
   // uid: 0,
-  // type: 2,
+  type: 2,
 }
 
 export interface BaseLiveClientOptions extends Options {
@@ -116,6 +118,9 @@ export interface AuthOptions {
 
 export interface ConnectionOptions {
   url?: string
+  host?: BILIBILI_HOST
+  port?: number
+  path?: string
 }
 
 export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
