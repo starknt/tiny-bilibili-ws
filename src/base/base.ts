@@ -71,11 +71,12 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
     this.firstMessage = {
       roomid: room,
-      clientver: options.clientVer,
       protover: options.protover,
       uid: options.uid,
       platform: options.platform,
       type: options.type,
+      key: options.key,
+      buvid: options.buvid,
     }
 
     if (options.key)
