@@ -125,23 +125,24 @@ export interface ConnectionOptions {
 
 export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   ssl?: boolean
-  clientVer?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
-  platform?: 'web'
+  platform?: 'web' | string
   protover?: 1 | 2 | 3
   uid?: number
   type?: number
+  key?: string
+  buvid?: string
 }
 
 export interface TCPOptions extends WSOptions {}
 
 export interface LiveHelloMessage {
-  clientver?: `${number}.${number}.${number}` | `${number}.${number}.${number}.${number}`
-  platform?: 'web'
+  platform?: 'web' | string
   protover?: 1 | 2 | 3
   roomid: number
   uid?: number
   type?: number
-  key?: any
+  key?: string
+  buvid?: string
 }
 
 export interface MessageMeta extends ProtocolHeader {}
