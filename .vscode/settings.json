@@ -1,5 +1,4 @@
 {
-  "prettier": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
@@ -9,5 +8,6 @@
   ],
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "/.github/workflows/deploy.yml"
-  }
+  },
+  "eslint.experimental.useFlatConfig": true
 }

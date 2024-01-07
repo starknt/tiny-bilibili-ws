@@ -1032,7 +1032,7 @@ export interface HOT_ROOM_NOTIFY {
     threshold: number
     ttl: number
     exit_no_refresh: number
-    random_delay_req_v2: ({ path: string; delay: number })[ ]
+    random_delay_req_v2: ({ path: string, delay: number })[ ]
   }
 }
 

@@ -39,7 +39,7 @@ export interface TCPEvents {
   message: Buffer
 }
 
-export class KeepLiveTCP<E extends Record<EventKey, any> = { }> extends LiveClient<Merge<TCPEvents, E>> {
+export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveClient<Merge<TCPEvents, E>> {
   private buffer: Buffer = Buffer.alloc(0)
   private i = 0
   tcpSocket: Socket
@@ -121,7 +121,7 @@ export interface WSEvents {
   message: Buffer
 }
 
-export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClient<Merge<WSEvents, E>> {
+export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {

@@ -1,17 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "esnext",
     "lib": ["esnext", "DOM"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
     "paths": {
       "tiny-bilibili-ws": [
         "src/index.ts"
@@ -19,6 +12,18 @@
       "tiny-bilibili-ws/browser": [
         "src/browser.ts"
       ]
-    }
-  }
+    },
+    "resolveJsonModule": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "./src/browserlib/brotli.ts"
+  ]
 }

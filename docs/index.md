@@ -29,4 +29,3 @@ features:
     title: Flexible type
     details: Out of the box type hit, and flexible type extendsion
 ---
-

@@ -2,7 +2,7 @@
   "name": "tiny-bilibili-ws",
   "type": "module",
   "version": "0.1.10",
-  "packageManager": "pnpm@8.9.2",
+  "packageManager": "pnpm@8.14.0",
   "description": "Bilibili Live WebSocket/TCP API",
   "author": "starknt",
   "license": "MIT",
@@ -22,21 +22,21 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
     "./browser": {
       "types": "./dist/browser.d.ts",
-      "require": "./dist/browser.cjs",
-      "import": "./dist/browser.mjs"
+      "import": "./dist/browser.mjs",
+      "require": "./dist/browser.cjs"
     }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "browser.d.ts"
+    "browser.d.ts",
+    "dist"
   ],
   "scripts": {
     "build": "unbuild",
@@ -56,23 +56,23 @@
   },
   "dependencies": {
     "pako": "^2.1.0",
-    "ws": "^8.14.2"
+    "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.43.1",
-    "@types/node": "^20.8.7",
-    "@types/pako": "^2.0.2",
-    "@types/ws": "^8.5.8",
+    "@antfu/eslint-config": "^2.6.1",
+    "@types/node": "^20.10.6",
+    "@types/pako": "^2.0.3",
+    "@types/ws": "^8.5.10",
     "brotli-size": "^4.0.0",
-    "bumpp": "^9.2.0",
+    "bumpp": "^9.2.1",
     "dotenv": "^16.3.1",
-    "eslint": "^8.52.0",
+    "eslint": "^8.56.0",
     "eventemitter3": "5.0.1",
-    "pnpm": "^8.9.2",
-    "terser": "^5.22.0",
-    "tsx": "^3.14.0",
-    "typescript": "^5.2.2",
+    "pnpm": "^8.14.0",
+    "terser": "^5.26.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
-    "vitest": "^0.34.6"
+    "vitest": "^1.1.3"
   }
 }

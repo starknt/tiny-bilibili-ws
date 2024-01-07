@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { EventEmitter } from './eventemitter'
 
-describe('EventEmitter', () => {
-  test('Basic test case', () => {
-    const emitter = new EventEmitter<{ close: boolean; t1: void }>()
+describe('eventEmitter', () => {
+  it('basic test case', () => {
+    const emitter = new EventEmitter<{ close: boolean, t1: void }>()
     let emitHit = 0
 
     emitter.on('t1', () => {
@@ -33,7 +33,7 @@ describe('EventEmitter', () => {
     expect(emitter.listenerCount('t1')).eq(0)
   })
 
-  test('Advance test case', () => {
+  it('advance test case', () => {
     const emitter = new EventEmitter()
     let emitHit = 0
     const f = () => {

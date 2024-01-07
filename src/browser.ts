@@ -16,7 +16,7 @@ export interface WSEvents {
   message: Uint8Array
 }
 
-export class KeepLiveWS<E extends Record<EventKey, any> = { }> extends LiveClient<Merge<WSEvents, E>> {
+export class KeepLiveWS<E extends Record<EventKey, any>> extends LiveClient<Merge<WSEvents, E>> {
   ws: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
