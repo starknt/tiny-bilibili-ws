@@ -276,7 +276,9 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
         }
       }
       else {
-        socket = new WebSocket(_url)
+        socket = new WebSocket(_url, {
+          headers: options.headers,
+        })
         socket.binaryType = 'arraybuffer'
       }
       if (socket) {
@@ -304,7 +306,9 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
       }
     }
     else {
-      socket = new WebSocket(url)
+      socket = new WebSocket(url, {
+        headers: options.headers,
+      })
       socket.binaryType = 'arraybuffer'
     }
 

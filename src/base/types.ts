@@ -153,6 +153,8 @@ interface CustomWebSocket {
 }
 
 export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
+  headers?: { [key: string]: string } | undefined
+
   ssl?: boolean
   platform?: 'web' | string
   protover?: 1 | 2 | 3
