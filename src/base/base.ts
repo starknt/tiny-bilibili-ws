@@ -1,16 +1,13 @@
 import { WS_OP, deserialize, serialize } from './buffer'
 import type { BuiltinEvent } from './cmd'
-import { fromEvent, normalizeWebsocketPath } from './utils'
+import { excludeNil, fromEvent, normalizeWebsocketPath } from './utils'
 import type { BILIBILI_HOST, BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
 import { EventEmitter } from './eventemitter'
 import type { EventKey } from './eventemitter'
 
 /// const
 export enum SOCKET_HOSTS {
-  DEFAULT = 'hw-gz-live-comet-02.chat.bilibili.com',
-  HOST_TX = 'tx-bj-live-comet-02.chat.bilibili.com',
-  HOST_HW = 'hw-gz-live-comet-02.chat.bilibili.com',
-  OLD = 'broadcastlv.chat.bilibili.com',
+  DEFAULT = 'zj-cn-live-comet.chat.bilibili.com:2245',
 }
 
 export const MESSAGE_EVENT = '__message__'
@@ -18,10 +15,12 @@ export const OPEN_EVENT = '__open__'
 export const ERROR_EVENT = '__error__'
 export const CLOSE_EVENT = '__close__'
 
+export function NOOP() {}
+
 export const SOCKET_HOST = SOCKET_HOSTS.DEFAULT
 export const NODE_SOCKET_PORT = 2243
 export const WEBSOCKET_PORT = 2244
-export const WEBSOCKET_SSL_PORT = 443
+export const WEBSOCKET_SSL_PORT = 2245
 export const WEBSOCKET_PATH = 'sub'
 export const WEBSOCKET_SSL_URL = (host: BILIBILI_HOST = SOCKET_HOST, port = WEBSOCKET_SSL_PORT, path?: string) => `wss://${host}${port === 443 ? '' : `:${port}`}${normalizeWebsocketPath(path ?? WEBSOCKET_PATH)}`
 export const WEBSOCKET_URL = (host: BILIBILI_HOST = SOCKET_HOST, port = WEBSOCKET_PORT, path?: string) => `ws://${host}:${port}${normalizeWebsocketPath(path ?? WEBSOCKET_PATH)}`
@@ -29,20 +28,20 @@ export const WEBSOCKET_URL = (host: BILIBILI_HOST = SOCKET_HOST, port = WEBSOCKE
 ///
 
 interface BilibiliLiveEvent extends BuiltinEvent {
-  open: void
-  msg: Message<any>
-  live: void
-  heartbeat: number
-  reconnect: boolean
+  'open': void
+  'msg': Message<any>
+  'live': void
+  'heartbeat': number
+  'reconnect': boolean
 
   'deserialize:error': Error
 }
 
 export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Merge<BilibiliLiveEvent, E>> {
-  roomId: number
   /** 人气值 */
-  online = 0
-  closed = true
+  online: number = 0
+  closed: boolean = true
+  roomId: number = 0
 
   private close_func_called = false
   private socket: ISocket | IWebSocket
@@ -51,39 +50,16 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   private readonly RECONNECT_TIME: number
   private zlib: IZlib
   private live = false
-  private firstMessage: LiveHelloMessage
 
   private skipMessage: string[] = []
 
-  constructor(readonly options: BaseLiveClientOptions) {
-    let room = 0
-    if (typeof options.room === 'string')
-      room = +(options.room.trim())
-    else
-      room = options.room
-    if (typeof room !== 'number' || Number.isNaN(room))
-      throw new Error(`roomId ${room} must be Number not NaN`)
-
+  constructor(readonly options: BaseLiveClientOptions<any>) {
     super()
 
     this.HEARTBEAT_TIME = options.heartbeatTime ?? 30 * 1000
     this.RECONNECT_TIME = options.reconnectTime ?? 5 * 1000
 
-    this.firstMessage = {
-      roomid: room,
-      protover: options.protover,
-      uid: options.uid,
-      platform: options.platform,
-      type: options.type,
-      key: options.key,
-      buvid: options.buvid,
-    }
-
-    if (options.key)
-      this.firstMessage.key = options.key
-
     this.socket = options.socket
-    this.roomId = room
     this.zlib = options.zlib
 
     this.bindEvent()
@@ -117,10 +93,22 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
 
       // @ts-expect-error open event
       this.emit('open')
-      if (this.options.authBody)
+      if (this.options.authBody) {
         this.rawSend(this.options.authBody)
-      else
-        this.send(WS_OP.USER_AUTHENTICATION, this.firstMessage)
+      }
+      else {
+        const msg = {
+          uid: this.options.uid,
+          roomid: this.roomId,
+          protover: this.options.protover,
+          platform: this.options.platform,
+          type: this.options.type,
+          key: this.options.key,
+          buvid: this.options.buvid,
+        } satisfies LiveHelloMessage
+
+        this.send(WS_OP.USER_AUTHENTICATION, excludeNil(msg))
+      }
     })
 
     // @ts-expect-error message event
@@ -201,7 +189,6 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           this.online = 0
           this.live = false
           clearTimeout(this.timeout)
-          // console.log('try reconnect to ', this.roomId)
           this.socket.reconnect()
         }, this.RECONNECT_TIME)
       }
@@ -238,7 +225,9 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       this.heartbeat()
 
     // @ts-expect-error heartbeat event
-    return new Promise<number>(resolve => this.once('heartbeat', (msg: Message<number>) => resolve(msg.data)))
+    return new Promise<number>(resolve => this.once('heartbeat', (data: number) => {
+      resolve(data)
+    }))
   }
 
   close() {

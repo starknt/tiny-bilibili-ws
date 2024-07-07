@@ -4,16 +4,34 @@ import https from 'node:https'
 import { Buffer } from 'node:buffer'
 import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, OPEN_EVENT, SOCKET_HOST, SOCKET_HOSTS, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, SOCKET_HOSTS, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, DanmuConfResponse, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
+import { parseRoomId, randomElement } from './base/utils'
 
 export function getLongRoomId(room: number): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
     https.get(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${room}`, (res) => {
+      let data = Buffer.alloc(0)
+
+      res.on('data', (chunk) => {
+        data += chunk
+      })
+
+      res.once('end', () => {
+        resolve(JSON.parse(Buffer.from(data).toString()))
+      })
+    })
+      .on('error', err => reject(err))
+  })
+}
+
+export function getDanmuConf(room: number): Promise<DanmuConfResponse> {
+  return new Promise((resolve, reject) => {
+    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, (res) => {
       let data = Buffer.alloc(0)
 
       res.on('data', (chunk) => {
@@ -39,34 +57,49 @@ export interface TCPEvents {
   message: Buffer
 }
 
+const cachedRoomInfo: Map<number, RoomResponse> = new Map()
+const cachedDanmuConf: Map<number, DanmuConfResponse> = new Map()
+
+async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResponse]> {
+  let roomInfo: RoomResponse | undefined
+  let danmuInfo: DanmuConfResponse | undefined
+  if (cachedRoomInfo.has(room)) {
+    roomInfo = cachedRoomInfo.get(room)!
+  }
+  else {
+    const info = await getLongRoomId(room)
+    cachedRoomInfo.set(room, info)
+    roomInfo = info
+  }
+
+  if (cachedDanmuConf.has(roomInfo.data.room_id)) {
+    danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
+  }
+  else {
+    const info = await getDanmuConf(roomInfo.data.room_id)
+    cachedDanmuConf.set(roomInfo.data.room_id, info)
+    danmuInfo = info
+  }
+
+  return [roomInfo, danmuInfo]
+}
+
 export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveClient<Merge<TCPEvents, E>> {
   private buffer: Buffer = Buffer.alloc(0)
   private i = 0
-  tcpSocket: Socket
+  tcpSocket!: Socket
 
   constructor(roomId: number, options: TCPOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
-    const socket = resolvedOptions.url
-      ? connect(resolvedOptions.url)
-      : connect(resolvedOptions.port ?? NODE_SOCKET_PORT, resolvedOptions.host ?? SOCKET_HOST)
-
-    const liveOptions: BaseLiveClientOptions = {
+    const liveOptions: BaseLiveClientOptions<any> = {
       ...resolvedOptions,
       socket: {
         type: 'tcp',
         write: (data) => {
           this.tcpSocket.write(data)
         },
-        reconnect: () => {
-          this.tcpSocket?.end()
-          this.tcpSocket = null!
-          const socket = resolvedOptions.url
-            ? connect(resolvedOptions.url)
-            : connect(resolvedOptions.port ?? NODE_SOCKET_PORT, resolvedOptions.host ?? SOCKET_HOST)
-          this.tcpSocket = socket
-          this._bindEvent(socket)
-        },
+        reconnect: NOOP,
         end: () => {
           this.tcpSocket.end()
         },
@@ -77,6 +110,45 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
 
     super(liveOptions)
 
+    this.init(liveOptions)
+  }
+
+  private async getSocketUrl(roomId: number): Promise<{
+    host: string
+    port: number
+  }> {
+    const [_, danmu] = await getCachedInfo(roomId)
+    if (!this.options.key)
+      this.options.key = danmu.data.token
+    const host = randomElement(danmu.data.host_server_list)
+
+    return {
+      host: host.host,
+      port: host.port,
+    }
+  }
+
+  private async init(options: BaseLiveClientOptions<any>) {
+    const roomId = parseRoomId(options.room)
+
+    const url = options.url ? options.url : await this.getSocketUrl(roomId)
+    const room = cachedRoomInfo.get(roomId)?.data?.room_id || roomId
+    this.options.room = room
+    this.roomId = room
+
+    const socket = typeof url === 'string'
+      ? connect(url)
+      : connect(url.port ?? NODE_SOCKET_PORT, url.host ?? SOCKET_HOST)
+
+    this.options.socket.reconnect = () => {
+      this.tcpSocket?.end()
+      this.tcpSocket = null!
+      const socket = typeof url === 'string'
+        ? connect(url)
+        : connect(url.port ?? NODE_SOCKET_PORT, url.host ?? SOCKET_HOST)
+      this.tcpSocket = socket
+      this._bindEvent(socket)
+    }
     this.tcpSocket = socket
     this._bindEvent(socket)
   }
@@ -122,23 +194,12 @@ export interface WSEvents {
 }
 
 export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
-  ws: WebSocket
+  ws!: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
-    const ssl = !!resolvedOptions.ssl
-    const url = resolvedOptions.url
-      ?? (
-        ssl
-          ? WEBSOCKET_SSL_URL(resolvedOptions.host ?? SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
-          : WEBSOCKET_URL(SOCKET_HOSTS.DEFAULT, resolvedOptions.port, resolvedOptions.path)
-      )
 
-    console.log({ url, resolvedOptions })
-
-    const socket = new WebSocket(url)
-
-    const liveOptions: BaseLiveClientOptions = {
+    const liveOptions: BaseLiveClientOptions<Buffer> = {
       ...resolvedOptions,
       socket: {
         type: 'websocket',
@@ -152,13 +213,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
         close: () => {
           this.ws.close()
         },
-        reconnect: (_url?: string) => {
-          this.ws?.close()
-          this.ws = null!
-          const socket = new WebSocket(_url ?? url)
-          this.ws = socket
-          this._bindEvent(socket)
-        },
+        reconnect: NOOP,
       } as IWebSocket,
       zlib: inflates,
       room: roomId,
@@ -166,8 +221,97 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
 
     super(liveOptions)
 
-    this.ws = socket
-    this._bindEvent(socket)
+    this.init(liveOptions)
+  }
+
+  private async getWebSocketUrl(ssl: boolean, roomId: number) {
+    const [_, danmu] = await getCachedInfo(roomId)
+    if (!this.options.key)
+      this.options.key = danmu.data.token
+    const host = randomElement(danmu.data.host_server_list)
+
+    return ssl
+      ? WEBSOCKET_SSL_URL(
+        this.options.host ?? host.host,
+        this.options.port ?? host.wss_port,
+        this.options.path,
+      )
+      : WEBSOCKET_URL(
+        this.options.host ?? host.host,
+        this.options.port ?? host.ws_port,
+        this.options.path,
+      )
+  }
+
+  private async init(options: BaseLiveClientOptions<Buffer>) {
+    const roomId = parseRoomId(options.room)
+
+    const ssl = !!options.ssl
+    const url = await this.getWebSocketUrl(ssl, roomId)
+    const room = cachedRoomInfo.get(roomId)?.data?.room_id || roomId
+    this.options.room = room
+    this.roomId = room
+    this.options.url = url
+
+    options.socket.reconnect = (reconnectUrl?: string) => {
+      this.ws?.close()
+      this.ws = null!
+      let socket: WebSocket | undefined
+      const _url = reconnectUrl ?? url
+      if (options.customWebSocket) {
+        const ws = options.customWebSocket(_url)
+        if (ws instanceof Promise) {
+          ws.then((socket) => {
+            socket.binaryType = 'arraybuffer'
+            // @ts-expect-error ignore
+            this.ws = socket
+            // @ts-expect-error ignore
+            this._bindEvent(socket)
+          })
+        }
+        else {
+          // @ts-expect-error ignore
+          socket = ws
+          ws.binaryType = 'arraybuffer'
+        }
+      }
+      else {
+        socket = new WebSocket(_url)
+        socket.binaryType = 'arraybuffer'
+      }
+      if (socket) {
+        this.ws = socket
+        this._bindEvent(socket)
+      }
+    }
+
+    let socket: WebSocket | undefined
+    if (options.customWebSocket) {
+      const ws = options.customWebSocket(url)
+      if (ws instanceof Promise) {
+        ws.then((socket) => {
+          socket.binaryType = 'arraybuffer'
+          // @ts-expect-error ignore
+          this.ws = socket
+          // @ts-expect-error ignore
+          this._bindEvent(socket)
+        })
+      }
+      else {
+        // @ts-expect-error ignore
+        socket = ws
+        ws.binaryType = 'arraybuffer'
+      }
+    }
+    else {
+      socket = new WebSocket(url)
+      socket.binaryType = 'arraybuffer'
+    }
+
+    if (socket) {
+      this.ws = socket
+      this._bindEvent(socket)
+    }
   }
 
   private _bindEvent(socket: WebSocket) {

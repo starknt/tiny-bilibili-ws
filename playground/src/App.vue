@@ -4,32 +4,30 @@ import { onMounted, ref } from 'vue'
 
 const danmu = ref<any[]>([])
 
-onMounted(() => {
-  fetch(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
-    .then(w => w.json())
-    .then((data) => {
-      console.log(data)
-    })
+function randomElement<T>(list: T[]): T {
+  return list[Math.floor(Math.random() * list.length)]
+}
 
-  const live = new KeepLiveWS(import.meta.env.VITE_ROOM)
+onMounted(async () => {
+  const room = await fetch(`/api/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
+    .then(res => res.json())
+  const conf = await fetch(`/api/room/v1/Danmu/getConf?room_id=${room.data.room_id}&platform=pc&player=web`)
+    .then(res => res.json())
+
+  const host = randomElement(conf.data.host_server_list)
+
+  const live = new KeepLiveWS(room.data.room_id, {
+    url: `wss://${host.host}:${host.wss_port}/sub`,
+    key: conf.data.token,
+  })
 
   live.runWhenConnected(() => {
     console.log(`正在监听 ${import.meta.env.VITE_ROOM}`)
   })
 
-  live.on('WELCOME_GUARD', (message) => { // 有弹幕会被触发
-    console.log(message)
-  })
+  live.on('DANMU_MSG', async (m) => {
+    console.log('Online: ', await live.getOnline())
 
-  live.on('WELCOME', (message) => { // 有弹幕会被触发
-    console.log(message)
-  })
-
-  live.on('SUPER_CHAT_MESSAGE', (message) => { // 有弹幕会被触发
-    console.log(message)
-  })
-
-  live.on('DANMU_MSG', (m) => {
     danmu.value.push(m)
   })
 })

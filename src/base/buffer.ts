@@ -179,7 +179,7 @@ class HeaderReader extends BufferReader {
   }
 }
 
-export async function parser(buffer: Uint8Array, zlib: IZlib): Promise<Message<any>[]> {
+export async function parser(buffer: Uint8Array, zlib: IZlib<any>): Promise<Message<any>[]> {
   const groupPacks = cutBuffer(buffer)
 
   const protocols = groupPacks.map<Protocol>((buffer) => {

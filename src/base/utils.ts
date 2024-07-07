@@ -23,3 +23,25 @@ export function toMessageData(message: Message<any>) {
 export function normalizeWebsocketPath(path: string) {
   return path[0] === '/' ? path : `/${path}`
 }
+
+export function randomElement<T>(arr: T[]) {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+export function parseRoomId(roomId: string | number, fallback?: number | (() => number)) {
+  const room = Number(roomId)
+
+  if (Number.isNaN(room)) {
+    if (typeof fallback === 'function')
+      return fallback()
+    if (typeof fallback === 'number')
+      return fallback
+    throw new Error('roomId must be Number')
+  }
+
+  return room
+}
+
+export function excludeNil<T extends object>(obj: T) {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null))
+}

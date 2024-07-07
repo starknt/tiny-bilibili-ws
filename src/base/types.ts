@@ -1,6 +1,6 @@
 import type { ProtocolHeader } from './buffer'
 
-export type BILIBILI_HOST = `${string}.chat.bilibili.com`
+export type BILIBILI_HOST = string
 
 // @ts-expect-error PartialByKeys pk
 export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Partial<Pick<O, UU>>> =
@@ -24,16 +24,16 @@ export type Nullable<T> = null | undefined | T
 
 export interface ISocket {
   type: 'tcp'
-  write(data: Uint8Array): void
-  end(): void
-  reconnect(): void
+  write: (data: Uint8Array) => void
+  end: () => void
+  reconnect: () => void
 }
 
 export interface IWebSocket {
   type: 'websocket'
-  send(data: Uint8Array): void
-  close(): void
-  reconnect(): void
+  send: (data: Uint8Array) => void
+  close: () => void
+  reconnect: () => void
 }
 
 type Options = PartialByKeys<WSOptions, keyof AuthOptions | keyof ConnectionOptions>
@@ -61,6 +61,33 @@ export interface RoomResponse {
     special_type: number
   }
 }
+export interface DanmuConfResponse {
+  code: number
+  msg: string
+  message: string
+  data: {
+    refresh_row_factor: number
+    refresh_rate: number
+    max_delay: number
+    port: number
+    host: string
+    host_server_list: HostServerList[]
+    server_list: ServerList[]
+    token: string
+  }
+}
+
+export interface ServerList {
+  host: string
+  port: number
+}
+
+export interface HostServerList {
+  host: string
+  port: number
+  wss_port: number
+  ws_port: number
+}
 
 export const DEFAULT_WS_OPTIONS: Options = {
   raw: false,
@@ -69,17 +96,15 @@ export const DEFAULT_WS_OPTIONS: Options = {
   keepalive: true,
   reconnectTime: 5 * 1000,
   heartbeatTime: 30 * 1000,
-  // clientVer: '2.0.11',
   platform: 'web',
   protover: 3,
-  // uid: 0,
   type: 2,
 }
 
-export interface BaseLiveClientOptions extends Options {
+export interface BaseLiveClientOptions<B extends Uint8Array> extends Options {
   socket: ISocket | IWebSocket
   room: number | string
-  zlib: IZlib
+  zlib: IZlib<B>
 }
 
 export interface BaseOptions {
@@ -123,6 +148,10 @@ export interface ConnectionOptions {
   path?: string
 }
 
+interface CustomWebSocket {
+  (url: string): WebSocket | Promise<WebSocket>
+}
+
 export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   ssl?: boolean
   platform?: 'web' | string
@@ -131,6 +160,8 @@ export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
   type?: number
   key?: string
   buvid?: string
+
+  customWebSocket?: CustomWebSocket
 }
 
 export interface TCPOptions extends WSOptions {}
@@ -153,14 +184,14 @@ export interface Message<T> {
 }
 
 export interface IZlib<T extends Uint8Array = Uint8Array> {
-  inflateAsync(v: T): Promise<T>
-  brotliDecompressAsync(v: T): Promise<T>
+  inflateAsync: (v: T) => Promise<T>
+  brotliDecompressAsync: (v: T) => Promise<T>
 }
 
 export interface IWriter {
-  write(offset: number, len: number, val: number): void
+  write: (offset: number, len: number, val: number) => void
 }
 
 export interface IReader {
-  read(offset: number, len: number): number
+  read: (offset: number, len: number) => number
 }

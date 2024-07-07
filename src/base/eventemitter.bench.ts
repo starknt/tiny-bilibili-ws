@@ -1,6 +1,6 @@
 import NodeEventEmitter from 'node:events'
 import EventEmitter3 from 'eventemitter3'
-import { describe } from 'vitest'
+import { describe, it } from 'vitest'
 import { EventEmitter } from './eventemitter'
 
 describe('emit', () => {
