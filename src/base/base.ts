@@ -7,7 +7,7 @@ import type { EventKey } from './eventemitter'
 
 /// const
 export enum SOCKET_HOSTS {
-  DEFAULT = 'zj-cn-live-comet.chat.bilibili.com:2245',
+  DEFAULT = 'zj-cn-live-comet.chat.bilibili.com',
 }
 
 export const MESSAGE_EVENT = '__message__'
@@ -159,6 +159,9 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
         }
 
         if (packet.meta.op === WS_OP.CONNECT_SUCCESS) {
+          if (typeof packet.data === 'object' && packet.data?.code !== 0) {
+            console.warn(`连接失败: `, packet.data)
+          }
           // @ts-expect-error live event allow
           this.emit('live')
           this.live = true
@@ -221,13 +224,18 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   async getOnline() {
     if (!this.live)
       await fromEvent(this, 'live')
-    else
-      this.heartbeat()
 
-    // @ts-expect-error heartbeat event
-    return new Promise<number>(resolve => this.once('heartbeat', (data: number) => {
-      resolve(data)
-    }))
+    return new Promise<number>((resolve) => {
+      // @ts-expect-error heartbeat event
+      this.once('heartbeat', (data: number | Message<number>) => {
+        if (typeof data === 'number')
+          resolve(data)
+        else
+          resolve(data.data)
+      })
+
+      this.heartbeat()
+    })
   }
 
   close() {

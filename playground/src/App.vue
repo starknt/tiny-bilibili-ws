@@ -9,16 +9,16 @@ function randomElement<T>(list: T[]): T {
 }
 
 onMounted(async () => {
-  const room = await fetch(`/api/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
-    .then(res => res.json())
-  const conf = await fetch(`/api/room/v1/Danmu/getConf?room_id=${room.data.room_id}&platform=pc&player=web`)
-    .then(res => res.json())
+  // const room = await fetch(`/api/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
+  //   .then(res => res.json())
+  // const conf = await fetch(`/api/room/v1/Danmu/getConf?room_id=${room.data.room_id}&platform=pc&player=web`)
+  //   .then(res => res.json())
 
-  const host = randomElement(conf.data.host_server_list)
+  // const host = randomElement(conf.data.host_server_list)
 
-  const live = new KeepLiveWS(room.data.room_id, {
-    url: `wss://${host.host}:${host.wss_port}/sub`,
-    key: conf.data.token,
+  const live = new KeepLiveWS(import.meta.env.VITE_ROOM, {
+    // url: `wss://${host.host}:${host.wss_port}/sub`,
+    // key: conf.data.token,
   })
 
   live.runWhenConnected(() => {
@@ -26,8 +26,6 @@ onMounted(async () => {
   })
 
   live.on('DANMU_MSG', async (m) => {
-    console.log('Online: ', await live.getOnline())
-
     danmu.value.push(m)
   })
 })

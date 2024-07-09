@@ -54,11 +54,11 @@ export interface ProtocolHeader {
   sequence: number
 }
 
+// eslint-disable-next-line ts/no-unsafe-declaration-merging
 export interface Protocol {
   header: ProtocolHeader
   body: Uint8Array
 }
-
 ///
 
 /// utils
@@ -135,18 +135,6 @@ function concat(list: Uint8Array[]) {
   return buffer
 }
 
-function cutBuffer(buffer: Uint8Array) {
-  const bufferPacks: Uint8Array[] = []
-  let size: number
-
-  for (let i = 0; i < buffer.length; i += size) {
-    size = readInt(buffer, i, INT_32)
-    bufferPacks.push(buffer.slice(i, i + size))
-  }
-
-  return bufferPacks
-}
-
 class HeaderReader extends BufferReader {
   readOperation(): WS_OP {
     return this.read(WS_OPERATION_OFFSET, INT_32)
@@ -179,28 +167,43 @@ class HeaderReader extends BufferReader {
   }
 }
 
-export async function parser(buffer: Uint8Array, zlib: IZlib<any>): Promise<Message<any>[]> {
-  const groupPacks = cutBuffer(buffer)
+// eslint-disable-next-line ts/no-unsafe-declaration-merging
+export class Protocol implements Protocol {
+  header: ProtocolHeader
+  body: Uint8Array
 
-  const protocols = groupPacks.map<Protocol>((buffer) => {
+  constructor(header: ProtocolHeader, body: Uint8Array) {
+    this.header = header
+    this.body = body
+  }
+
+  static parse(buffer: Uint8Array): Protocol {
     const header = new HeaderReader(buffer.slice(0, 16)).toJSON()
     const body = buffer.slice(16)
 
-    return {
-      header,
-      body,
-    }
-  })
+    return new Protocol(header, body)
+  }
 
-  const standardProtocolPacket = protocols.map(async (protocol) => {
-    const { header, body } = protocol
+  async toMessagePacket(zlib: IZlib): Promise<Message<any> | Message<any>[]> {
+    const { header, body } = this
 
     let data: any
     if (header.ver === WS_BODY_PROTOCOL_VERSION.NORMAL)
       data = JSON.parse(textDecoder.decode(body))
 
-    if (header.ver === WS_BODY_PROTOCOL_VERSION.NUMBER && body.length === 4)
-      data = readInt(body, 0, 4)
+    if (header.ver === WS_BODY_PROTOCOL_VERSION.NUMBER) {
+      if (header.op === WS_OP.HEARTBEAT_REPLY) {
+        data = readInt(body, 0, 4)
+      }
+      if (header.op === WS_OP.CONNECT_SUCCESS) {
+        try {
+          data = JSON.parse(textDecoder.decode(body))
+        }
+        catch {
+          /** ignore */
+        }
+      }
+    }
 
     if (header.ver === WS_BODY_PROTOCOL_VERSION.ZLIB)
       data = await parser(await zlib.inflateAsync(body), zlib)
@@ -208,21 +211,26 @@ export async function parser(buffer: Uint8Array, zlib: IZlib<any>): Promise<Mess
     if (header.ver === WS_BODY_PROTOCOL_VERSION.BROTLI)
       data = await parser(await zlib.brotliDecompressAsync(body), zlib)
 
+    if (header.ver === WS_BODY_PROTOCOL_VERSION.ZLIB || header.ver === WS_BODY_PROTOCOL_VERSION.BROTLI) {
+      return data
+    }
+
     return {
       meta: header,
       data,
     }
-  })
+  }
+}
 
-  const packs = await Promise.all(
-    standardProtocolPacket,
-  )
+export async function parser(buffer: Uint8Array, zlib: IZlib<any>): Promise<Message<any>[]> {
+  const protocol: Protocol = Protocol.parse(buffer)
+  const standardProtocolPacket = await protocol.toMessagePacket(zlib)
 
-  return packs.flatMap<Message<any>>((v) => {
-    if (v.meta.ver === WS_BODY_PROTOCOL_VERSION.ZLIB || v.meta.ver === WS_BODY_PROTOCOL_VERSION.BROTLI)
-      return v.data
-    return v
-  })
+  if (Array.isArray(standardProtocolPacket)) {
+    return standardProtocolPacket
+  }
+
+  return [standardProtocolPacket]
 }
 
 ///
