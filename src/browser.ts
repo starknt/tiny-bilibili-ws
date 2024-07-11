@@ -1,10 +1,10 @@
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NOOP, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
-import type { BaseLiveClientOptions, HostServerList, IWebSocket, Merge, RequiredByKeys, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, IWebSocket, Merge, RequiredByKeys, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import { parser } from './base/buffer'
 import { inflates } from './browserlib/inflate'
 import type { EventKey } from './base/eventemitter'
-import { parseRoomId, randomElement } from './base/utils'
+import { parseRoomId } from './base/utils'
 
 export interface WSEvents {
   // [OPEN_EVENT]: void
@@ -26,7 +26,7 @@ interface BrowserWSHostOptions extends RequiredByKeys<WSOptions, 'key' | 'host' 
   port: number
 }
 
-type BrowserWSOptions = BrowserWSUrlOptions | BrowserWSHostOptions
+export type BrowserWSOptions = BrowserWSUrlOptions | BrowserWSHostOptions
 
 export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
   ws!: WebSocket
