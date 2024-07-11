@@ -8,6 +8,9 @@ export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U ext
     [K in keyof O as K extends U ? never : K]: O[K]
   }
 
+// @ts-expect-error RequiredByKeys pk
+export type RequiredByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Required<Pick<O, UU>>> = PO & Omit<O, UU>
+
 // reference https://stackoverflow.com/questions/49682569/typescript-merge-object-types
 export type Merge<A, B> = {
   [K in keyof A | keyof B]:

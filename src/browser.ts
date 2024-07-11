@@ -1,5 +1,5 @@
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NOOP, OPEN_EVENT, SOCKET_HOSTS, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
-import type { BaseLiveClientOptions, HostServerList, IWebSocket, Merge, WSOptions } from './base/types'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NOOP, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import type { BaseLiveClientOptions, HostServerList, IWebSocket, Merge, RequiredByKeys, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import { parser } from './base/buffer'
 import { inflates } from './browserlib/inflate'
@@ -17,19 +17,21 @@ export interface WSEvents {
   message: Uint8Array
 }
 
-const DEFAULT_HOST_LIST: Array<HostServerList> = [
-  {
-    host: 'broadcastlv.chat.bilibili.com',
-    port: 2243,
-    wss_port: 443,
-    ws_port: 2244,
-  },
-]
+interface BrowserWSUrlOptions extends RequiredByKeys<WSOptions, 'key' | 'url'> {
+  url: string
+}
+
+interface BrowserWSHostOptions extends RequiredByKeys<WSOptions, 'key' | 'host' | 'port'> {
+  host: string
+  port: number
+}
+
+type BrowserWSOptions = BrowserWSUrlOptions | BrowserWSHostOptions
 
 export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
   ws!: WebSocket
 
-  constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
+  constructor(roomId: number, options: BrowserWSOptions) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
     const liveOptions: BaseLiveClientOptions<any> = {
@@ -54,17 +56,15 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   }
 
   private async getWebSocketUrl(ssl: boolean, _: number) {
-    const host = randomElement(DEFAULT_HOST_LIST)
-
     return ssl
       ? WEBSOCKET_SSL_URL(
-        this.options.host ?? host.host,
-        this.options.port ?? host.wss_port,
+        this.options.host,
+        this.options.port,
         this.options.path,
       )
       : WEBSOCKET_URL(
-        this.options.host ?? host.host,
-        this.options.port ?? host.ws_port,
+        this.options.host,
+        this.options.port,
         this.options.path,
       )
   }

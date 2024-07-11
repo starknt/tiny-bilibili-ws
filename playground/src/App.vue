@@ -9,16 +9,16 @@ function randomElement<T>(list: T[]): T {
 }
 
 onMounted(async () => {
-  // const room = await fetch(`/api/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
-  //   .then(res => res.json())
-  // const conf = await fetch(`/api/room/v1/Danmu/getConf?room_id=${room.data.room_id}&platform=pc&player=web`)
-  //   .then(res => res.json())
+  const room = await fetch(`/api/room/v1/Room/mobileRoomInit?id=${import.meta.env.VITE_ROOM}`)
+    .then(res => res.json())
+  const conf = await fetch(`/api/room/v1/Danmu/getConf?room_id=${room.data.room_id}&platform=pc&player=web`)
+    .then(res => res.json())
 
-  // const host = randomElement(conf.data.host_server_list)
+  const host = randomElement(conf.data.host_server_list) as any
 
   const live = new KeepLiveWS(import.meta.env.VITE_ROOM, {
-    // url: `wss://${host.host}:${host.wss_port}/sub`,
-    // key: conf.data.token,
+    url: `wss://${host.host}:${host.wss_port}/sub`,
+    key: conf.data.token,
   })
 
   live.runWhenConnected(() => {
