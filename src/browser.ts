@@ -19,30 +19,6 @@ export interface WSEvents {
 
 const DEFAULT_HOST_LIST: Array<HostServerList> = [
   {
-    host: 'zj-cn-live-comet.chat.bilibili.com',
-    port: 2243,
-    wss_port: 443,
-    ws_port: 2244,
-  },
-  {
-    host: 'zj-cn-live-comet.chat.bilibili.com',
-    port: 2243,
-    wss_port: 443,
-    ws_port: 2244,
-  },
-  {
-    host: 'ali-gz-live-comet-17.chat.bilibili.com',
-    port: 2243,
-    wss_port: 443,
-    ws_port: 2244,
-  },
-  {
-    host: 'ali-gz-live-comet-15.chat.bilibili.com',
-    port: 2243,
-    wss_port: 443,
-    ws_port: 2244,
-  },
-  {
     host: 'broadcastlv.chat.bilibili.com',
     port: 2243,
     wss_port: 443,
@@ -50,7 +26,7 @@ const DEFAULT_HOST_LIST: Array<HostServerList> = [
   },
 ]
 
-export class KeepLiveWS<E extends Record<EventKey, any>> extends LiveClient<Merge<WSEvents, E>> {
+export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
   ws!: WebSocket
 
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
