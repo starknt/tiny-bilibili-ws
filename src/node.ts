@@ -6,11 +6,11 @@ import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, DanmuConfResponse, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, DanmuConfResponse, HostServerList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
-import { parseRoomId, randomElement } from './base/utils'
+import { parseRoomId, randomElement, retry } from './base/utils'
 
 export function getLongRoomId(room: number): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
@@ -29,9 +29,9 @@ export function getLongRoomId(room: number): Promise<RoomResponse> {
   })
 }
 
-export function getDanmuConf(room: number): Promise<DanmuConfResponse> {
+export function getDanmuConf(room: number, signal?: AbortSignal): Promise<DanmuConfResponse> {
   return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, (res) => {
+    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, { signal }, (res) => {
       let data = Buffer.alloc(0)
 
       res.on('data', (chunk) => {
@@ -67,7 +67,7 @@ async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResp
     roomInfo = cachedRoomInfo.get(room)!
   }
   else {
-    const info = await getLongRoomId(room)
+    const info = await retry(() => getLongRoomId(room), 2, 200)
     cachedRoomInfo.set(room, info)
     roomInfo = info
   }
@@ -76,7 +76,7 @@ async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResp
     danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
   }
   else {
-    const info = await getDanmuConf(roomInfo.data.room_id)
+    const info = await retry(() => getDanmuConf(roomInfo.data.room_id), 2, 200)
     cachedDanmuConf.set(roomInfo.data.room_id, info)
     danmuInfo = info
   }
@@ -114,17 +114,23 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
   }
 
   private async getSocketUrl(roomId: number): Promise<{
-    host: string
-    port: number
+    host?: string
+    port?: number
   }> {
-    const [_, danmu] = await getCachedInfo(roomId)
-    if (!this.options.key)
-      this.options.key = danmu.data.token
-    const host = randomElement(danmu.data.host_server_list)
+    let host: HostServerList | undefined
+    try {
+      const [_, danmu] = await getCachedInfo(roomId)
+      if (!this.options.key)
+        this.options.key = danmu.data.token
+      host = randomElement(danmu.data.host_server_list)
+    }
+    catch (error) {
+      console.error(error)
+    }
 
     return {
-      host: host.host,
-      port: host.port,
+      host: host?.host,
+      port: host?.port,
     }
   }
 
@@ -225,20 +231,26 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   }
 
   private async getWebSocketUrl(ssl: boolean, roomId: number) {
-    const [_, danmu] = await getCachedInfo(roomId)
-    if (!this.options.key)
-      this.options.key = danmu.data.token
-    const host = randomElement(danmu.data.host_server_list)
+    let host: HostServerList | undefined
+    try {
+      const [_, danmu] = await getCachedInfo(roomId)
+      if (!this.options.key)
+        this.options.key = danmu.data.token
+      host = randomElement(danmu.data.host_server_list)
+    }
+    catch (error) {
+      console.error(error)
+    }
 
     return ssl
       ? WEBSOCKET_SSL_URL(
-        this.options.host ?? host.host,
-        this.options.port ?? host.wss_port,
+        this.options.host ?? host?.host,
+        this.options.port ?? host?.wss_port,
         this.options.path,
       )
       : WEBSOCKET_URL(
-        this.options.host ?? host.host,
-        this.options.port ?? host.ws_port,
+        this.options.host ?? host?.host,
+        this.options.port ?? host?.ws_port,
         this.options.path,
       )
   }

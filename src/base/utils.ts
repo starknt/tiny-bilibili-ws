@@ -45,3 +45,24 @@ export function parseRoomId(roomId: string | number, fallback?: number | (() => 
 export function excludeNil<T extends object>(obj: T) {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null))
 }
+
+export function retry<T>(fn: () => Promise<T>, times: number, interval: number) {
+  return new Promise<T>((resolve, reject) => {
+    let count = 0
+    const retry = async () => {
+      try {
+        const res = await fn()
+        resolve(res)
+      }
+      catch (err) {
+        if (++count < times) {
+          setTimeout(retry, interval)
+        }
+        else {
+          reject(err)
+        }
+      }
+    }
+    retry()
+  })
+}
