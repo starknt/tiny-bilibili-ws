@@ -67,7 +67,7 @@
     "brotli-size": "^4.0.0",
     "bumpp": "^9.4.1",
     "dotenv": "^16.4.5",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0",
     "eventemitter3": "5.0.1",
     "pnpm": "^9.5.0",
     "terser": "^5.31.2",
