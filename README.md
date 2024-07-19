@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/npm/v/tiny-bilibili-ws?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/tiny-bilibili-ws)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/jotai?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=tiny-bilibili-ws)
+[![jsDocs.io](https://img.shields.io/badge/jsDocs.io-reference-blue)](https://www.jsdocs.io/package/tiny-bilibili-ws)
 
 ## 特点
 
@@ -37,7 +38,10 @@ pnpm install tiny-bilibili-ws
 
 ```typescript
 // In Nodejs environment
-import { KeepLiveTCP, toMessageData, getLongRoomId } from 'tiny-bilibili-ws'
+import { KeepLiveTCP, getLongRoomId, toMessageData } from 'tiny-bilibili-ws'
+
+// or browser environment
+import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 
 const { data } = await getLongRoomId(652581)
 const room = data.room_id
@@ -62,9 +66,6 @@ tcp.on('error', (e) => {
 tcp.on('close', () => {
   console.log(`退出监听 ${room}`)
 })
-
-// or browser environment
-import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
 
 // 因为存在跨域问题, getLongRoomId 这个 API 不能在浏览器中运行
 
