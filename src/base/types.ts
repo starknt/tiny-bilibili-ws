@@ -80,6 +80,15 @@ export interface DanmuConfResponse {
   }
 }
 
+export interface BuvidConfResponse {
+  code: number
+  message: string
+  data: {
+    b_3: string
+    b_4: string
+  }
+}
+
 export interface ServerList {
   host: string
   port: number

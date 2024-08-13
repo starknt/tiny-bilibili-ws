@@ -4,9 +4,9 @@ import https from 'node:https'
 import { Buffer } from 'node:buffer'
 import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_SSL_PORT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, DanmuConfResponse, HostServerList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, BuvidConfResponse, DanmuConfResponse, HostServerList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
@@ -46,6 +46,22 @@ export function getDanmuConf(room: number, signal?: AbortSignal): Promise<DanmuC
   })
 }
 
+export function getBuvidConf(): Promise<BuvidConfResponse> {
+  return new Promise((resolve, reject) => {
+    https.get('https://api.bilibili.com/x/frontend/finger/spi', (res) => {
+      let data = Buffer.alloc(0)
+
+      res.on('data', (chunk) => {
+        data += chunk
+      })
+      res.once('end', () => {
+        resolve(JSON.parse(Buffer.from(data).toString()))
+      })
+    })
+      .on('error', err => reject(err))
+  })
+}
+
 export interface TCPEvents {
   // [OPEN_EVENT]: void
   // [MESSAGE_EVENT]: Buffer
@@ -59,8 +75,9 @@ export interface TCPEvents {
 
 const cachedRoomInfo: Map<number, RoomResponse> = new Map()
 const cachedDanmuConf: Map<number, DanmuConfResponse> = new Map()
+let fingerprint: string | undefined
 
-async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResponse]> {
+async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResponse, string]> {
   let roomInfo: RoomResponse | undefined
   let danmuInfo: DanmuConfResponse | undefined
   if (cachedRoomInfo.has(room)) {
@@ -81,7 +98,12 @@ async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResp
     danmuInfo = info
   }
 
-  return [roomInfo, danmuInfo]
+  if (!fingerprint) {
+    const info = await retry(() => getBuvidConf(), 2, 200)
+    fingerprint = info.data.b_3
+  }
+
+  return [roomInfo, danmuInfo, fingerprint]
 }
 
 export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveClient<Merge<TCPEvents, E>> {
@@ -119,9 +141,13 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
   }> {
     let host: HostServerList | undefined
     try {
-      const [_, danmu] = await getCachedInfo(roomId)
+      const [_, danmu, fingerprint] = await getCachedInfo(roomId)
       if (!this.options.key)
         this.options.key = danmu.data.token
+      // ref: https://github.com/SocialSisterYi/bilibili-API-collect/issues/933
+      if (!this.options.buvid) {
+        this.options.buvid = fingerprint
+      }
       host = randomElement(danmu.data.host_server_list)
     }
     catch (error) {
@@ -233,9 +259,13 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   private async getWebSocketUrl(ssl: boolean, roomId: number) {
     let host: HostServerList | undefined
     try {
-      const [_, danmu] = await getCachedInfo(roomId)
+      const [_, danmu, fingerprint] = await getCachedInfo(roomId)
       if (!this.options.key)
         this.options.key = danmu.data.token
+      // ref: https://github.com/SocialSisterYi/bilibili-API-collect/issues/933
+      if (!this.options.buvid) {
+        this.options.buvid = fingerprint
+      }
       host = randomElement(danmu.data.host_server_list)
     }
     catch (error) {
@@ -244,13 +274,13 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
 
     return ssl
       ? WEBSOCKET_SSL_URL(
-        this.options.host ?? host?.host,
-        this.options.port ?? host?.wss_port,
+        this.options?.host ?? host?.host,
+        this.options?.port ?? WEBSOCKET_SSL_PORT,
         this.options.path,
       )
       : WEBSOCKET_URL(
-        this.options.host ?? host?.host,
-        this.options.port ?? host?.ws_port,
+        this.options?.host ?? host?.host,
+        this.options?.port ?? WEBSOCKET_PORT,
         this.options.path,
       )
   }
