@@ -2,7 +2,7 @@
   "name": "tiny-bilibili-ws",
   "type": "module",
   "version": "1.0.0-beta.2",
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@9.7.0",
   "description": "Bilibili Live WebSocket/TCP API",
   "author": "starknt",
   "license": "MIT",
@@ -60,20 +60,20 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.22.0",
-    "@types/node": "^20.14.10",
+    "@antfu/eslint-config": "^2.25.1",
+    "@types/node": "^20.14.15",
     "@types/pako": "^2.0.3",
-    "@types/ws": "^8.5.10",
+    "@types/ws": "^8.5.12",
     "brotli-size": "^4.0.0",
-    "bumpp": "^9.4.1",
+    "bumpp": "^9.5.1",
     "dotenv": "^16.4.5",
-    "eslint": "^9.7.0",
+    "eslint": "^9.9.0",
     "eventemitter3": "5.0.1",
-    "pnpm": "^9.5.0",
-    "terser": "^5.31.2",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.3",
+    "pnpm": "^9.7.0",
+    "terser": "^5.31.6",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4",
     "unbuild": "^2.0.0",
-    "vitest": "^1.6.0"
+    "vitest": "^2.0.5"
   }
 }
