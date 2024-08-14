@@ -108,8 +108,8 @@ export const DEFAULT_WS_OPTIONS: Options = {
   keepalive: true,
   reconnectTime: 5 * 1000,
   heartbeatTime: 30 * 1000,
-  platform: 'web',
-  protover: 3,
+  // platform: 'web',
+  // protover: 3,
   type: 2,
 }
 
