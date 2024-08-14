@@ -178,8 +178,9 @@ export class Protocol implements Protocol {
   }
 
   static parse(buffer: Uint8Array): Protocol {
-    const header = new HeaderReader(buffer.slice(0, 16)).toJSON()
-    const body = buffer.slice(16)
+    const headerLength = readInt(buffer, 4, 2)
+    const header = new HeaderReader(buffer.slice(0, headerLength)).toJSON()
+    const body = buffer.slice(headerLength, header.packetLength)
 
     return new Protocol(header, body)
   }
