@@ -6,8 +6,13 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/api': {
+      '/apilive': {
         target: 'https://api.live.bilibili.com',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/apilive/, ''),
+      },
+      '/api': {
+        target: 'https://api.bilibili.com',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
       },
