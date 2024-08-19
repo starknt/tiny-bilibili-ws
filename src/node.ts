@@ -12,9 +12,11 @@ import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
 import { parseRoomId, randomElement, retry } from './base/utils'
 
-export function getLongRoomId(room: number): Promise<RoomResponse> {
+export function getLongRoomId(room: number, headers?: Record<string, string>): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${room}`, (res) => {
+    https.get(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${room}`, {
+      headers,
+    }, (res) => {
       let data = Buffer.alloc(0)
 
       res.on('data', (chunk) => {
@@ -29,9 +31,11 @@ export function getLongRoomId(room: number): Promise<RoomResponse> {
   })
 }
 
-export function getDanmuConf(room: number, signal?: AbortSignal): Promise<DanmuConfResponse> {
+export function getDanmuConf(room: number, headers?: Record<string, string>): Promise<DanmuConfResponse> {
   return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, { signal }, (res) => {
+    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, {
+      headers,
+    }, (res) => {
       let data = Buffer.alloc(0)
 
       res.on('data', (chunk) => {
@@ -46,9 +50,11 @@ export function getDanmuConf(room: number, signal?: AbortSignal): Promise<DanmuC
   })
 }
 
-export function getBuvidConf(): Promise<BuvidConfResponse> {
+export function getBuvidConf(headers?: Record<string, string>): Promise<BuvidConfResponse> {
   return new Promise((resolve, reject) => {
-    https.get('https://api.bilibili.com/x/frontend/finger/spi', (res) => {
+    https.get('https://api.bilibili.com/x/frontend/finger/spi', {
+      headers,
+    }, (res) => {
       let data = Buffer.alloc(0)
 
       res.on('data', (chunk) => {
@@ -77,14 +83,14 @@ const cachedRoomInfo: Map<number, RoomResponse> = new Map()
 const cachedDanmuConf: Map<number, DanmuConfResponse> = new Map()
 let fingerprint: string | undefined
 
-async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResponse, string]> {
+async function getCachedInfo(room: number, options: BaseLiveClientOptions<any>): Promise<[RoomResponse, DanmuConfResponse, string]> {
   let roomInfo: RoomResponse | undefined
   let danmuInfo: DanmuConfResponse | undefined
   if (cachedRoomInfo.has(room)) {
     roomInfo = cachedRoomInfo.get(room)!
   }
   else {
-    const info = await retry(() => getLongRoomId(room), 2, 200)
+    const info = await retry(() => getLongRoomId(room, options.headers), 2, 200)
     cachedRoomInfo.set(room, info)
     roomInfo = info
   }
@@ -93,13 +99,13 @@ async function getCachedInfo(room: number): Promise<[RoomResponse, DanmuConfResp
     danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
   }
   else {
-    const info = await retry(() => getDanmuConf(roomInfo.data.room_id), 2, 200)
+    const info = await retry(() => getDanmuConf(roomInfo.data.room_id, options.headers), 2, 200)
     cachedDanmuConf.set(roomInfo.data.room_id, info)
     danmuInfo = info
   }
 
   if (!fingerprint) {
-    const info = await retry(() => getBuvidConf(), 2, 200)
+    const info = await retry(() => getBuvidConf(options.headers), 2, 200)
     fingerprint = info.data.b_3
   }
 
@@ -141,7 +147,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
   }> {
     let host: HostServerList | undefined
     try {
-      const [_, danmu, fingerprint] = await getCachedInfo(roomId)
+      const [_, danmu, fingerprint] = await getCachedInfo(roomId, this.options)
       if (!this.options.key)
         this.options.key = danmu.data.token
       // ref: https://github.com/SocialSisterYi/bilibili-API-collect/issues/933
@@ -259,7 +265,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   private async getWebSocketUrl(ssl: boolean, roomId: number) {
     let host: HostServerList | undefined
     try {
-      const [_, danmu, fingerprint] = await getCachedInfo(roomId)
+      const [_, danmu, fingerprint] = await getCachedInfo(roomId, this.options)
       if (!this.options.key)
         this.options.key = danmu.data.token
       // ref: https://github.com/SocialSisterYi/bilibili-API-collect/issues/933
