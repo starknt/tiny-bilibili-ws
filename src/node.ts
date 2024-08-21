@@ -6,7 +6,7 @@ import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_SSL_PORT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, BuvidConfResponse, DanmuConfResponse, HostServerList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, BuvidConfResponse, DanmuConfResponse, HostList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
@@ -33,7 +33,7 @@ export function getLongRoomId(room: number, headers?: Record<string, string>): P
 
 export function getDanmuConf(room: number, headers?: Record<string, string>): Promise<DanmuConfResponse> {
   return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${room}&platform=pc&player=web`, {
+    https.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${room}&type=0`, {
       headers,
     }, (res) => {
       let data = Buffer.alloc(0)
@@ -145,7 +145,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
     host?: string
     port?: number
   }> {
-    let host: HostServerList | undefined
+    let host: HostList | undefined
     try {
       const [_, danmu, fingerprint] = await getCachedInfo(roomId, this.options)
       if (!this.options.key)
@@ -154,7 +154,7 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
       if (!this.options.buvid) {
         this.options.buvid = fingerprint
       }
-      host = randomElement(danmu.data.host_server_list)
+      host = randomElement(danmu.data.host_list)
     }
     catch (error) {
       console.error(error)
@@ -263,7 +263,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   }
 
   private async getWebSocketUrl(ssl: boolean, roomId: number) {
-    let host: HostServerList | undefined
+    let host: HostList | undefined
     try {
       const [_, danmu, fingerprint] = await getCachedInfo(roomId, this.options)
       if (!this.options.key)
@@ -272,7 +272,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
       if (!this.options.buvid) {
         this.options.buvid = fingerprint
       }
-      host = randomElement(danmu.data.host_server_list)
+      host = randomElement(danmu.data.host_list)
     }
     catch (error) {
       console.error(error)

@@ -66,16 +66,12 @@ export interface RoomResponse {
 }
 export interface DanmuConfResponse {
   code: number
-  msg: string
   message: string
   data: {
     refresh_row_factor: number
     refresh_rate: number
     max_delay: number
-    port: number
-    host: string
-    host_server_list: HostServerList[]
-    server_list: ServerList[]
+    host_list: HostList[]
     token: string
   }
 }
@@ -94,7 +90,7 @@ export interface ServerList {
   port: number
 }
 
-export interface HostServerList {
+export interface HostList {
   host: string
   port: number
   wss_port: number
