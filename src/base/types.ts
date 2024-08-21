@@ -108,8 +108,8 @@ export const DEFAULT_WS_OPTIONS: Options = {
   keepalive: true,
   reconnectTime: 5 * 1000,
   heartbeatTime: 30 * 1000,
-  // platform: 'web',
-  // protover: 3,
+  platform: 'web',
+  protover: 3,
   type: 2,
 }
 
@@ -181,7 +181,7 @@ export interface WSOptions extends BaseOptions, AuthOptions, ConnectionOptions {
 export interface TCPOptions extends WSOptions {}
 
 export interface LiveHelloMessage {
-  platform?: 'web' | string
+  platform?: 'web' | 'android' | string
   protover?: 1 | 2 | 3
   roomid: number
   uid?: number
