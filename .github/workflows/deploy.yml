@@ -17,22 +17,22 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
-      - uses: actions/setup-node@v3
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: latest
       - name: Install
         run: pnpm install
       - name: Build
         run: pnpm run docs:build
-      - uses: actions/configure-pages@v2
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
