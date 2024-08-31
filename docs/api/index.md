@@ -1,6 +1,6 @@
 ---
-title: API reference
-description: API reference with Tiny-Bilibili-WS
+title: API 文档
+description: API 文档
 ---
 
 **Working in Progress**
