@@ -6,7 +6,8 @@
 
 ## 特点
 
-- 同时支持浏览器和NodeJs环境
+- 开箱即用
+- 同时支持浏览器和 NodeJs 环境
 - 开箱即用的 Typescript 类型提示
 - 轻量级的包体积
 
@@ -15,20 +16,6 @@
 阅读 [文档](https://starknt.github.io/tiny-bilibili-ws) 查看更多信息.
 
 ## 安装
-
-### Npm
-
-```bash
-npm install --save tiny-bilibili-ws
-```
-
-### Yarn
-
-```bash
-yarn add tiny-bilibili-ws
-```
-
-### Pnpm
 
 ```bash
 pnpm install tiny-bilibili-ws
