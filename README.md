@@ -36,40 +36,73 @@ pnpm install tiny-bilibili-ws
 
 ## 简单使用
 
+### 在 Nodejs 中使用
+
 ```typescript
-// In Nodejs environment
-import { KeepLiveTCP, getLongRoomId, toMessageData } from 'tiny-bilibili-ws'
+import { KeepLiveWS, toMessageData } from 'tiny-bilibili-ws'
 
-// or browser environment
-import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
-
-const { data } = await getLongRoomId(652581)
-const room = data.room_id
-const tcp = new KeepLiveTCP(room)
-
-tcp.runWhenConnected(() => {
-  console.log(`正在监听 ${room}`)
+const room = 652581
+const live = new KeepLiveWS(room, {
+  // 触发风控后，你会无法获取弹幕发送者的用户名，详情可见：https://github.com/ddiu8081/blive-message-listener/issues/29， 传入以下参数即可解除
+  headers: {
+    Cookie: 'xxx', // 从 Bilibili 网页版获取
+  },
+  uid: 0, // 你的 Cookie 对应的 UID
 })
 
-tcp.on('heartbeat', (online) => {
+live.runWhenConnected(() => {
+  console.log(`正在监听 ${room}`) // 连接成功后才会触发
+})
+
+live.on('heartbeat', (online) => {
   console.log('人气值: ', online)
 })
 
-tcp.on('DANMU_MSG', (danmu) => {
+live.on('DANMU_MSG', (danmu) => {
   console.log(toMessageData(danmu))
 })
 
-tcp.on('error', (e) => {
+live.on('error', (e) => {
   console.error('错误: ', e)
 })
 
-tcp.on('close', () => {
+live.on('close', () => {
   console.log(`退出监听 ${room}`)
 })
+```
 
-// 因为存在跨域问题, getLongRoomId 这个 API 不能在浏览器中运行
+### 在浏览器中使用
 
-new KeepLiveWS(652581) // Now Long Room id: 4350043
+```typescript
+import { KeepLiveWS } from 'tiny-bilibili-ws/browser'
+
+// 因为存在跨域问题, Bilibili API 不能在浏览器中访问，现在需要手动传入 key 和 url
+// 例子可以参考 https://github.com/starknt/tiny-bilibili-ws/blob/master/playground/src/App.vue#L13
+const room = 652581
+const live = new KeepLiveWS(room, {
+  url: 'xxx',
+  key: 'xxx',
+})
+
+live.runWhenConnected(() => {
+  console.log(`正在监听 ${room}`) // 连接成功后才会触发
+})
+
+live.on('heartbeat', (online) => {
+  console.log('人气值: ', online)
+})
+
+live.on('DANMU_MSG', (danmu) => {
+  console.log(toMessageData(danmu))
+})
+
+live.on('error', (e) => {
+  console.error('错误: ', e)
+})
+
+live.on('close', () => {
+  console.log(`退出监听 ${room}`)
+})
 ```
 
 ## Credits
