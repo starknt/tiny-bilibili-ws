@@ -56,6 +56,7 @@
     "test:memory:leak": "node --inspect ./scripts/m-test.mjs"
   },
   "dependencies": {
+    "eventemitter3": "^5.0.1",
     "pako": "^2.1.0",
     "ws": "^8.18.0"
   },
@@ -68,7 +69,6 @@
     "bumpp": "^9.5.1",
     "dotenv": "^16.4.5",
     "eslint": "^9.9.0",
-    "eventemitter3": "5.0.1",
     "pnpm": "^9.7.0",
     "terser": "^5.31.6",
     "tsx": "^4.17.0",

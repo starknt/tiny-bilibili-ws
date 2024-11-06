@@ -61,4 +61,20 @@ describe('eventEmitter', () => {
     expect(emitter.listenerCount('t2')).eq(0)
     expect(emitter.listenerCount()).eq(1)
   })
+
+  it('advance test case(2)', () => {
+    const emitter = new EventEmitter()
+    let emitHit = 0
+    const f = () => {
+      emitHit += 1
+    }
+
+    emitter.addListener('hit', f)
+
+    for (let i = 0; i < 1000; i++) {
+      emitter.emit('hit')
+    }
+
+    expect(emitHit).eq(1000)
+  })
 })

@@ -1,5 +1,7 @@
+import E3 from 'eventemitter3'
+
 export type Nil = undefined | void | null
-export type EventKey = string | symbol | number
+export type EventKey = string | symbol
 export type ListenerResult = void | Promise<void>
 export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K]> =
   V extends Array<any>
@@ -19,85 +21,38 @@ export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K
       : V extends boolean ? (arg: boolean) => ListenerResult
         : (arg: V) => ListenerResult
 
-export class EventEmitter<E extends Record<EventKey, any>> {
-  private readonly eventListeners: Map<keyof E, Listener<E, any>[]> = new Map()
-
-  get eventNames() {
-    return this.eventListeners.keys()
-  }
-
+export class EventEmitter<E extends Record<EventKey, any>> extends E3 {
   on<N extends keyof E>(eventName: N, listener: Listener<E, N>) {
-    if (!this.eventListeners.has(eventName))
-      this.eventListeners.set(eventName, [listener])
-    else
-      this.eventListeners.get(eventName)!.push(listener)
-    return this
+    return super.on(eventName as EventKey, listener)
   }
 
   once<N extends keyof E>(eventName: N, listener: Listener<E, N>) {
-    const _listener = async (...args: any[]) => {
-      // @ts-expect-error rest parameter allow
-      await listener(...args)
-      // @ts-expect-error rest parameter allow
-      this.off(eventName, _listener)
-    }
-    // @ts-expect-error rest parameter allow
-    this.on(eventName, _listener)
-    return this
+    return super.once(eventName as EventKey, listener)
   }
 
   addListener<N extends keyof E>(eventName: N, listener: Listener<E, N>) {
-    this.on(eventName, listener)
-    return this
+    return this.on(eventName, listener)
   }
 
   off<N extends keyof E>(eventName: N, listener: Listener<E, N>): this {
-    if (this.eventListeners.has(eventName)) {
-      const listeners = this.eventListeners.get(eventName)!.filter(
-        l => l !== listener,
-      )
-      this.eventListeners.set(eventName, listeners)
-    }
-    return this
+    return super.off(eventName as EventKey, listener)
   }
 
   emit<N extends keyof E>(eventName: N, ...args: Parameters<Listener<E, N>>) {
-    if (!this.eventListeners.has(eventName))
-      return this
-
-    for (const callback of this.eventListeners.get(eventName)!) {
-      // @ts-expect-error rest parameter allow
-      callback(...args)
-        ?.then(() => { /* ignore void */ })
-        ?.catch(() => { /* ignore error */ })
-    }
-    return this
+    return super.emit(eventName as EventKey, ...args)
   }
 
   removeListener<N extends keyof E>(eventName: N, listener: Listener<E, N>): this {
     return this.off(eventName, listener)
   }
 
-  prependListener<N extends keyof E>(eventName: N, listener: Listener<E, N>): this {
-    if (this.eventListeners.has(eventName))
-      this.eventListeners.get(eventName)?.unshift(listener)
-    else
-      this.eventListeners.set(eventName, [listener])
-
-    return this
-  }
-
   removeAllListeners<N extends keyof E>(eventName?: N) {
-    if (eventName)
-      this.eventListeners.delete(eventName)
-    else
-      this.eventListeners.clear()
+    return super.removeAllListeners(eventName as EventKey)
   }
 
   listenerCount<N extends keyof E>(eventName?: N): number {
     if (!eventName)
-      return Array.from(this.eventListeners.values()).flatMap(v => v).length
-
-    return this.eventListeners.get(eventName)?.length ?? 0
+      return super.eventNames().length
+    return super.listenerCount(eventName as EventKey)
   }
 }

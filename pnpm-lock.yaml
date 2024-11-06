@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
       pako:
         specifier: ^2.1.0
         version: 2.1.0
@@ -39,9 +42,6 @@ importers:
       eslint:
         specifier: ^9.9.0
         version: 9.9.0(jiti@1.21.6)
-      eventemitter3:
-        specifier: 5.0.1
-        version: 5.0.1
       pnpm:
         specifier: ^9.7.0
         version: 9.7.0
