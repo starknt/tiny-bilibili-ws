@@ -42,7 +42,7 @@
     "stub": "unbuild --stub",
     "build": "unbuild",
     "prepublishOnly": "pnpm run build",
-    "release": "pnpm publish",
+    "release": "npx bumpp --no-push && pnpm publish",
     "dev": "unbuild --stub",
     "docs:dev": "pnpm -C docs run docs:dev",
     "docs:build": "pnpm -C docs run docs:build",
@@ -51,9 +51,7 @@
     "bench": "vitest bench",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "size": "pnpm run build && tsx --tsconfig=./tsconfig.tsx.json ./scripts/size.ts",
-    "g": "tsx --tsconfig=./tsconfig.tsx.json ./scripts/g-cmd.ts",
-    "test:memory:leak": "node --inspect ./scripts/m-test.mjs"
+    "size": "pnpm run build && tsx --tsconfig=./tsconfig.tsx.json ./scripts/size.ts"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1",
@@ -69,6 +67,7 @@
     "bumpp": "^9.5.1",
     "dotenv": "^16.4.5",
     "eslint": "^9.9.0",
+    "gzip-size": "^7.0.0",
     "pnpm": "^9.7.0",
     "terser": "^5.31.6",
     "tsx": "^4.17.0",

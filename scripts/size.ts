@@ -1,7 +1,8 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import process from 'node:process'
 import { sync as brotli } from 'brotli-size'
-import { sync as gzip } from 'gzip-size'
+import { gzipSizeSync as gzip } from 'gzip-size'
 import { minify } from 'terser'
 import { version } from '../package.json'
 
