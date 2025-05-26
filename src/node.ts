@@ -11,6 +11,7 @@ import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
 import { parser } from './base/buffer'
 import { parseRoomId, randomElement, retry } from './base/utils'
+import { WbiSign } from './node/sign'
 
 export function getLongRoomId(room: number, headers?: Record<string, string>): Promise<RoomResponse> {
   return new Promise((resolve, reject) => {
@@ -31,9 +32,9 @@ export function getLongRoomId(room: number, headers?: Record<string, string>): P
   })
 }
 
-export function getDanmuConf(room: number, headers?: Record<string, string>): Promise<DanmuConfResponse> {
+export function getDanmuConf(query: string, headers?: Record<string, string>): Promise<DanmuConfResponse> {
   return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${room}&type=0`, {
+    https.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?${query}`, {
       headers,
     }, (res) => {
       let data = Buffer.alloc(0)
@@ -99,7 +100,13 @@ async function getCachedInfo(room: number, options: BaseLiveClientOptions<any>):
     danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
   }
   else {
-    const info = await retry(() => getDanmuConf(roomInfo.data.room_id, options.headers), 2, 200)
+    const query = {
+      id: roomInfo.data.room_id,
+      type: 0,
+      wts: Math.floor(Date.now() / 1000),
+    }
+    const signedQuery = await WbiSign(query)
+    const info = await retry(() => getDanmuConf(signedQuery, options.headers), 2, 200)
     cachedDanmuConf.set(roomInfo.data.room_id, info)
     danmuInfo = info
   }
