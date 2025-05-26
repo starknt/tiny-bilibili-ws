@@ -9,8 +9,8 @@ import { version } from '../package.json'
 console.log()
 console.log(`tiny-bilibili-ws v${version}`)
 
-const browser = path.resolve(process.cwd(), 'dist/browser.mjs')
-const node = path.resolve(process.cwd(), 'dist/index.mjs')
+const browser = path.resolve(process.cwd(), 'dist/browser.js')
+const node = path.resolve(process.cwd(), 'dist/index.js')
 
 let minified = ''
 const browsercode = await fs.readFile(browser, 'utf8')

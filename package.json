@@ -18,32 +18,30 @@
     "bilibili",
     "live"
   ],
-  "sideEffects": false,
+  "sideEffects": true,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./browser": {
       "types": "./dist/browser.d.ts",
-      "import": "./dist/browser.mjs",
-      "require": "./dist/browser.cjs"
+      "import": "./dist/browser.js"
     }
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "browser.d.ts",
     "dist"
   ],
   "scripts": {
-    "stub": "unbuild --stub",
-    "build": "unbuild",
-    "prepublishOnly": "pnpm run build",
+    "build": "tsdown",
+    "prepublishOnly": "PUBLISH=true pnpm run build",
     "release": "npx bumpp --no-push && pnpm publish",
-    "dev": "unbuild --stub",
+    "dev": "tsdown --watch",
     "docs:dev": "pnpm -C docs run docs:dev",
     "docs:build": "pnpm -C docs run docs:build",
     "docs:preview": "pnpm -C docs run docs:preview",
@@ -70,9 +68,9 @@
     "gzip-size": "^7.0.0",
     "pnpm": "^9.7.0",
     "terser": "^5.31.6",
+    "tsdown": "^0.12.3",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
-    "unbuild": "^2.0.0",
     "vitest": "^2.0.5"
   }
 }
