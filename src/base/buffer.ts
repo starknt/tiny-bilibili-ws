@@ -82,6 +82,10 @@ const writeInt = function (buffer: Uint8Array, offset: number, len: number, valu
   }
 }
 
+export function readInt32BE(buffer: Uint8Array, offset: number) {
+  return buffer[offset] << 24 | buffer[offset + 1] << 16 | buffer[offset + 2] << 8 | buffer[offset + 3]
+}
+
 class BufferWriter implements IWriter {
   private _buffer: Uint8Array
 

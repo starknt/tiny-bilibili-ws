@@ -1,4 +1,5 @@
-export { KeepLiveTCP, KeepLiveWS, getLongRoomId, deserialize } from './node'
+export { KeepLiveTCP, KeepLiveWS, deserialize } from './node'
+export { getLongRoomId, getCachedInfo } from './node/api'
 export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize } from './base/buffer'
 export { fromEvent, toMessageData } from './base/utils'
 export { EventEmitter } from './base/eventemitter'

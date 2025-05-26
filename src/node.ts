@@ -1,73 +1,15 @@
 import type { Socket } from 'node:net'
 import { connect } from 'node:net'
-import https from 'node:https'
-import { Buffer } from 'node:buffer'
 import type { CloseEvent, ErrorEvent } from 'ws'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_SSL_PORT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
 import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, BuvidConfResponse, DanmuConfResponse, HostList, ISocket, IWebSocket, Merge, RoomResponse, TCPOptions, WSOptions } from './base/types'
+import type { BaseLiveClientOptions, HostList, ISocket, IWebSocket, Merge, TCPOptions, WSOptions } from './base/types'
 import { DEFAULT_WS_OPTIONS } from './base/types'
 import type { EventKey } from './base/eventemitter'
-import { parser } from './base/buffer'
-import { parseRoomId, randomElement, retry } from './base/utils'
-import { WbiSign } from './node/sign'
-
-export function getLongRoomId(room: number, headers?: Record<string, string>): Promise<RoomResponse> {
-  return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${room}`, {
-      headers,
-    }, (res) => {
-      let data = Buffer.alloc(0)
-
-      res.on('data', (chunk) => {
-        data += chunk
-      })
-
-      res.once('end', () => {
-        resolve(JSON.parse(Buffer.from(data).toString()))
-      })
-    })
-      .on('error', err => reject(err))
-  })
-}
-
-export function getDanmuConf(query: string, headers?: Record<string, string>): Promise<DanmuConfResponse> {
-  return new Promise((resolve, reject) => {
-    https.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?${query}`, {
-      headers,
-    }, (res) => {
-      let data = Buffer.alloc(0)
-
-      res.on('data', (chunk) => {
-        data += chunk
-      })
-
-      res.once('end', () => {
-        resolve(JSON.parse(Buffer.from(data).toString()))
-      })
-    })
-      .on('error', err => reject(err))
-  })
-}
-
-export function getBuvidConf(headers?: Record<string, string>): Promise<BuvidConfResponse> {
-  return new Promise((resolve, reject) => {
-    https.get('https://api.bilibili.com/x/frontend/finger/spi', {
-      headers,
-    }, (res) => {
-      let data = Buffer.alloc(0)
-
-      res.on('data', (chunk) => {
-        data += chunk
-      })
-      res.once('end', () => {
-        resolve(JSON.parse(Buffer.from(data).toString()))
-      })
-    })
-      .on('error', err => reject(err))
-  })
-}
+import { parser, readInt32BE } from './base/buffer'
+import { parseRoomId, randomElement } from './base/utils'
+import { cachedRoomInfo, getCachedInfo } from './node/api'
 
 export interface TCPEvents {
   // [OPEN_EVENT]: void
@@ -77,50 +19,11 @@ export interface TCPEvents {
 
   error: Error
   close: boolean
-  message: Buffer
-}
-
-const cachedRoomInfo: Map<number, RoomResponse> = new Map()
-const cachedDanmuConf: Map<number, DanmuConfResponse> = new Map()
-let fingerprint: string | undefined
-
-async function getCachedInfo(room: number, options: BaseLiveClientOptions<any>): Promise<[RoomResponse, DanmuConfResponse, string]> {
-  let roomInfo: RoomResponse | undefined
-  let danmuInfo: DanmuConfResponse | undefined
-  if (cachedRoomInfo.has(room)) {
-    roomInfo = cachedRoomInfo.get(room)!
-  }
-  else {
-    const info = await retry(() => getLongRoomId(room, options.headers), 2, 200)
-    cachedRoomInfo.set(room, info)
-    roomInfo = info
-  }
-
-  if (cachedDanmuConf.has(roomInfo.data.room_id)) {
-    danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
-  }
-  else {
-    const query = {
-      id: roomInfo.data.room_id,
-      type: 0,
-      wts: Math.floor(Date.now() / 1000),
-    }
-    const signedQuery = await WbiSign(query)
-    const info = await retry(() => getDanmuConf(signedQuery, options.headers), 2, 200)
-    cachedDanmuConf.set(roomInfo.data.room_id, info)
-    danmuInfo = info
-  }
-
-  if (!fingerprint) {
-    const info = await retry(() => getBuvidConf(options.headers), 2, 200)
-    fingerprint = info.data.b_3
-  }
-
-  return [roomInfo, danmuInfo, fingerprint]
+  message: Uint8Array
 }
 
 export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveClient<Merge<TCPEvents, E>> {
-  private buffer: Buffer = Buffer.alloc(0)
+  private buffer: Uint8Array = new Uint8Array()
   private i = 0
   tcpSocket!: Socket
 
@@ -206,20 +109,20 @@ export class KeepLiveTCP<E extends Record<EventKey, any> = object> extends LiveC
     // @ts-expect-error emit event
     socket.on('error', e => this.emit(ERROR_EVENT, e))
     socket.on('data', (buffer) => {
-      this.buffer = Buffer.concat([this.buffer, buffer])
+      this.buffer = new Uint8Array([...this.buffer, ...buffer])
       this.splitBuffer()
     })
   }
 
   private splitBuffer() {
-    while (this.buffer.length >= 4 && this.buffer.readInt32BE(0) <= this.buffer.length) {
-      const size = this.buffer.readInt32BE(0)
+    while (this.buffer.length >= 4 && readInt32BE(this.buffer, 0) <= this.buffer.length) {
+      const size = readInt32BE(this.buffer, 0)
       const pack = this.buffer.subarray(0, size)
       this.buffer = this.buffer.subarray(size)
       this.i++
       if (this.i > 5) {
         this.i = 0
-        this.buffer = Buffer.from(this.buffer)
+        this.buffer = new Uint8Array(this.buffer)
       }
       // @ts-expect-error emit event
       this.emit(MESSAGE_EVENT, pack)
@@ -235,7 +138,7 @@ export interface WSEvents {
 
   error: ErrorEvent | Error
   close: CloseEvent
-  message: Buffer
+  message: Uint8Array
 }
 
 export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveClient<Merge<WSEvents, E>> {
@@ -244,7 +147,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   constructor(roomId: number, options: WSOptions = DEFAULT_WS_OPTIONS) {
     const resolvedOptions = Object.assign({}, DEFAULT_WS_OPTIONS, options)
 
-    const liveOptions: BaseLiveClientOptions<Buffer> = {
+    const liveOptions: BaseLiveClientOptions<Uint8Array> = {
       ...resolvedOptions,
       socket: {
         type: 'websocket',
@@ -298,7 +201,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
       )
   }
 
-  private async init(options: BaseLiveClientOptions<Buffer>) {
+  private async init(options: BaseLiveClientOptions<Uint8Array>) {
     const roomId = parseRoomId(options.room)
 
     const ssl = !!options.ssl
@@ -377,7 +280,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
     // @ts-expect-error emit event
     socket.addEventListener('open', () => this.emit(OPEN_EVENT))
     // @ts-expect-error emit event
-    socket.addEventListener('message', e => this.emit(MESSAGE_EVENT, Buffer.from(e.data as Buffer)))
+    socket.addEventListener('message', e => this.emit(MESSAGE_EVENT, new Uint8Array(e.data)))
     // @ts-expect-error emit event
     socket.addEventListener('error', e => this.emit(ERROR_EVENT, e))
     // @ts-expect-error emit event
@@ -385,6 +288,6 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   }
 }
 
-export function deserialize(buffer: Buffer) {
+export function deserialize(buffer: Uint8Array) {
   return parser(buffer, inflates)
 }
