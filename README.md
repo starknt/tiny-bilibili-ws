@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/npm/v/tiny-bilibili-ws?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/tiny-bilibili-ws)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/jotai?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=tiny-bilibili-ws)
 [![jsDocs.io](https://img.shields.io/badge/jsDocs.io-reference-blue)](https://www.jsdocs.io/package/tiny-bilibili-ws)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/starknt/tiny-bilibili-ws)
 
 ## 特点
 
