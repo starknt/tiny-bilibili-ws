@@ -17,5 +17,6 @@ export default [
     format: 'esm',
     platform: 'browser',
     minify: process.env.PUBLISH === 'true',
+    target: 'chrome100',
   }),
 ]
