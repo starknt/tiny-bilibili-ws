@@ -64,6 +64,7 @@ export interface RoomResponse {
     special_type: number
   }
 }
+
 export interface DanmuConfResponse {
   code: number
   message: string
@@ -95,6 +96,11 @@ export interface HostList {
   port: number
   wss_port: number
   ws_port: number
+}
+
+export interface WbiKeys {
+  img_key: string
+  sub_key: string
 }
 
 export const DEFAULT_WS_OPTIONS: Options = {

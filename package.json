@@ -37,6 +37,9 @@
     "browser.d.ts",
     "dist"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "build": "tsdown",
     "prepublishOnly": "PUBLISH=true pnpm run build",

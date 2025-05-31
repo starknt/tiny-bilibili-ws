@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { httpRequest } from './requester'
+import { getWbiKeys } from './api'
 
 const mixinKeyEncTab = [
   46,
@@ -108,34 +108,6 @@ export function encWbi(params: ParamsObject, img_key: string, sub_key: string): 
   const queryString = query.join('&')
   const wbi_sign = md5(queryString + mixin_key) // 计算 w_rid
   return `${queryString}&w_rid=${wbi_sign}`
-}
-
-interface WbiKeys {
-  img_key: string
-  sub_key: string
-}
-
-// 获取最新的 img_key 和 sub_key
-export async function getWbiKeys(): Promise<WbiKeys> {
-  const resp = await httpRequest({
-    url: 'https://api.bilibili.com/x/web-interface/nav',
-    method: 'GET',
-  })
-
-  const json_content = resp.data
-  const img_url = json_content.data.wbi_img.img_url
-  const sub_url = json_content.data.wbi_img.sub_url
-
-  return {
-    img_key: img_url.slice(
-      img_url.lastIndexOf('/') + 1,
-      img_url.lastIndexOf('.'),
-    ),
-    sub_key: sub_url.slice(
-      sub_url.lastIndexOf('/') + 1,
-      sub_url.lastIndexOf('.'),
-    ),
-  }
 }
 
 // 签名
