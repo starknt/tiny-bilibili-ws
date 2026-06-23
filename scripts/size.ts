@@ -1,5 +1,5 @@
-import path from 'node:path'
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import process from 'node:process'
 import { sync as brotli } from 'brotli-size'
 import { gzipSizeSync as gzip } from 'gzip-size'

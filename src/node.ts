@@ -1,15 +1,15 @@
 import type { Socket } from 'node:net'
-import { connect } from 'node:net'
 import type { CloseEvent, ErrorEvent } from 'ws'
+import type { EventKey } from './base/eventemitter'
+import type { BaseLiveClientOptions, HostList, ISocket, IWebSocket, Merge, TCPOptions, WSOptions } from './base/types'
+import { connect } from 'node:net'
 import WebSocket from 'ws'
 import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NODE_SOCKET_PORT, NOOP, OPEN_EVENT, SOCKET_HOST, WEBSOCKET_PORT, WEBSOCKET_SSL_PORT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
-import { inflates } from './node/inflate'
-import type { BaseLiveClientOptions, HostList, ISocket, IWebSocket, Merge, TCPOptions, WSOptions } from './base/types'
-import { DEFAULT_WS_OPTIONS } from './base/types'
-import type { EventKey } from './base/eventemitter'
 import { parser, readInt32BE } from './base/buffer'
+import { DEFAULT_WS_OPTIONS } from './base/types'
 import { parseRoomId, randomElement } from './base/utils'
 import { cachedRoomInfo, getCachedInfo } from './node/api'
+import { inflates } from './node/inflate'
 
 export interface TCPEvents {
   // [OPEN_EVENT]: void
@@ -190,15 +190,15 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
 
     return ssl
       ? WEBSOCKET_SSL_URL(
-        this.options?.host ?? host?.host,
-        this.options?.port ?? WEBSOCKET_SSL_PORT,
-        this.options.path,
-      )
+          this.options?.host ?? host?.host,
+          this.options?.port ?? WEBSOCKET_SSL_PORT,
+          this.options.path,
+        )
       : WEBSOCKET_URL(
-        this.options?.host ?? host?.host,
-        this.options?.port ?? WEBSOCKET_PORT,
-        this.options.path,
-      )
+          this.options?.host ?? host?.host,
+          this.options?.port ?? WEBSOCKET_PORT,
+          this.options.path,
+        )
   }
 
   private async init(options: BaseLiveClientOptions<Uint8Array>) {

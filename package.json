@@ -2,7 +2,7 @@
   "name": "tiny-bilibili-ws",
   "type": "module",
   "version": "1.0.2",
-  "packageManager": "pnpm@9.7.0",
+  "packageManager": "pnpm@11.8.0",
   "description": "Bilibili Live WebSocket/TCP API",
   "author": "starknt",
   "license": "MIT",
@@ -55,25 +55,25 @@
     "size": "pnpm run build && tsx --tsconfig=./tsconfig.tsx.json ./scripts/size.ts"
   },
   "dependencies": {
-    "eventemitter3": "^5.0.1",
-    "pako": "^2.1.0",
-    "ws": "^8.18.0"
+    "eventemitter3": "^5.0.4",
+    "pako": "^2.2.0",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.25.1",
-    "@types/node": "^20.14.15",
-    "@types/pako": "^2.0.3",
-    "@types/ws": "^8.5.12",
+    "@antfu/eslint-config": "^9.0.0",
+    "@types/node": "^26.0.0",
+    "@types/pako": "^2.0.4",
+    "@types/ws": "^8.18.1",
     "brotli-size": "^4.0.0",
-    "bumpp": "^9.5.1",
-    "dotenv": "^16.4.5",
-    "eslint": "^9.9.0",
+    "bumpp": "^11.1.0",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.5.0",
     "gzip-size": "^7.0.0",
-    "pnpm": "^9.7.0",
-    "terser": "^5.31.6",
-    "tsdown": "^0.12.5",
-    "tsx": "^4.17.0",
-    "typescript": "^5.5.4",
-    "vitest": "^2.0.5"
+    "pnpm": "^11.8.0",
+    "terser": "^5.48.0",
+    "tsdown": "^0.22.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^2.1.9"
   }
 }

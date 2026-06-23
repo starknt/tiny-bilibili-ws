@@ -1,10 +1,10 @@
-import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NOOP, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
-import type { BaseLiveClientOptions, IWebSocket, Merge, RequiredByKeys, WSOptions } from './base/types'
-import { DEFAULT_WS_OPTIONS } from './base/types'
-import { parser } from './base/buffer'
-import { inflates } from './browserlib/inflate'
 import type { EventKey } from './base/eventemitter'
+import type { BaseLiveClientOptions, IWebSocket, Merge, RequiredByKeys, WSOptions } from './base/types'
+import { CLOSE_EVENT, ERROR_EVENT, LiveClient, MESSAGE_EVENT, NOOP, OPEN_EVENT, WEBSOCKET_SSL_URL, WEBSOCKET_URL } from './base/base'
+import { parser } from './base/buffer'
+import { DEFAULT_WS_OPTIONS } from './base/types'
 import { parseRoomId } from './base/utils'
+import { inflates } from './browserlib/inflate'
 
 export interface WSEvents {
   // [OPEN_EVENT]: void
@@ -58,15 +58,15 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
   private async getWebSocketUrl(ssl: boolean, _: number) {
     return ssl
       ? WEBSOCKET_SSL_URL(
-        this.options.host,
-        this.options.port,
-        this.options.path,
-      )
+          this.options.host,
+          this.options.port,
+          this.options.path,
+        )
       : WEBSOCKET_URL(
-        this.options.host,
-        this.options.port,
-        this.options.path,
-      )
+          this.options.host,
+          this.options.port,
+          this.options.path,
+        )
   }
 
   private async init(options: BaseLiveClientOptions<any>) {
@@ -148,6 +148,6 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
 export function deserialize(buffer: Uint8Array) {
   return parser(buffer, inflates)
 }
-export { WS_OP, WS_BODY_PROTOCOL_VERSION, serialize } from './base/buffer'
+export { serialize, WS_BODY_PROTOCOL_VERSION, WS_OP } from './base/buffer'
 export { EventEmitter } from './base/eventemitter'
 export { fromEvent, toMessageData } from './base/utils'

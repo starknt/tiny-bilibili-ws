@@ -3,8 +3,8 @@ import E3 from 'eventemitter3'
 export type Nil = undefined | void | null
 export type EventKey = string | symbol
 export type ListenerResult = void | Promise<void>
-export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K]> =
-  V extends Array<any>
+export type Listener<O extends Record<EventKey, any>, K extends keyof O, V = O[K]>
+  = V extends Array<any>
     ? V extends [infer Arg] ? (arg1: Arg) => ListenerResult
       : V extends [infer Arg1, infer Arg2] ? (arg1: Arg1, arg2: Arg2) => ListenerResult
         : V extends [infer Arg1, infer Arg2, infer Arg3] ? (arg1: Arg1, arg2: Arg2, arg3: Arg3) => ListenerResult

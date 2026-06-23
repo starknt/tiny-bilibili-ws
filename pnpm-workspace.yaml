@@ -1,4 +1,14 @@
+minimumReleaseAgeExclude:
+  - pako@2.2.0
+
+shellEmulator: true
+
+# eslint-disable-next-line pnpm/yaml-enforce-settings, yaml/plain-scalar
+trustPolicy: 'off'
+
 packages:
   - playground
-  - docs
   - tauri
+
+allowBuilds:
+  esbuild: true

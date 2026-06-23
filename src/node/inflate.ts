@@ -1,7 +1,7 @@
-import type { BrotliOptions, InputType, ZlibOptions } from 'node:zlib'
-import { brotliDecompress as _brotliDecompress, inflate as _inflate } from 'node:zlib'
 import type { Buffer } from 'node:buffer'
+import type { BrotliOptions, InputType, ZlibOptions } from 'node:zlib'
 import type { IZlib } from '../base/types'
+import { brotliDecompress as _brotliDecompress, inflate as _inflate } from 'node:zlib'
 
 function handler(resolve: (value: Uint8Array | PromiseLike<Uint8Array>) => void, reject: (reason?: any) => void) {
   return (error: Error | null, result: Buffer) => {

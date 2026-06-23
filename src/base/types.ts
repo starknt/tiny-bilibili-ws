@@ -3,8 +3,8 @@ import type { ProtocolHeader } from './buffer'
 export type BILIBILI_HOST = string
 
 // @ts-expect-error PartialByKeys pk
-export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Partial<Pick<O, UU>>> =
-  PO & {
+export type PartialByKeys<O extends Record<string, any>, U = keyof O, UU = U extends keyof O ? U : never, PO = Partial<Pick<O, UU>>>
+  = PO & {
     [K in keyof O as K extends U ? never : K]: O[K]
   }
 

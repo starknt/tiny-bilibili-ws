@@ -66,7 +66,7 @@ export interface Protocol {
 const textDecoder = new TextDecoder('utf-8')
 const textEncoder = new TextEncoder()
 
-const readInt = function (buffer: Uint8Array, offset: number, len: number) {
+function readInt(buffer: Uint8Array, offset: number, len: number) {
   let result = 0
   for (let i = len - 1; i >= 0; i--)
     result += 256 ** (len - i - 1) * buffer[offset + i]
@@ -74,7 +74,7 @@ const readInt = function (buffer: Uint8Array, offset: number, len: number) {
   return result
 }
 
-const writeInt = function (buffer: Uint8Array, offset: number, len: number, value: number) {
+function writeInt(buffer: Uint8Array, offset: number, len: number, value: number) {
   let i = 0
   while (i < len) {
     buffer[offset + i] = value / 256 ** (len - i - 1)

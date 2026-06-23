@@ -2,15 +2,14 @@
   "compilerOptions": {
     "target": "es2018",
     "lib": ["esnext", "DOM"],
-    "baseUrl": ".",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "tiny-bilibili-ws": [
-        "src/index.ts"
+        "./src/index.ts"
       ],
       "tiny-bilibili-ws/browser": [
-        "src/browser.ts"
+        "./src/browser.ts"
       ]
     },
     "resolveJsonModule": true,
