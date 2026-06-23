@@ -1,9 +1,9 @@
-import { WS_OP, deserialize, serialize } from './buffer'
 import type { BuiltinEvent } from './cmd'
-import { excludeNil, fromEvent, normalizeWebsocketPath } from './utils'
-import type { BILIBILI_HOST, BaseLiveClientOptions, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
-import { EventEmitter } from './eventemitter'
 import type { EventKey } from './eventemitter'
+import type { BaseLiveClientOptions, BILIBILI_HOST, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
+import { deserialize, serialize, WS_OP } from './buffer'
+import { EventEmitter } from './eventemitter'
+import { excludeNil, fromEvent, normalizeWebsocketPath } from './utils'
 
 /// const
 export enum SOCKET_HOSTS {
@@ -43,9 +43,10 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   closed: boolean = true
   roomId: number = 0
 
-  private close_func_called = false
+  private manualClose = false
   private socket: ISocket | IWebSocket
   private timeout: any
+  private reconnectTimer: any
   private readonly HEARTBEAT_TIME: number
   private readonly RECONNECT_TIME: number
   private zlib: IZlib
@@ -84,6 +85,17 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       this.socket.write(data)
     else
       this.socket.send(data)
+  }
+
+  private clearTimers() {
+    clearTimeout(this.timeout)
+    clearTimeout(this.reconnectTimer)
+  }
+
+  private resetConnectionState() {
+    this.closed = true
+    this.online = 0
+    this.live = false
   }
 
   private bindEvent() {
@@ -182,25 +194,22 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
       // @ts-expect-error close event
       this.emit('close', e)
 
-      if (this.options.keepalive && !this.close_func_called) {
+      if (this.options.keepalive && !this.manualClose) {
         // @ts-expect-error emit reconnect event
         this.emit('reconnect', true) // Warning:  reconnect to bilibili server
 
-        const timer = setTimeout(() => {
-          clearTimeout(timer)
-          this.closed = true
-          this.online = 0
-          this.live = false
-          clearTimeout(this.timeout)
+        clearTimeout(this.reconnectTimer)
+        this.reconnectTimer = setTimeout(() => {
+          clearTimeout(this.reconnectTimer)
+          this.resetConnectionState()
+          this.clearTimers()
           this.socket.reconnect()
         }, this.RECONNECT_TIME)
       }
       else {
-        this.closed = true
-        this.online = 0
-        this.live = false
-        this.close_func_called = false
-        clearTimeout(this.timeout)
+        this.resetConnectionState()
+        this.clearTimers()
+        this.manualClose = false
       }
     })
   }
@@ -241,12 +250,11 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   close() {
     // issue: https://github.com/ddiu8081/blive-message-listener/issues/24
     // this.emit('close', this.socket.type === 'tcp' ? false : { code: 0, reason: 'close', wasClean: true })
+    this.manualClose = true
+    this.clearTimers()
+
     if (!this.live)
       return false
-
-    this.close_func_called = true
-
-    clearTimeout(this.timeout)
 
     if ('end' in this.socket)
       this.socket.end()
@@ -256,11 +264,9 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
   }
 
   reconnect() {
-    this.closed = true
-    this.online = 0
-    this.live = false
-    clearTimeout(this.timeout)
-    this.close_func_called = false
+    this.resetConnectionState()
+    this.clearTimers()
+    this.manualClose = false
     // @ts-expect-error emit reconnect event
     this.emit('reconnect', false)
     this.socket.reconnect()
