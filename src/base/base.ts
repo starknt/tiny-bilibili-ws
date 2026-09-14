@@ -3,6 +3,7 @@ import type { EventKey } from './eventemitter'
 import type { BaseLiveClientOptions, BILIBILI_HOST, ISocket, IWebSocket, IZlib, LiveHelloMessage, Merge, Message } from './types'
 import { deserialize, serialize, WS_OP } from './buffer'
 import { EventEmitter } from './eventemitter'
+import { parseSendGiftV2 } from './send-gift-v2'
 import { excludeNil, fromEvent, normalizeWebsocketPath } from './utils'
 
 /// const
@@ -148,12 +149,35 @@ export class LiveClient<E extends Record<EventKey, any>> extends EventEmitter<Me
           // @ts-expect-error message event
             this.emit('msg', packet)
 
-          if (cmd.includes('DANMU_MSG'))
-          // @ts-expect-error bulk danmu msg event
+          if (cmd === 'SEND_GIFT_V2') {
+            try {
+              const { pb, ...data } = packet.data.data
+              for (const gift of parseSendGiftV2(pb)) {
+                // @ts-expect-error SEND_GIFT_V2 event
+                this.emit('SEND_GIFT_V2', {
+                  ...packet,
+                  data: {
+                    ...packet.data,
+                    data: { ...data, ...gift },
+                  },
+                })
+              }
+            }
+            catch (error) {
+              if (error instanceof Error) {
+                // @ts-expect-error deserialize error event
+                this.emit('deserialize:error', error)
+              }
+            }
+          }
+          else if (cmd.includes('DANMU_MSG')) {
+            // @ts-expect-error bulk danmu msg event
             this.emit('DANMU_MSG', packet)
-          else
-          // @ts-expect-error any event
+          }
+          else {
+            // @ts-expect-error any event
             this.emit(cmd as any, packet)
+          }
 
           continue
         }

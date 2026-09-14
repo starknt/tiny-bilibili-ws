@@ -1,3 +1,4 @@
+import type { SendGiftV2Message } from './send-gift-v2'
 import type { Message, Nullable } from './types'
 
 export interface DANMU_MSG {
@@ -128,6 +129,16 @@ export interface SEND_GIFT {
     effect: number
     tag_image: string
     user_count: number
+  }
+}
+
+export interface SEND_GIFT_V2 {
+  cmd: 'SEND_GIFT_V2'
+  danmu?: {
+    area: number
+  }
+  data: SendGiftV2Message & {
+    dmscore: number
   }
 }
 
@@ -1841,6 +1852,7 @@ interface _BuiltinEvent {
 
   // 礼物
   SEND_GIFT: SEND_GIFT
+  SEND_GIFT_V2: SEND_GIFT_V2
   GIFT_STAR_PROCESS: GIFT_STAR_PROCESS
   COMBO_SEND: COMBO_SEND
   SPECIAL_GIFT: SPECIAL_GIFT
