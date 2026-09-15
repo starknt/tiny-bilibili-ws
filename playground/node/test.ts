@@ -10,10 +10,13 @@ const live = new KeepLiveWS(process.env.VITE_ROOM as any, {
   headers: {
     Cookie: process.env.VITE_COOKIE!,
   },
-  stub: true,
 })
 
 live.on('DANMU_MSG', m => console.log(toMessageData(m).info[1]))
+
+live.on('SEND_GIFT_V2', (m) => {
+  console.dir(m, { depth: null })
+})
 
 live.getOnline()
   .then(console.log)
