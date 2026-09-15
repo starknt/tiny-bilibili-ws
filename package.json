@@ -1,7 +1,7 @@
 {
   "name": "tiny-bilibili-ws",
   "type": "module",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "packageManager": "pnpm@11.8.0",
   "description": "Bilibili Live WebSocket/TCP API",
   "author": "starknt",
