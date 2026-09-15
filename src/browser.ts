@@ -150,4 +150,8 @@ export function deserialize(buffer: Uint8Array) {
 }
 export { serialize, WS_BODY_PROTOCOL_VERSION, WS_OP } from './base/buffer'
 export { EventEmitter } from './base/eventemitter'
+export { decodeBase64, decodeProtobufFields, getProtobufBytes, getProtobufString, getProtobufVarint } from './base/protobuf'
+export type { ProtobufField } from './base/protobuf'
+export { decodeSendGiftV2, parseSendGiftV2 } from './base/send-gift-v2'
+export type { SendGiftV2BlindGift, SendGiftV2Broadcast, SendGiftV2Gift, SendGiftV2MedalInfo, SendGiftV2Message } from './base/send-gift-v2'
 export { fromEvent, toMessageData } from './base/utils'
