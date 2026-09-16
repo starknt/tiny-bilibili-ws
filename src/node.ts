@@ -159,7 +159,7 @@ export class KeepLiveWS<E extends Record<EventKey, any> = object> extends LiveCl
           })
         },
         close: () => {
-          this.ws.close()
+          this.ws.terminate()
         },
         reconnect: NOOP,
       } as IWebSocket,
