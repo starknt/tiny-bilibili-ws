@@ -9,7 +9,8 @@ import { retry } from '../base/utils'
 import { WbiSign } from './sign'
 
 export const cachedRoomInfo: Map<number, RoomResponse> = new Map()
-export const cachedDanmuConf: Map<number, DanmuConfResponse> = new Map()
+const DANMU_CONF_CACHE_TTL = 3 * 24 * 60 * 60 * 1000
+export const cachedDanmuConf: Map<number, { info: DanmuConfResponse, expiresAt: number }> = new Map()
 let fingerprint: string | undefined
 
 function request(url: string, options: RequestInit = {}): Promise<Response> {
@@ -98,10 +99,12 @@ export async function getCachedInfo(
     roomInfo = info
   }
 
-  if (cachedDanmuConf.has(roomInfo.data.room_id)) {
-    danmuInfo = cachedDanmuConf.get(roomInfo.data.room_id)!
+  const cachedConf = cachedDanmuConf.get(roomInfo.data.room_id)
+  if (cachedConf && cachedConf.expiresAt > Date.now()) {
+    danmuInfo = cachedConf.info
   }
   else {
+    cachedDanmuConf.delete(roomInfo.data.room_id)
     const query = {
       id: roomInfo.data.room_id,
       type: 0,
@@ -113,7 +116,10 @@ export async function getCachedInfo(
       2,
       200,
     )
-    cachedDanmuConf.set(roomInfo.data.room_id, info)
+    cachedDanmuConf.set(roomInfo.data.room_id, {
+      info,
+      expiresAt: Date.now() + DANMU_CONF_CACHE_TTL,
+    })
     danmuInfo = info
   }
 
